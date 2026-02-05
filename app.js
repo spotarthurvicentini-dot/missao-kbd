@@ -4,6 +4,7 @@ const CONTENT = {
     {
       id: "always",
       nome: "ALWAYS",
+      logo: "logos/always.jpg",
       kbds: [
         {
           id: "kbd1",
@@ -16,6 +17,7 @@ const CONTENT = {
     {
       id: "downy",
       nome: "DOWNY",
+      logo: "logos/downy.png",
       kbds: [
         {
           id: "kbd1",
@@ -40,6 +42,7 @@ const CONTENT = {
     {
       id: "pantene",
       nome: "PANTENE",
+      logo: "logos/pantene.png",
       kbds: [
         {
           id: "kbd1",
@@ -70,6 +73,7 @@ const CONTENT = {
     {
       id: "pampers",
       nome: "PAMPERS",
+      logo: "logos/pampers.png",
       kbds: [
         {
           id: "kbd1",
@@ -106,6 +110,7 @@ const CONTENT = {
     {
       id: "secret",
       nome: "SECRET",
+      logo: "logos/secret.png",
       kbds: [
         {
           id: "kbd1",
@@ -124,6 +129,7 @@ const CONTENT = {
     {
       id: "oral-b",
       nome: "ORAL-B",
+      logo: "logos/oral-b.png",
       kbds: [
         {
           id: "kbd1",
@@ -148,6 +154,7 @@ const CONTENT = {
     {
       id: "gillette",
       nome: "GILLETTE",
+      logo: "logos/gillette.png",
       kbds: [
         {
           id: "kbd1",
@@ -172,6 +179,7 @@ const CONTENT = {
     {
       id: "venus",
       nome: "VENUS",
+      logo: "logos/venus.png",
       kbds: [
         {
           id: "kbd1",
@@ -248,8 +256,13 @@ function renderHome() {
     const totalKbds = (m.kbds || []).length;
 
     div.innerHTML = `
-      <div class="cardTitle">${m.nome}</div>
-      <div class="cardSub">${totalKbds} KBD(s)</div>
+      <div class="cardLogo">
+        <img src="${m.logo}" alt="${m.nome}">
+      </div>
+      <div class="cardContent">
+        <div class="cardTitle">${m.nome}</div>
+        <div class="cardSub">${totalKbds} KBD${totalKbds > 1 ? 's' : ''}</div>
+      </div>
     `;
 
     div.onclick = () => {
@@ -289,8 +302,10 @@ function renderMarca() {
     const div = document.createElement("div");
     div.className = "card";
     div.innerHTML = `
-      <div class="cardTitle">${kbd.nome}</div>
-      <div class="cardSub">Abrir conteúdo</div>
+      <div class="cardContent">
+        <div class="cardTitle">${kbd.nome}</div>
+        <div class="cardSub">Clique para abrir conteúdo</div>
+      </div>
     `;
 
     div.onclick = () => {
