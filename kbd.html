@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KBD - Aula</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+
+    <div class="top">
+      <div>
+        <button class="btnSmall" onclick="voltarMarca()">← Voltar</button>
+        <h1 id="kbdTitulo">KBD</h1>
+        <p>Aula prática</p>
+      </div>
+
+      <div class="setorBox">
+        <div class="small">SETOR</div>
+        <div id="setorBadge" class="badge">---</div>
+      </div>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="videoBox">
+      <div id="videoPlaceholder" class="videoPlaceholder">
+        🎬 Vídeo em breve
+        <div class="small">Enquanto isso, veja as imagens abaixo</div>
+      </div>
+
+      <iframe
+        id="videoFrame"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- IMAGENS -->
+    <div id="imagensKbd" class="imageRow"></div>
+
+    <!-- BOTÃO QUIZ -->
+    <button class="btnPrimary" onclick="irParaQuiz()">
+      QUERO RESPONDER O QUIZ
+    </button>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    renderKbd();
+  </script>
+</body>
+</html>
