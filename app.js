@@ -2,14 +2,194 @@
 const CONTENT = {
   marcas: [
     {
+      id: "always",
+      nome: "ALWAYS",
+      kbds: [
+        {
+          id: "kbd1",
+          nome: "KBD Absorventes – Always Suave",
+          videoId: null,
+          imagens: []
+        }
+      ]
+    },
+    {
+      id: "downy",
+      nome: "DOWNY",
+      kbds: [
+        {
+          id: "kbd1",
+          nome: "KBD Ponto Extra – Brisa",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd2",
+          nome: "KBD Bloco Azul (50%)",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd3",
+          nome: "KBD Bloco Colorido (40%) ou [Alfazema ou Lírios]",
+          videoId: null,
+          imagens: []
+        }
+      ]
+    },
+    {
       id: "pantene",
       nome: "PANTENE",
       kbds: [
         {
           id: "kbd1",
-          nome: "KBD 01 - Exposição",
-          videoId: null,          // depois: ID do YouTube
-          imagens: []             // depois: ["img/pantene/kbd1_01.jpg", ...]
+          nome: "KBD Bond Repair (20%)",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd2",
+          nome: "KBD Top Versões – Bambu, Colágeno e Biotinamina B3 (40%)",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd3",
+          nome: "KBD Óleo – 2 Pontos de Contato",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd4",
+          nome: "KBD Rio/Cachoeira Dourada",
+          videoId: null,
+          imagens: []
+        }
+      ]
+    },
+    {
+      id: "pampers",
+      nome: "PAMPERS",
+      kbds: [
+        {
+          id: "kbd1",
+          nome: "KBD Ponto Extra – 50% Tamanhos Grandes",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd2",
+          nome: "KBD Pants",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd3",
+          nome: "KBD Pants + Premium (Lojas Sul)",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd4",
+          nome: "KBD Vale Night – SOS Gôndola",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd5",
+          nome: "KBD Vale Night – Ponto Extra Farma",
+          videoId: null,
+          imagens: []
+        }
+      ]
+    },
+    {
+      id: "secret",
+      nome: "SECRET",
+      kbds: [
+        {
+          id: "kbd1",
+          nome: "KBD 2 Bandejas",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd2",
+          nome: "KBD Bloco 15 Frentes ou 3 Bandejas",
+          videoId: null,
+          imagens: []
+        }
+      ]
+    },
+    {
+      id: "oral-b",
+      nome: "ORAL-B",
+      kbds: [
+        {
+          id: "kbd1",
+          nome: "KBD Branqueamento (60%)",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd2",
+          nome: "KBD 2 Pontos de Contato – Escovas",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd3",
+          nome: "KBD Layout BIPE – Escovas",
+          videoId: null,
+          imagens: []
+        }
+      ]
+    },
+    {
+      id: "gillette",
+      nome: "GILLETTE",
+      kbds: [
+        {
+          id: "kbd1",
+          nome: "KBD Sistemas – % de Ganchos",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd2",
+          nome: "KBD 2 Pontos de Contato – Mach3/Presto3",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd3",
+          nome: "KBD Carga Mach3 c/8 – 2 Ganchos",
+          videoId: null,
+          imagens: []
+        }
+      ]
+    },
+    {
+      id: "venus",
+      nome: "VENUS",
+      kbds: [
+        {
+          id: "kbd1",
+          nome: "KBD Sistemas – 20% de Ganchos",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd2",
+          nome: "KBD 2 Pontos de Contato",
+          videoId: null,
+          imagens: []
+        },
+        {
+          id: "kbd3",
+          nome: "KBD Checkout – Venus Pele Sensível",
+          videoId: null,
+          imagens: []
         }
       ]
     }
