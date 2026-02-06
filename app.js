@@ -1,3 +1,6 @@
+// ====== CONFIGURAÇÃO GOOGLE SHEETS ======
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWERu4e0iNLGkeB3Xq8Ou1dM4FFGI7SQagRVEjhCNIc-4gVAyt4DJPNe_rp9Le6kM/exec";
+
 // ====== DADOS (VOCÊ VAI EDITAR DEPOIS) ======
 const CONTENT = {
   marcas: [
@@ -351,7 +354,7 @@ function renderKbd() {
 
   document.getElementById("setorBadge").textContent = getSetor();
 
-  // VÍDEO (placeholder por enquanto)
+  // VÍDEO
   const iframe = document.getElementById("videoFrame");
   const placeholder = document.getElementById("videoPlaceholder");
 
@@ -364,7 +367,7 @@ function renderKbd() {
     placeholder.style.display = "flex";
   }
 
-  // IMAGENS (vazio por enquanto)
+  // IMAGENS
   const imgBox = document.getElementById("imagensKbd");
   imgBox.innerHTML = "";
 
@@ -375,7 +378,6 @@ function renderKbd() {
       imgBox.appendChild(img);
     });
   } else {
-    // mensagem leve quando não tiver imagens
     const msg = document.createElement("div");
     msg.className = "small";
     msg.style.marginTop = "16px";
@@ -385,7 +387,7 @@ function renderKbd() {
   }
 }
 
-// ====== QUIZ ======
+// ====== QUIZ - NOVO SISTEMA ======
 function irParaQuiz() {
   const params = new URLSearchParams(window.location.search);
   const marca = params.get("marca");
@@ -394,6 +396,17 @@ function irParaQuiz() {
     "quiz.html?marca=" + encodeURIComponent(marca) +
     "&kbd=" + encodeURIComponent(kbd);
 }
+
+// Estado global do quiz
+let quizState = {
+  marcaAtual: null,
+  kbdAtual: null,
+  perguntaIndex: 0,
+  tentativa: 1,
+  acertos: 0,
+  total: 0,
+  historico: []
+};
 
 function renderQuiz() {
   ensureSetor();
@@ -409,12 +422,9 @@ function renderQuiz() {
     return;
   }
 
-  // Atualizar título
-  document.getElementById("quizTitulo").textContent = `Quiz ${marca.nome}`;
-  document.getElementById("quizSubtitulo").textContent = "Teste seus conhecimentos";
-  document.getElementById("setorBadge").textContent = getSetor();
+  const kbd = (marca.kbds || []).find(k => k.id === kbdId);
 
-  // Buscar perguntas do quiz
+  // Buscar perguntas
   const perguntas = QUIZZES[marcaId] || [];
   
   if (perguntas.length === 0) {
@@ -425,133 +435,335 @@ function renderQuiz() {
         <div class="cardSub" style="margin-top: 8px;">
           As perguntas para ${marca.nome} estão sendo preparadas.
         </div>
+        <button class="btnPrimary" onclick="proximoKBD()" style="margin-top: 20px;">
+          Próximo KBD →
+        </button>
       </div>
     `;
     return;
   }
 
-  // Renderizar quiz
-  let html = '';
-  
-  perguntas.forEach((p, index) => {
-    html += `
-      <div class="quizPergunta" id="pergunta${index}" style="margin-bottom: 20px;">
-        <div class="card" style="padding: 20px;">
-          <div class="cardTitle" style="margin-bottom: 16px;">
-            ${index + 1}. ${p.pergunta}
-          </div>
-          
-          <div class="quizAlternativas" style="display: grid; gap: 10px;">
-            ${p.alternativas.map((alt, i) => {
-              const letra = String.fromCharCode(65 + i); // A, B, C, D
-              return `
-                <label class="quizOpcao" style="
-                  display: block;
-                  padding: 14px;
-                  border-radius: 10px;
-                  background: rgba(255,255,255,0.08);
-                  border: 2px solid rgba(255,255,255,0.15);
-                  cursor: pointer;
-                  transition: all 0.2s;
-                " onmouseover="this.style.background='rgba(255,255,255,0.15)'"
-                   onmouseout="this.style.background='rgba(255,255,255,0.08)'">
-                  <input type="radio" 
-                         name="q${index}" 
-                         value="${letra}"
-                         style="margin-right: 8px;">
-                  ${alt}
-                </label>
-              `;
-            }).join('')}
-          </div>
-          
-          <div id="feedback${index}" style="margin-top: 16px; display: none;">
-            <!-- Feedback aparecerá aqui -->
-          </div>
+  // Inicializar estado
+  quizState = {
+    marcaAtual: marca,
+    kbdAtual: kbd,
+    perguntaIndex: 0,
+    tentativa: 1,
+    acertos: 0,
+    total: perguntas.length,
+    historico: [],
+    perguntas: perguntas
+  };
+
+  // Atualizar cabeçalho
+  document.getElementById("quizTitulo").textContent = `Quiz ${marca.nome}`;
+  document.getElementById("quizSubtitulo").textContent = kbd ? kbd.nome : "";
+  document.getElementById("setorBadge").textContent = getSetor();
+
+  // Mostrar primeira pergunta
+  mostrarPergunta();
+}
+
+function mostrarPergunta() {
+  const { perguntas, perguntaIndex } = quizState;
+  const pergunta = perguntas[perguntaIndex];
+
+  const html = `
+    <div class="card" style="padding: 24px;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div class="small" style="font-weight: 700; opacity: 0.7;">
+          Pergunta ${perguntaIndex + 1} de ${perguntas.length}
         </div>
       </div>
-    `;
-  });
 
-  html += `
-    <button class="btnPrimary" onclick="corrigirQuiz()" id="btnCorrigir">
-      ✓ Corrigir Quiz
-    </button>
-    
-    <div id="resultado" style="margin-top: 20px; display: none;">
-      <!-- Resultado final -->
+      <div class="cardTitle" style="margin-bottom: 24px; font-size: 18px; line-height: 1.4;">
+        ${pergunta.pergunta}
+      </div>
+      
+      <div id="alternativas" style="display: grid; gap: 12px;">
+        ${pergunta.alternativas.map((alt, i) => {
+          const letra = String.fromCharCode(65 + i);
+          return `
+            <button class="quizOpcao" onclick="responderQuiz('${letra}')" style="
+              width: 100%;
+              padding: 16px;
+              text-align: left;
+              border-radius: 12px;
+              background: rgba(255,255,255,0.08);
+              border: 2px solid rgba(255,255,255,0.15);
+              color: white;
+              cursor: pointer;
+              transition: all 0.2s;
+              font-size: 15px;
+            " onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.borderColor='rgba(255,255,255,0.3)'"
+               onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.borderColor='rgba(255,255,255,0.15)'">
+              <strong>${letra})</strong> ${alt.replace(/^[A-D]\)\s*/, '')}
+            </button>
+          `;
+        }).join('')}
+      </div>
     </div>
   `;
 
   document.getElementById("quizArea").innerHTML = html;
-  
-  // Guardar dados do quiz
-  window.quizAtual = {
-    marcaId: marcaId,
-    perguntas: perguntas
-  };
 }
 
-function corrigirQuiz() {
-  const { perguntas } = window.quizAtual;
-  let acertos = 0;
-  let total = perguntas.length;
+async function responderQuiz(resposta) {
+  const { perguntas, perguntaIndex, marcaAtual, kbdAtual } = quizState;
+  const pergunta = perguntas[perguntaIndex];
+  const correto = resposta === pergunta.gabarito;
 
-  perguntas.forEach((p, index) => {
-    const resposta = document.querySelector(`input[name="q${index}"]:checked`);
-    const feedbackDiv = document.getElementById(`feedback${index}`);
-    
-    if (!resposta) {
-      feedbackDiv.style.display = 'block';
-      feedbackDiv.innerHTML = `
-        <div style="padding: 12px; background: rgba(255,200,0,0.15); border-radius: 8px; border-left: 4px solid #ffc800;">
-          ⚠️ Você não respondeu esta pergunta
-        </div>
-      `;
-      return;
-    }
-
-    const correto = resposta.value === p.gabarito;
-    if (correto) acertos++;
-
-    feedbackDiv.style.display = 'block';
-    feedbackDiv.innerHTML = `
-      <div style="padding: 12px; background: ${correto ? 'rgba(0,255,100,0.15)' : 'rgba(255,50,50,0.15)'}; 
-                  border-radius: 8px; border-left: 4px solid ${correto ? '#00ff64' : '#ff3232'};">
-        ${correto ? '✓' : '✗'} ${correto ? 'Correto!' : 'Incorreto'}
-        <br><small style="opacity: 0.9; margin-top: 4px; display: block;">
-          ${p.justificativa || `Resposta correta: ${p.gabarito}`}
-        </small>
-      </div>
-    `;
+  // Registrar resposta
+  quizState.historico.push({
+    pergunta: pergunta.pergunta,
+    resposta: resposta,
+    correta: pergunta.gabarito,
+    acertou: correto
   });
 
-  // Mostrar resultado final
-  const percentual = Math.round((acertos / total) * 100);
-  const emoji = percentual >= 70 ? '🎉' : percentual >= 50 ? '😊' : '📚';
-  const mensagem = percentual >= 70 ? 'Excelente!' : percentual >= 50 ? 'Bom trabalho!' : 'Continue estudando!';
+  if (correto) {
+    quizState.acertos++;
+  }
 
-  document.getElementById("resultado").style.display = 'block';
-  document.getElementById("resultado").innerHTML = `
-    <div class="card" style="text-align: center; padding: 30px; background: rgba(255,255,255,0.12);">
-      <div style="font-size: 64px; margin-bottom: 16px;">${emoji}</div>
+  // Enviar para Google Sheets
+  await enviarParaSheets({
+    setor: getSetor(),
+    marca: marcaAtual.nome,
+    kbd: kbdAtual ? kbdAtual.nome : "N/A",
+    pergunta: pergunta.pergunta,
+    resposta: resposta,
+    correta: pergunta.gabarito,
+    acertou: correto,
+    score: Math.round((quizState.acertos / quizState.total) * 100),
+    tentativa: quizState.tentativa
+  });
+
+  if (correto) {
+    // CORRETO - apenas mostra feedback verde e avança
+    mostrarFeedbackCorreto();
+  } else {
+    // ERRADO - mostra popup
+    mostrarPopupErro(pergunta);
+  }
+}
+
+function mostrarFeedbackCorreto() {
+  const { perguntas, perguntaIndex } = quizState;
+  
+  document.getElementById("quizArea").innerHTML = `
+    <div class="card" style="padding: 40px; text-align: center; background: rgba(0,255,100,0.15); border: 2px solid #00ff64;">
+      <div style="font-size: 64px; margin-bottom: 16px;">✓</div>
       <div class="cardTitle" style="font-size: 24px; margin-bottom: 8px;">
-        ${mensagem}
+        Correto!
       </div>
-      <div style="font-size: 32px; font-weight: 900; margin: 16px 0;">
-        ${acertos}/${total}
-      </div>
-      <div class="cardSub" style="font-size: 16px;">
-        ${percentual}% de acertos
+      <div class="cardSub" style="margin-top: 12px;">
+        Você acertou a pergunta ${perguntaIndex + 1} de ${perguntas.length}
       </div>
     </div>
   `;
 
-  // Esconder botão de corrigir
-  document.getElementById("btnCorrigir").style.display = 'none';
-
-  // Scroll suave para o resultado
+  // Avançar automaticamente após 1.5s
   setTimeout(() => {
-    document.getElementById("resultado").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 300);
+    proximaPergunta();
+  }, 1500);
+}
+
+function mostrarPopupErro(pergunta) {
+  // Criar overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'popupOverlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+  `;
+
+  overlay.innerHTML = `
+    <div style="
+      background: linear-gradient(135deg, #ff3232 0%, #ff6b6b 100%);
+      padding: 32px;
+      border-radius: 20px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    ">
+      <div style="text-align: center; margin-bottom: 20px; font-size: 64px;">
+        ✗
+      </div>
+      <div style="font-size: 22px; font-weight: 900; margin-bottom: 16px; text-align: center;">
+        Resposta Incorreta
+      </div>
+      <div style="background: rgba(0,0,0,0.2); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+        <div style="font-weight: 700; margin-bottom: 8px; font-size: 14px; opacity: 0.9;">
+          Resposta correta:
+        </div>
+        <div style="font-size: 16px; font-weight: 900;">
+          ${pergunta.gabarito}) ${pergunta.alternativas[pergunta.gabarito.charCodeAt(0) - 65].replace(/^[A-D]\)\s*/, '')}
+        </div>
+        ${pergunta.justificativa ? `
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 14px; opacity: 0.95;">
+            ${pergunta.justificativa}
+          </div>
+        ` : ''}
+      </div>
+      <button onclick="fecharPopupErro()" style="
+        width: 100%;
+        padding: 16px;
+        border-radius: 12px;
+        border: none;
+        background: white;
+        color: #ff3232;
+        font-size: 16px;
+        font-weight: 900;
+        cursor: pointer;
+      ">
+        Entendi
+      </button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+}
+
+function fecharPopupErro() {
+  const overlay = document.getElementById('popupOverlay');
+  if (overlay) {
+    overlay.remove();
+  }
+  proximaPergunta();
+}
+
+function proximaPergunta() {
+  quizState.perguntaIndex++;
+
+  if (quizState.perguntaIndex < quizState.perguntas.length) {
+    // Ainda tem perguntas
+    mostrarPergunta();
+  } else {
+    // Acabou o quiz
+    mostrarResultadoFinal();
+  }
+}
+
+function mostrarResultadoFinal() {
+  const { acertos, total } = quizState;
+  const percentual = Math.round((acertos / total) * 100);
+  
+  // Definir medalha
+  let cor, emoji, mensagem, gradiente;
+  if (percentual >= 81) {
+    cor = "ouro";
+    emoji = "🥇";
+    mensagem = "Ouro - Excelente!";
+    gradiente = "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)";
+  } else if (percentual >= 61) {
+    cor = "prata";
+    emoji = "🥈";
+    mensagem = "Prata - Muito Bom!";
+    gradiente = "linear-gradient(135deg, #C0C0C0 0%, #808080 100%)";
+  } else {
+    cor = "bronze";
+    emoji = "🥉";
+    mensagem = "Bronze - Continue Estudando!";
+    gradiente = "linear-gradient(135deg, #CD7F32 0%, #8B4513 100%)";
+  }
+
+  document.getElementById("quizArea").innerHTML = `
+    <div class="card" style="padding: 40px; text-align: center; background: ${gradiente}; color: white;">
+      <div style="font-size: 80px; margin-bottom: 16px;">${emoji}</div>
+      <div style="font-size: 28px; font-weight: 900; margin-bottom: 12px;">
+        ${mensagem}
+      </div>
+      <div style="font-size: 48px; font-weight: 900; margin: 20px 0;">
+        ${percentual}%
+      </div>
+      <div style="font-size: 18px; opacity: 0.95;">
+        ${acertos} de ${total} perguntas corretas
+      </div>
+      
+      <button class="btnPrimary" onclick="proximoKBD()" style="
+        margin-top: 30px;
+        background: rgba(0,0,0,0.3);
+        border: 2px solid white;
+      ">
+        Próximo KBD →
+      </button>
+    </div>
+  `;
+}
+
+function proximoKBD() {
+  const params = new URLSearchParams(window.location.search);
+  const marcaIdAtual = params.get("marca");
+  const kbdIdAtual = params.get("kbd");
+
+  const marcaAtual = CONTENT.marcas.find(m => m.id === marcaIdAtual);
+  if (!marcaAtual) {
+    voltarHome();
+    return;
+  }
+
+  // Encontrar índice do KBD atual
+  const kbdIndex = marcaAtual.kbds.findIndex(k => k.id === kbdIdAtual);
+  
+  // Próximo KBD na mesma marca
+  if (kbdIndex + 1 < marcaAtual.kbds.length) {
+    const proximoKbd = marcaAtual.kbds[kbdIndex + 1];
+    window.location.href = 
+      "kbd.html?marca=" + encodeURIComponent(marcaIdAtual) +
+      "&kbd=" + encodeURIComponent(proximoKbd.id);
+    return;
+  }
+
+  // Próxima marca
+  const marcaIndex = CONTENT.marcas.findIndex(m => m.id === marcaIdAtual);
+  if (marcaIndex + 1 < CONTENT.marcas.length) {
+    const proximaMarca = CONTENT.marcas[marcaIndex + 1];
+    const primeiroKbd = proximaMarca.kbds[0];
+    window.location.href = 
+      "kbd.html?marca=" + encodeURIComponent(proximaMarca.id) +
+      "&kbd=" + encodeURIComponent(primeiroKbd.id);
+    return;
+  }
+
+  // Acabou tudo!
+  alert("Parabéns! Você completou todos os KBDs! 🎉");
+  voltarHome();
+}
+
+async function enviarParaSheets(dados) {
+  try {
+    const payload = {
+      timestamp: new Date().toISOString(),
+      setor: dados.setor,
+      marca: dados.marca,
+      kbd: dados.kbd,
+      pergunta: dados.pergunta,
+      resposta: dados.resposta,
+      correta: dados.correta,
+      acertou: dados.acertou ? "SIM" : "NÃO",
+      score: dados.score,
+      tentativa: dados.tentativa,
+      userAgent: navigator.userAgent
+    };
+
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    console.error('Erro ao enviar dados:', error);
+  }
 }
