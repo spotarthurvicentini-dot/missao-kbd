@@ -385,7 +385,173 @@ function renderKbd() {
   }
 }
 
-// ====== QUIZ (vamos implementar depois) ======
+// ====== QUIZ ======
 function irParaQuiz() {
-  alert("Quiz: vamos implementar na próxima etapa 🙂");
+  const params = new URLSearchParams(window.location.search);
+  const marca = params.get("marca");
+  const kbd = params.get("kbd");
+  window.location.href = 
+    "quiz.html?marca=" + encodeURIComponent(marca) +
+    "&kbd=" + encodeURIComponent(kbd);
+}
+
+function renderQuiz() {
+  ensureSetor();
+
+  const params = new URLSearchParams(window.location.search);
+  const marcaId = params.get("marca");
+  const kbdId = params.get("kbd");
+
+  const marca = CONTENT.marcas.find(m => m.id === marcaId);
+  if (!marca) {
+    alert("Marca não encontrada");
+    voltarHome();
+    return;
+  }
+
+  // Atualizar título
+  document.getElementById("quizTitulo").textContent = `Quiz ${marca.nome}`;
+  document.getElementById("quizSubtitulo").textContent = "Teste seus conhecimentos";
+  document.getElementById("setorBadge").textContent = getSetor();
+
+  // Buscar perguntas do quiz
+  const perguntas = QUIZZES[marcaId] || [];
+  
+  if (perguntas.length === 0) {
+    document.getElementById("quizArea").innerHTML = `
+      <div class="card" style="text-align: center; padding: 40px;">
+        <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
+        <div class="cardTitle">Quiz em breve</div>
+        <div class="cardSub" style="margin-top: 8px;">
+          As perguntas para ${marca.nome} estão sendo preparadas.
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Renderizar quiz
+  let html = '';
+  
+  perguntas.forEach((p, index) => {
+    html += `
+      <div class="quizPergunta" id="pergunta${index}" style="margin-bottom: 20px;">
+        <div class="card" style="padding: 20px;">
+          <div class="cardTitle" style="margin-bottom: 16px;">
+            ${index + 1}. ${p.pergunta}
+          </div>
+          
+          <div class="quizAlternativas" style="display: grid; gap: 10px;">
+            ${p.alternativas.map((alt, i) => {
+              const letra = String.fromCharCode(65 + i); // A, B, C, D
+              return `
+                <label class="quizOpcao" style="
+                  display: block;
+                  padding: 14px;
+                  border-radius: 10px;
+                  background: rgba(255,255,255,0.08);
+                  border: 2px solid rgba(255,255,255,0.15);
+                  cursor: pointer;
+                  transition: all 0.2s;
+                " onmouseover="this.style.background='rgba(255,255,255,0.15)'"
+                   onmouseout="this.style.background='rgba(255,255,255,0.08)'">
+                  <input type="radio" 
+                         name="q${index}" 
+                         value="${letra}"
+                         style="margin-right: 8px;">
+                  ${alt}
+                </label>
+              `;
+            }).join('')}
+          </div>
+          
+          <div id="feedback${index}" style="margin-top: 16px; display: none;">
+            <!-- Feedback aparecerá aqui -->
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+    <button class="btnPrimary" onclick="corrigirQuiz()" id="btnCorrigir">
+      ✓ Corrigir Quiz
+    </button>
+    
+    <div id="resultado" style="margin-top: 20px; display: none;">
+      <!-- Resultado final -->
+    </div>
+  `;
+
+  document.getElementById("quizArea").innerHTML = html;
+  
+  // Guardar dados do quiz
+  window.quizAtual = {
+    marcaId: marcaId,
+    perguntas: perguntas
+  };
+}
+
+function corrigirQuiz() {
+  const { perguntas } = window.quizAtual;
+  let acertos = 0;
+  let total = perguntas.length;
+
+  perguntas.forEach((p, index) => {
+    const resposta = document.querySelector(`input[name="q${index}"]:checked`);
+    const feedbackDiv = document.getElementById(`feedback${index}`);
+    
+    if (!resposta) {
+      feedbackDiv.style.display = 'block';
+      feedbackDiv.innerHTML = `
+        <div style="padding: 12px; background: rgba(255,200,0,0.15); border-radius: 8px; border-left: 4px solid #ffc800;">
+          ⚠️ Você não respondeu esta pergunta
+        </div>
+      `;
+      return;
+    }
+
+    const correto = resposta.value === p.gabarito;
+    if (correto) acertos++;
+
+    feedbackDiv.style.display = 'block';
+    feedbackDiv.innerHTML = `
+      <div style="padding: 12px; background: ${correto ? 'rgba(0,255,100,0.15)' : 'rgba(255,50,50,0.15)'}; 
+                  border-radius: 8px; border-left: 4px solid ${correto ? '#00ff64' : '#ff3232'};">
+        ${correto ? '✓' : '✗'} ${correto ? 'Correto!' : 'Incorreto'}
+        <br><small style="opacity: 0.9; margin-top: 4px; display: block;">
+          ${p.justificativa || `Resposta correta: ${p.gabarito}`}
+        </small>
+      </div>
+    `;
+  });
+
+  // Mostrar resultado final
+  const percentual = Math.round((acertos / total) * 100);
+  const emoji = percentual >= 70 ? '🎉' : percentual >= 50 ? '😊' : '📚';
+  const mensagem = percentual >= 70 ? 'Excelente!' : percentual >= 50 ? 'Bom trabalho!' : 'Continue estudando!';
+
+  document.getElementById("resultado").style.display = 'block';
+  document.getElementById("resultado").innerHTML = `
+    <div class="card" style="text-align: center; padding: 30px; background: rgba(255,255,255,0.12);">
+      <div style="font-size: 64px; margin-bottom: 16px;">${emoji}</div>
+      <div class="cardTitle" style="font-size: 24px; margin-bottom: 8px;">
+        ${mensagem}
+      </div>
+      <div style="font-size: 32px; font-weight: 900; margin: 16px 0;">
+        ${acertos}/${total}
+      </div>
+      <div class="cardSub" style="font-size: 16px;">
+        ${percentual}% de acertos
+      </div>
+    </div>
+  `;
+
+  // Esconder botão de corrigir
+  document.getElementById("btnCorrigir").style.display = 'none';
+
+  // Scroll suave para o resultado
+  setTimeout(() => {
+    document.getElementById("resultado").scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 300);
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz - Missão KBD</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header com setor -->
+    <div class="top">
+      <div style="flex:1">
+        <h1 id="quizTitulo">Quiz</h1>
+        <p class="small" id="quizSubtitulo">Teste seus conhecimentos</p>
+      </div>
+      <div class="setorBox">
+        <div class="small">Setor</div>
+        <div class="badge" id="setorBadge">---</div>
+        <button class="btnSmall" onclick="trocarSetor()">Trocar</button>
+      </div>
+    </div>
+
+    <!-- Área do Quiz -->
+    <div id="quizArea" style="margin-top: 24px;">
+      <!-- Será preenchido pelo JS -->
+    </div>
+
+    <!-- Botão Voltar -->
+    <button class="btnSmall" onclick="voltarMarca()" style="width: 100%; margin-top: 20px; padding: 12px;">
+      ← Voltar para KBD
+    </button>
+  </div>
+
+  <script src="quizzes.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Renderizar quiz ao carregar
+    if (typeof renderQuiz === 'function') {
+      renderQuiz();
+    }
+  </script>
+</body>
+</html>
