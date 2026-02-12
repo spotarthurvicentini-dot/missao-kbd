@@ -6,42 +6,16 @@
   <title>Quiz - Missão KBD</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="quiz-form">
-
-  <!-- Barra Superior (padrão do app) -->
-  <div class="topbar">
-    <img src="logo-missao-kbd.png" alt="Missão KBD" class="topbar-logo" onclick="window.location.href='home.html'">
-    <div class="topbar-right">
-      <div class="topbar-setor" id="topbarSetor">---</div>
-      <button class="btn-sair" onclick="trocarSetor()">Trocar</button>
-    </div>
-  </div>
-
+<body>
   <div class="container">
-    <div class="formHeader">
-      <div class="formTitle" id="quizTitulo">Quiz</div>
-      <div class="formSubtitle" id="quizSubtitulo">Teste seus conhecimentos</div>
-    </div>
+    <h1 id="quizTitulo">Quiz</h1>
+    <p class="small" id="quizSubtitulo">Teste seus conhecimentos</p>
 
-    <div class="progressWrap" aria-label="Progresso do quiz">
-      <div class="progressBar" id="quizProgressBar"></div>
-    </div>
-
-    <!-- Área do Quiz -->
-    <div id="quizArea"></div>
-
-    <!-- Voltar -->
-    <button class="btnGhost" onclick="voltarMarca()" style="width:100%; margin-top: 14px;">
-      ← Voltar para KBD
-    </button>
+    <div id="quizArea" style="margin-top: 18px;"></div>
   </div>
 
   <script src="quizzes.js"></script>
   <script src="app.js"></script>
-  <script>
-    if (typeof renderQuiz === 'function') {
-      renderQuiz();
-    }
-  </script>
+  <script>renderQuiz();</script>
 </body>
 </html>

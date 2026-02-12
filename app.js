@@ -5,112 +5,15 @@ const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWERu4e0iNLG
 const CONTENT = {
   marcas: [
     { id: "always", nome: "ALWAYS", logo: "logos/always.jpg", kbds: [{ id: "kbd1", nome: "KBD Absorventes – Always Suave", videoId: null, imagens: [] }] },
-    // Vídeo: "KBD Downy (A loja possui Ponto Extra tamanhos grandes)"
     { id: "downy", nome: "DOWNY", logo: "logos/downy.png", kbds: [{ id: "kbd1", nome: "KBD Ponto Extra – Brisa", videoId: "sY8R7z2jwuI", imagens: [] }, { id: "kbd2", nome: "KBD Bloco Azul (50%)", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Bloco Colorido (40%) ou [Alfazema ou Lírios]", videoId: null, imagens: [] }] },
     { id: "pantene", nome: "PANTENE", logo: "logos/pantene.png", kbds: [{ id: "kbd1", nome: "KBD Bond Repair (20%)", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD Top Versões – Bambu, Colágeno e Biotinamina B3 (40%)", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Óleo – 2 Pontos de Contato", videoId: null, imagens: [] }, { id: "kbd4", nome: "KBD Rio/Cachoeira Dourada", videoId: null, imagens: [] }] },
     { id: "pampers", nome: "PAMPERS", logo: "logos/pampers.png", kbds: [{ id: "kbd1", nome: "KBD Ponto Extra – 50% Tamanhos Grandes", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD Pants", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Pants + Premium (Lojas Sul)", videoId: null, imagens: [] }, { id: "kbd4", nome: "KBD Vale Night – SOS Gôndola", videoId: null, imagens: [] }, { id: "kbd5", nome: "KBD Vale Night – Ponto Extra Farma", videoId: null, imagens: [] }] },
     { id: "secret", nome: "SECRET", logo: "logos/secret.png", kbds: [{ id: "kbd1", nome: "KBD 2 Bandejas", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD Bloco 15 Frentes ou 3 Bandejas", videoId: null, imagens: [] }] },
     { id: "oral-b", nome: "ORAL-B", logo: "logos/oral-b.png", kbds: [{ id: "kbd1", nome: "KBD Branqueamento (60%)", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD 2 Pontos de Contato – Escovas", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Layout BIPE – Escovas", videoId: null, imagens: [] }] },
-    // Vídeo: "KBD Gillette Carga Mach3 (Na região do CKO)"
     { id: "gillette", nome: "GILLETTE", logo: "logos/gillette.png", kbds: [{ id: "kbd1", nome: "KBD Sistemas – % de Ganchos", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD 2 Pontos de Contato – Mach3/Presto3", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Carga Mach3 c/8 – 2 Ganchos", videoId: "qaQl_otdN9Y", imagens: [] }] },
     { id: "venus", nome: "VENUS", logo: "logos/venus.png", kbds: [{ id: "kbd1", nome: "KBD Sistemas – 20% de Ganchos", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD 2 Pontos de Contato", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Checkout – Venus Pele Sensível", videoId: null, imagens: [] }] }
   ]
 };
-
-// ====== APP SHELL (NAVEGAÇÃO) ======
-function appTitle(t) {
-  const el = document.getElementById('appTitle');
-  if (el) el.textContent = t || 'Missão KBD';
-}
-
-function goBack() {
-  // Se houver histórico, volta; senão, tenta fallback sensato.
-  if (window.history.length > 1) return window.history.back();
-  const path = (location.pathname || '').toLowerCase();
-  if (path.includes('kbd.html') || path.includes('quiz.html')) return voltarMarca();
-  if (path.includes('marca.html')) return voltarHome();
-  return window.location.href = 'home.html';
-}
-
-function navToHome() { window.location.href = 'home.html'; }
-
-function navToMarcaAtual() {
-  const p = new URLSearchParams(window.location.search);
-  const m = p.get('marca');
-  if (m) window.location.href = 'marca.html?marca=' + encodeURIComponent(m);
-  else navToHome();
-}
-
-function navToKbdAtual(view) {
-  const p = new URLSearchParams(window.location.search);
-  const m = p.get('marca');
-  const k = p.get('kbd');
-  if (!m || !k) return navToHome();
-  const qs = new URLSearchParams({ marca: m, kbd: k });
-  if (view) qs.set('view', view);
-  window.location.href = 'kbd.html?' + qs.toString();
-}
-
-function navToQuizAtual() {
-  const p = new URLSearchParams(window.location.search);
-  const m = p.get('marca');
-  const k = p.get('kbd');
-  if (!m || !k) return navToHome();
-  window.location.href = 'quiz.html?marca=' + encodeURIComponent(m) + '&kbd=' + encodeURIComponent(k);
-}
-
-function setActiveNav(key) {
-  document.querySelectorAll('.bottomNav .navItem').forEach(b => {
-    const k = b.getAttribute('data-nav');
-    if (k === key) b.classList.add('active');
-    else b.classList.remove('active');
-  });
-}
-
-function abrirMenu() {
-  criarModal({
-    icon: '☰',
-    title: 'Navegação',
-    text: `
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <button class="btnPrimaryForm" style="width:100%;" onclick="navToHome();fecharModal()">🏠 Ir para Home</button>
-        <button class="btnPrimaryForm" style="width:100%;" onclick="navToMarcaAtual();fecharModal()">🗂️ Lista de KBDs (marca)</button>
-        <button class="btnPrimaryForm" style="width:100%;" onclick="trocarSetor()">🔁 Trocar setor</button>
-      </div>
-    `,
-    buttons: [{ label: 'Fechar', class: 'modal-btn-cancel', action: 'fecharModal()' }]
-  });
-}
-
-function initAppShell(opts = {}) {
-  // Setor
-  const s = getSetor();
-  const chip = document.getElementById('navSetor');
-  if (chip) chip.textContent = s || '---';
-
-  // Título
-  if (opts.title) appTitle(opts.title);
-
-  // Botões
-  const back = document.getElementById('navBack');
-  if (back) back.onclick = goBack;
-  const menu = document.getElementById('navMenu');
-  if (menu) menu.onclick = abrirMenu;
-
-  // Bottom nav
-  const home = document.querySelector('[data-nav="home"]');
-  if (home) home.onclick = navToHome;
-  const kbd = document.querySelector('[data-nav="kbd"]');
-  if (kbd) kbd.onclick = () => navToKbdAtual();
-  const quiz = document.querySelector('[data-nav="quiz"]');
-  if (quiz) quiz.onclick = navToQuizAtual;
-  const fotos = document.querySelector('[data-nav="fotos"]');
-  if (fotos) fotos.onclick = () => navToKbdAtual('fotos');
-  const videos = document.querySelector('[data-nav="videos"]');
-  if (videos) videos.onclick = () => navToKbdAtual('videos');
-
-  if (opts.active) setActiveNav(opts.active);
-}
 
 function criarModal(c) {
   const o = document.createElement('div');
@@ -128,8 +31,97 @@ function getSetor() { return (localStorage.getItem("SETOR") || "").trim(); }
 function ensureSetor() { if (!getSetor()) window.location.href = "index.html"; }
 function trocarSetor() { confirmarSaida(); }
 
+// ====== APP SHELL (TOP + BOTTOM NAV) ======
+function goBackFallback(fallbackHref){
+  if (window.history.length > 1) window.history.back();
+  else window.location.href = fallbackHref || "home.html";
+}
+
+function openMenu(){
+  const existing = document.getElementById("appMenuOverlay");
+  if (existing) return;
+  const overlay = document.createElement("div");
+  overlay.id = "appMenuOverlay";
+  overlay.className = "modal-overlay";
+  const params = new URLSearchParams(window.location.search);
+  const marca = params.get("marca");
+  const kbd = params.get("kbd");
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width:420px; width: calc(100% - 40px);">
+      <div class="modal-title" style="margin-bottom:14px;">Menu</div>
+      <div class="modal-text" style="display:grid; gap:10px;">
+        <button class="modal-btn modal-btn-confirm" onclick="window.location.href='home.html'">🏠 Home</button>
+        ${marca ? `<button class="modal-btn modal-btn-confirm" onclick="window.location.href='marca.html?marca=${encodeURIComponent(marca)}'">🧩 Trocar KBD</button>` : ``}
+        <button class="modal-btn modal-btn-cancel" onclick="confirmarSaida()">🔁 Trocar setor</button>
+        <button class="modal-btn modal-btn-cancel" onclick="closeMenu()">Fechar</button>
+      </div>
+    </div>`;
+  overlay.addEventListener("click", (e)=>{ if(e.target===overlay) closeMenu(); });
+  document.body.appendChild(overlay);
+}
+
+function closeMenu(){
+  const el = document.getElementById("appMenuOverlay");
+  if (el) el.remove();
+}
+
+function injectShell(opts){
+  // opts: {active:'home|aula|quiz|fotos|videos', title, subtitle, backFallback}
+  const already = document.querySelector(".appbar");
+  if (already) return;
+
+  const title = opts?.title || "Missão KBD";
+  const subtitle = opts?.subtitle || "";
+  const active = opts?.active || "";
+  const backFallback = opts?.backFallback || "home.html";
+
+  const params = new URLSearchParams(window.location.search);
+  const marca = params.get("marca");
+  const kbd = params.get("kbd");
+
+  const hrefAula   = (marca && kbd) ? `kbd.html?marca=${encodeURIComponent(marca)}&kbd=${encodeURIComponent(kbd)}` : "home.html";
+  const hrefQuiz   = (marca && kbd) ? `quiz.html?marca=${encodeURIComponent(marca)}&kbd=${encodeURIComponent(kbd)}` : "home.html";
+  const hrefFotos  = (marca && kbd) ? `kbd.html?marca=${encodeURIComponent(marca)}&kbd=${encodeURIComponent(kbd)}&view=fotos` : "home.html";
+  const hrefVideos = (marca && kbd) ? `kbd.html?marca=${encodeURIComponent(marca)}&kbd=${encodeURIComponent(kbd)}&view=videos` : "home.html";
+
+  const appbar = document.createElement("div");
+  appbar.className = "appbar";
+  appbar.innerHTML = `
+    <div class="appbar-left">
+      <button class="iconBtn" aria-label="Voltar" onclick="goBackFallback('${backFallback}')">←</button>
+      <button class="iconBtn" aria-label="Menu" onclick="openMenu()">☰</button>
+    </div>
+    <div class="appbar-title">
+      ${title}
+      ${subtitle ? `<span>${subtitle}</span>` : ``}
+    </div>
+    <div class="appbar-right">
+      <div class="pill" id="pillSetor">---</div>
+    </div>
+  `;
+
+  const nav = document.createElement("nav");
+  nav.className = "bottomNav";
+  nav.innerHTML = `
+    <a class="navItem ${active==='home'?'active':''}" href="home.html"><div class="navIcon">🏠</div><div>Home</div></a>
+    <a class="navItem ${active==='aula'?'active':''}" href="${hrefAula}"><div class="navIcon">📘</div><div>Aula</div></a>
+    <a class="navItem ${active==='quiz'?'active':''}" href="${hrefQuiz}"><div class="navIcon">📝</div><div>Quiz</div></a>
+    <a class="navItem ${active==='fotos'?'active':''}" href="${hrefFotos}"><div class="navIcon">🖼️</div><div>Fotos</div></a>
+    <a class="navItem ${active==='videos'?'active':''}" href="${hrefVideos}"><div class="navIcon">🎬</div><div>Vídeos</div></a>
+  `;
+
+  document.body.prepend(appbar);
+  document.body.appendChild(nav);
+
+  const pill = document.getElementById("pillSetor");
+  if (pill) pill.textContent = getSetor() || "---";
+}
+
+
+
 function renderHome() {
   ensureSetor();
+  injectShell({active:'home', title:'Missão KBD', subtitle:'Marcas', backFallback:'home.html'});
   const badge = document.getElementById("setorBadge");
   if (badge) badge.textContent = getSetor();
   const lista = document.getElementById("listaMarcas");
@@ -149,6 +141,7 @@ function voltarHome() { window.location.href = "home.html"; }
 
 function renderMarca() {
   ensureSetor();
+  injectShell({active:'aula', title:'Missão KBD', subtitle:'Selecione o KBD', backFallback:'home.html'});
   const params = new URLSearchParams(window.location.search);
   const marcaId = params.get("marca");
   const marca = CONTENT.marcas.find(m => m.id === marcaId);
@@ -171,212 +164,113 @@ function voltarMarca() { const p = new URLSearchParams(window.location.search); 
 
 function renderKbd() {
   ensureSetor();
+  // view=fotos|videos controla o que aparece
+  const _view = new URLSearchParams(window.location.search).get('view') || 'tudo';
+  injectShell({active: (_view==='fotos'?'fotos':(_view==='videos'?'videos':'aula')), title:'Missão KBD', subtitle:'Aula prática', backFallback:'home.html'});
   const params = new URLSearchParams(window.location.search);
   const marcaId = params.get("marca");
   const kbdId = params.get("kbd");
-  const view = (params.get('view') || 'all').toLowerCase();
   const marca = CONTENT.marcas.find(m => m.id === marcaId);
   if (!marca) { alert("Marca não encontrada"); voltarHome(); return; }
   const kbd = (marca.kbds || []).find(k => k.id === kbdId);
   if (!kbd) { alert("KBD não encontrado"); voltarMarca(); return; }
-
-  // App shell
-  initAppShell({ title: `${marca.nome}`, active: view === 'fotos' ? 'fotos' : view === 'videos' ? 'videos' : 'kbd' });
-
-  // Título dentro do conteúdo
-  const titulo = document.getElementById("kbdTitulo");
-  if (titulo) titulo.textContent = `${kbd.nome}`;
-
-  // Dropdown: mudar KBD
-  const sel = document.getElementById('kbdSelect');
+  document.getElementById("kbdTitulo").textContent = `${marca.nome} • ${kbd.nome}`;
+  // Dropdown: trocar KBD dentro da mesma marca
+  const sel = document.getElementById("kbdSelect");
   if (sel) {
-    sel.innerHTML = '';
-    marca.kbds.forEach(k => {
-      const o = document.createElement('option');
-      o.value = k.id;
-      o.textContent = k.nome;
-      if (k.id === kbdId) o.selected = true;
-      sel.appendChild(o);
+    sel.innerHTML = "";
+    (marca.kbds || []).forEach(k => {
+      const opt = document.createElement("option");
+      opt.value = k.id;
+      opt.textContent = k.nome;
+      if (k.id === kbd.id) opt.selected = true;
+      sel.appendChild(opt);
     });
     sel.onchange = () => {
-      const qs = new URLSearchParams({ marca: marcaId, kbd: sel.value });
-      if (view && view !== 'all') qs.set('view', view);
-      window.location.href = 'kbd.html?' + qs.toString();
+      const next = sel.value;
+      const v = new URLSearchParams(window.location.search).get('view');
+      const viewParam = v ? `&view=${encodeURIComponent(v)}` : '';
+      window.location.href = `kbd.html?marca=${encodeURIComponent(marca.id)}&kbd=${encodeURIComponent(next)}${viewParam}`;
     };
   }
+
+  // Tabs: Tudo / Vídeos / Fotos
+  const view = new URLSearchParams(window.location.search).get('view') || 'tudo';
+  const tabTudo = document.getElementById("tabTudo");
+  const tabVideos = document.getElementById("tabVideos");
+  const tabFotos = document.getElementById("tabFotos");
+  const setActiveTab = () => {
+    [tabTudo, tabVideos, tabFotos].forEach(t => t && t.classList.remove("active"));
+    if (view === 'videos') tabVideos && tabVideos.classList.add("active");
+    else if (view === 'fotos') tabFotos && tabFotos.classList.add("active");
+    else tabTudo && tabTudo.classList.add("active");
+  };
+  const navToView = (v) => {
+    const url = new URL(window.location.href);
+    if (v === 'tudo') url.searchParams.delete('view');
+    else url.searchParams.set('view', v);
+    window.location.href = url.toString();
+  };
+  tabTudo && (tabTudo.onclick = () => navToView('tudo'));
+  tabVideos && (tabVideos.onclick = () => navToView('videos'));
+  tabFotos && (tabFotos.onclick = () => navToView('fotos'));
+  setActiveTab();
+
   const iframe = document.getElementById("videoFrame");
   const placeholder = document.getElementById("videoPlaceholder");
-  if (kbd.videoId) { iframe.src = "https://www.youtube.com/embed/" + kbd.videoId; iframe.style.display = "block"; placeholder.style.display = "none"; } else { iframe.style.display = "none"; placeholder.style.display = "flex"; }
+  if (kbd.videoId) {
+    iframe.src = "https://www.youtube.com/embed/" + kbd.videoId;
+    iframe.style.display = "block";
+    placeholder.style.display = "none";
+  } else {
+    iframe.style.display = "none";
+    placeholder.style.display = "flex";
+  }
+
+  // Controla exibição por view
+  const videoBox = document.getElementById("videoBox");
   const imgBox = document.getElementById("imagensKbd");
+  if (videoBox) {
+    videoBox.style.display = (view === 'fotos') ? "none" : "block";
+  }
+  if (imgBox) {
+    imgBox.style.display = (view === 'videos') ? "none" : "grid";
+  }
+
+  // IMAGENS
+
   imgBox.innerHTML = "";
   if (kbd.imagens && kbd.imagens.length > 0) { kbd.imagens.forEach(src => { const img = document.createElement("img"); img.src = src; imgBox.appendChild(img); }); } else { const msg = document.createElement("div"); msg.className = "small"; msg.style.marginTop = "16px"; msg.style.opacity = ".8"; msg.textContent = "Imagens em breve."; imgBox.appendChild(msg); }
-
-  // Tabs (Tudo / Vídeos / Fotos)
-  const tabs = document.querySelectorAll('[data-view-tab]');
-  tabs.forEach(b => {
-    const v = b.getAttribute('data-view-tab');
-    if (v === view) b.classList.add('active');
-    else if (view === 'all' && v === 'all') b.classList.add('active');
-    else b.classList.remove('active');
-
-    b.onclick = () => {
-      const qs = new URLSearchParams({ marca: marcaId, kbd: kbdId });
-      if (v && v !== 'all') qs.set('view', v);
-      window.location.href = 'kbd.html?' + qs.toString();
-    };
-  });
-
-  // Aplicar filtro
-  const vb = document.getElementById('videoSection');
-  const ib = document.getElementById('imagesSection');
-  if (view === 'videos') {
-    if (vb) vb.style.display = 'block';
-    if (ib) ib.style.display = 'none';
-  } else if (view === 'fotos') {
-    if (vb) vb.style.display = 'none';
-    if (ib) ib.style.display = 'block';
-  } else {
-    if (vb) vb.style.display = 'block';
-    if (ib) ib.style.display = 'block';
-  }
 }
 
 function irParaQuiz() { const p = new URLSearchParams(window.location.search); window.location.href = "quiz.html?marca=" + encodeURIComponent(p.get("marca")) + "&kbd=" + encodeURIComponent(p.get("kbd")); }
 
-let quizState = { marcaAtual: null, kbdAtual: null, perguntaIndex: 0, tentativa: 1, acertos: 0, total: 0, historico: [], respondendo: false, perguntas: [], selecionada: null };
-
-function atualizarProgressoQuiz() {
-  const bar = document.getElementById("quizProgressBar");
-  if (!bar || !quizState.perguntas) return;
-  const total = quizState.perguntas.length || 1;
-  const pct = Math.round((quizState.perguntaIndex / total) * 100);
-  bar.style.width = pct + "%";
-}
-
-function quizSelecionar(v) {
-  quizState.selecionada = v;
-  const btn = document.getElementById("btnConfirmarResposta");
-  if (btn) btn.disabled = !v;
-}
-
-function confirmarResposta() {
-  if (!quizState.selecionada) return;
-  const v = quizState.selecionada;
-  quizState.selecionada = null;
-  const btn = document.getElementById("btnConfirmarResposta");
-  if (btn) btn.disabled = true;
-  responderQuiz(v);
-}
-
+let quizState = { marcaAtual: null, kbdAtual: null, perguntaIndex: 0, tentativa: 1, acertos: 0, total: 0, historico: [], respondendo: false };
 
 function renderQuiz() {
   ensureSetor();
+  injectShell({active:'quiz', title:'Missão KBD', subtitle:'Quiz', backFallback:'home.html'});
   const params = new URLSearchParams(window.location.search);
   const marcaId = params.get("marca");
   const kbdId = params.get("kbd");
-
   const marca = CONTENT.marcas.find(m => m.id === marcaId);
   if (!marca) { alert("Marca não encontrada"); voltarHome(); return; }
-
   const kbd = (marca.kbds || []).find(k => k.id === kbdId);
   const perguntas = QUIZZES[marcaId] || [];
-
-  // App shell
-  initAppShell({ title: 'Quiz', active: 'quiz' });
-
-  // Dropdown: mudar KBD dentro do quiz
-  const sel = document.getElementById('quizKbdSelect');
-  if (sel) {
-    sel.innerHTML = '';
-    (marca.kbds || []).forEach(k => {
-      const o = document.createElement('option');
-      o.value = k.id;
-      o.textContent = k.nome;
-      if (k.id === kbdId) o.selected = true;
-      sel.appendChild(o);
-    });
-    sel.onchange = () => {
-      window.location.href = 'quiz.html?marca=' + encodeURIComponent(marcaId) + '&kbd=' + encodeURIComponent(sel.value);
-    };
-  }
-
-  document.getElementById("quizTitulo").textContent = `Quiz • ${marca.nome}`;
-  document.getElementById("quizSubtitulo").textContent = kbd ? kbd.nome : "Teste seus conhecimentos";
-
-  if (perguntas.length === 0) {
-    const bar = document.getElementById("quizProgressBar");
-    if (bar) bar.style.width = "0%";
-    document.getElementById("quizArea").innerHTML = `
-      <div class="formCard" style="text-align:center; padding: 24px;">
-        <div style="font-size: 48px; margin-bottom: 10px;">📝</div>
-        <div class="questionTitle" style="margin-bottom: 8px;">Quiz em breve</div>
-        <div class="small" style="opacity:.85;">Ainda não temos perguntas para essa marca.</div>
-        <button class="btnPrimaryForm" style="margin-top: 16px; width: 100%;" onclick="proximoKBD()">Próximo KBD →</button>
-      </div>
-    `;
-    return;
-  }
-
-  quizState = {
-    marcaAtual: marca,
-    kbdAtual: kbd,
-    perguntaIndex: 0,
-    tentativa: 1,
-    acertos: 0,
-    total: perguntas.length,
-    historico: [],
-    perguntas: perguntas,
-    respondendo: false,
-    selecionada: null
-  };
-
-  atualizarProgressoQuiz();
+  if (perguntas.length === 0) { document.getElementById("quizArea").innerHTML = `<div class="card" style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 16px;">📝</div><div class="cardTitle">Quiz em breve</div><button class="btnPrimary" onclick="proximoKBD()">Próximo KBD →</button></div>`; return; }
+  quizState = { marcaAtual: marca, kbdAtual: kbd, perguntaIndex: 0, tentativa: 1, acertos: 0, total: perguntas.length, historico: [], perguntas: perguntas, respondendo: false };
+  document.getElementById("quizTitulo").textContent = `Quiz ${marca.nome}`;
+  document.getElementById("quizSubtitulo").textContent = kbd ? kbd.nome : "";
+  const topbarSetor = document.getElementById("topbarSetor");
+  if (topbarSetor) topbarSetor.textContent = getSetor();
   mostrarPergunta();
 }
 
 function mostrarPergunta() {
   const { perguntas, perguntaIndex } = quizState;
   const p = perguntas[perguntaIndex];
-
   quizState.respondendo = false;
-  quizState.selecionada = null;
-
-  atualizarProgressoQuiz();
-
-  const total = perguntas.length;
-  const idx = perguntaIndex + 1;
-
-  const opts = p.alternativas.map((alt, i) => {
-    const l = String.fromCharCode(65 + i);
-    const txt = alt.replace(/^[A-D]\)\s*/, '');
-    return `
-      <label class="option" onclick="quizSelecionar('${l}')">
-        <input type="radio" name="quizOption" value="${l}" onchange="quizSelecionar('${l}')">
-        <div class="optionText"><strong>${l})</strong> ${txt}</div>
-      </label>
-    `;
-  }).join('');
-
-  document.getElementById("quizArea").innerHTML = `
-    <div class="formCard">
-      <div class="questionMeta">
-        <div class="pill">Pergunta ${idx} de ${total}</div>
-        <div class="pill">1 resposta</div>
-      </div>
-
-      <div class="questionTitle">${p.pergunta}</div>
-
-      <div class="options" role="radiogroup" aria-label="Alternativas">
-        ${opts}
-      </div>
-
-      <div class="formActions">
-        <button class="btnPrimaryForm" id="btnConfirmarResposta" onclick="confirmarResposta()" disabled>
-          Confirmar resposta
-        </button>
-      </div>
-    </div>
-  `;
+  document.getElementById("quizArea").innerHTML = `<div class="card" style="padding: 24px;"><div style="text-align: center; margin-bottom: 20px;"><div class="small" style="font-weight: 700;">Pergunta ${perguntaIndex + 1} de ${perguntas.length}</div></div><div class="cardTitle" style="margin-bottom: 24px; font-size: 18px;">${p.pergunta}</div><div style="display: grid; gap: 12px;">${p.alternativas.map((alt, i) => { const l = String.fromCharCode(65 + i); return `<button onclick="responderQuiz('${l}')" style="width: 100%; padding: 16px; text-align: left; border-radius: 12px; background: rgba(168, 85, 247, 0.1); border: 2px solid rgba(0, 217, 255, 0.3); color: white; cursor: pointer; font-size: 15px;"><strong>${l})</strong> ${alt.replace(/^[A-D]\)\s*/, '')}</button>`; }).join('')}</div></div>`;
 }
 
 async function responderQuiz(r) {
@@ -393,24 +287,8 @@ async function responderQuiz(r) {
 
 function mostrarFeedbackCorreto() {
   const { perguntas, perguntaIndex } = quizState;
-  const total = perguntas.length;
-  const idx = perguntaIndex + 1;
-
-  document.getElementById("quizArea").innerHTML = `
-    <div class="formCard" style="text-align:center; border-color: rgba(0,255,100,0.45); background: rgba(0,255,100,0.10);">
-      <div style="font-size: 54px; margin-bottom: 6px;">✅</div>
-      <div class="questionTitle" style="margin-bottom: 6px;">Correto!</div>
-      <div class="small" style="opacity:.85;">Avançando para a próxima pergunta...</div>
-    </div>
-  `;
-
-  const bar = document.getElementById("quizProgressBar");
-  if (bar) {
-    const pct = Math.round((idx / total) * 100);
-    bar.style.width = pct + "%";
-  }
-
-  setTimeout(() => { proximaPergunta(); }, 800);
+  document.getElementById("quizArea").innerHTML = `<div class="card" style="padding: 40px; text-align: center; background: rgba(0, 255, 100, 0.15); border: 2px solid #00ff64;"><div style="font-size: 64px;">✓</div><div class="cardTitle" style="color: #00ff64;">Correto!</div></div>`;
+  setTimeout(() => { proximaPergunta(); }, 1200);
 }
 
 function mostrarPopupErro(p) {
@@ -428,26 +306,11 @@ function proximaPergunta() {
 function mostrarResultadoFinal() {
   const { acertos, total } = quizState;
   const pct = Math.round((acertos / total) * 100);
-
-  const bar = document.getElementById("quizProgressBar");
-  if (bar) bar.style.width = "100%";
-
-  let titulo;
-  if (pct >= 81) titulo = "Excelente!";
-  else if (pct >= 61) titulo = "Boa!";
-  else titulo = "Bora reforçar!";
-
-  document.getElementById("quizArea").innerHTML = `
-    <div class="resultCard">
-      <div style="font-size: 46px;">🏁</div>
-      <div class="questionTitle" style="margin-top: 10px;">${titulo}</div>
-      <div class="resultScore">${pct}%</div>
-      <div class="small" style="opacity:.9;">${acertos} de ${total} respostas corretas</div>
-      <button class="btnPrimaryForm" onclick="proximoKBD()" style="margin-top: 16px; width: 100%;">
-        Próximo KBD →
-      </button>
-    </div>
-  `;
+  let emoji, msg, grad;
+  if (pct >= 81) { emoji = "🥇"; msg = "Ouro!"; grad = "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)"; }
+  else if (pct >= 61) { emoji = "🥈"; msg = "Prata!"; grad = "linear-gradient(135deg, #C0C0C0 0%, #808080 100%)"; }
+  else { emoji = "🥉"; msg = "Bronze!"; grad = "linear-gradient(135deg, #CD7F32 0%, #8B4513 100%)"; }
+  document.getElementById("quizArea").innerHTML = `<div class="card" style="padding: 40px; text-align: center; background: ${grad}; border: none;"><div style="font-size: 80px;">${emoji}</div><div style="font-size: 28px; font-weight: 900;">${msg}</div><div style="font-size: 48px; font-weight: 900; margin: 20px 0;">${pct}%</div><div style="font-size: 18px;">${acertos} de ${total}</div><button class="btnPrimary" onclick="proximoKBD()" style="margin-top: 30px; background: rgba(0,0,0,0.3); border: 2px solid white;">Próximo →</button></div>`;
 }
 
 function proximoKBD() {

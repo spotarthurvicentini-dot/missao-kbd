@@ -7,32 +7,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <!-- Barra Superior -->
-  <div class="topbar">
-    <img src="logo-missao-kbd.png" alt="Missão KBD" class="topbar-logo" onclick="location.reload()">
-    <div class="topbar-right">
-      <div class="topbar-setor" id="topbarSetor">---</div>
-      <button class="btn-sair" onclick="confirmarSaida()">Sair</button>
-    </div>
-  </div>
-
   <div class="container">
     <h1>Marcas</h1>
     <p class="small">Selecione uma marca para começar</p>
-
-    <!-- Lista de marcas -->
-    <div class="lista" id="listaMarcas">
-      <!-- Preenchido pelo JS -->
-    </div>
+    <div class="lista" id="listaMarcas"></div>
   </div>
 
   <script src="app.js"></script>
-  <script>
-    if (typeof renderHome === 'function') {
-      renderHome();
-      document.getElementById('topbarSetor').textContent = getSetor();
-    }
-  </script>
+  <script>renderHome();</script>
 </body>
 </html>
