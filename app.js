@@ -94,31 +94,124 @@ function renderKbd() {
 
 function irParaQuiz() { const p = new URLSearchParams(window.location.search); window.location.href = "quiz.html?marca=" + encodeURIComponent(p.get("marca")) + "&kbd=" + encodeURIComponent(p.get("kbd")); }
 
-let quizState = { marcaAtual: null, kbdAtual: null, perguntaIndex: 0, tentativa: 1, acertos: 0, total: 0, historico: [], respondendo: false };
+let quizState = { marcaAtual: null, kbdAtual: null, perguntaIndex: 0, tentativa: 1, acertos: 0, total: 0, historico: [], respondendo: false, perguntas: [], selecionada: null };
+
+function atualizarProgressoQuiz() {
+  const bar = document.getElementById("quizProgressBar");
+  if (!bar || !quizState.perguntas) return;
+  const total = quizState.perguntas.length || 1;
+  const pct = Math.round((quizState.perguntaIndex / total) * 100);
+  bar.style.width = pct + "%";
+}
+
+function quizSelecionar(v) {
+  quizState.selecionada = v;
+  const btn = document.getElementById("btnConfirmarResposta");
+  if (btn) btn.disabled = !v;
+}
+
+function confirmarResposta() {
+  if (!quizState.selecionada) return;
+  const v = quizState.selecionada;
+  quizState.selecionada = null;
+  const btn = document.getElementById("btnConfirmarResposta");
+  if (btn) btn.disabled = true;
+  responderQuiz(v);
+}
+
 
 function renderQuiz() {
   ensureSetor();
   const params = new URLSearchParams(window.location.search);
   const marcaId = params.get("marca");
   const kbdId = params.get("kbd");
+
   const marca = CONTENT.marcas.find(m => m.id === marcaId);
   if (!marca) { alert("Marca não encontrada"); voltarHome(); return; }
+
   const kbd = (marca.kbds || []).find(k => k.id === kbdId);
   const perguntas = QUIZZES[marcaId] || [];
-  if (perguntas.length === 0) { document.getElementById("quizArea").innerHTML = `<div class="card" style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 16px;">📝</div><div class="cardTitle">Quiz em breve</div><button class="btnPrimary" onclick="proximoKBD()">Próximo KBD →</button></div>`; return; }
-  quizState = { marcaAtual: marca, kbdAtual: kbd, perguntaIndex: 0, tentativa: 1, acertos: 0, total: perguntas.length, historico: [], perguntas: perguntas, respondendo: false };
-  document.getElementById("quizTitulo").textContent = `Quiz ${marca.nome}`;
-  document.getElementById("quizSubtitulo").textContent = kbd ? kbd.nome : "";
+
   const topbarSetor = document.getElementById("topbarSetor");
   if (topbarSetor) topbarSetor.textContent = getSetor();
+
+  document.getElementById("quizTitulo").textContent = `Quiz • ${marca.nome}`;
+  document.getElementById("quizSubtitulo").textContent = kbd ? kbd.nome : "Teste seus conhecimentos";
+
+  if (perguntas.length === 0) {
+    const bar = document.getElementById("quizProgressBar");
+    if (bar) bar.style.width = "0%";
+    document.getElementById("quizArea").innerHTML = `
+      <div class="formCard" style="text-align:center; padding: 24px;">
+        <div style="font-size: 48px; margin-bottom: 10px;">📝</div>
+        <div class="questionTitle" style="margin-bottom: 8px;">Quiz em breve</div>
+        <div class="small" style="opacity:.85;">Ainda não temos perguntas para essa marca.</div>
+        <button class="btnPrimaryForm" style="margin-top: 16px; width: 100%;" onclick="proximoKBD()">Próximo KBD →</button>
+      </div>
+    `;
+    return;
+  }
+
+  quizState = {
+    marcaAtual: marca,
+    kbdAtual: kbd,
+    perguntaIndex: 0,
+    tentativa: 1,
+    acertos: 0,
+    total: perguntas.length,
+    historico: [],
+    perguntas: perguntas,
+    respondendo: false,
+    selecionada: null
+  };
+
+  atualizarProgressoQuiz();
   mostrarPergunta();
 }
 
 function mostrarPergunta() {
   const { perguntas, perguntaIndex } = quizState;
   const p = perguntas[perguntaIndex];
+
   quizState.respondendo = false;
-  document.getElementById("quizArea").innerHTML = `<div class="card" style="padding: 24px;"><div style="text-align: center; margin-bottom: 20px;"><div class="small" style="font-weight: 700;">Pergunta ${perguntaIndex + 1} de ${perguntas.length}</div></div><div class="cardTitle" style="margin-bottom: 24px; font-size: 18px;">${p.pergunta}</div><div style="display: grid; gap: 12px;">${p.alternativas.map((alt, i) => { const l = String.fromCharCode(65 + i); return `<button onclick="responderQuiz('${l}')" style="width: 100%; padding: 16px; text-align: left; border-radius: 12px; background: rgba(168, 85, 247, 0.1); border: 2px solid rgba(0, 217, 255, 0.3); color: white; cursor: pointer; font-size: 15px;"><strong>${l})</strong> ${alt.replace(/^[A-D]\)\s*/, '')}</button>`; }).join('')}</div></div>`;
+  quizState.selecionada = null;
+
+  atualizarProgressoQuiz();
+
+  const total = perguntas.length;
+  const idx = perguntaIndex + 1;
+
+  const opts = p.alternativas.map((alt, i) => {
+    const l = String.fromCharCode(65 + i);
+    const txt = alt.replace(/^[A-D]\)\s*/, '');
+    return `
+      <label class="option" onclick="quizSelecionar('${l}')">
+        <input type="radio" name="quizOption" value="${l}" onchange="quizSelecionar('${l}')">
+        <div class="optionText"><strong>${l})</strong> ${txt}</div>
+      </label>
+    `;
+  }).join('');
+
+  document.getElementById("quizArea").innerHTML = `
+    <div class="formCard">
+      <div class="questionMeta">
+        <div class="pill">Pergunta ${idx} de ${total}</div>
+        <div class="pill">1 resposta</div>
+      </div>
+
+      <div class="questionTitle">${p.pergunta}</div>
+
+      <div class="options" role="radiogroup" aria-label="Alternativas">
+        ${opts}
+      </div>
+
+      <div class="formActions">
+        <button class="btnPrimaryForm" id="btnConfirmarResposta" onclick="confirmarResposta()" disabled>
+          Confirmar resposta
+        </button>
+      </div>
+    </div>
+  `;
 }
 
 async function responderQuiz(r) {
@@ -135,8 +228,24 @@ async function responderQuiz(r) {
 
 function mostrarFeedbackCorreto() {
   const { perguntas, perguntaIndex } = quizState;
-  document.getElementById("quizArea").innerHTML = `<div class="card" style="padding: 40px; text-align: center; background: rgba(0, 255, 100, 0.15); border: 2px solid #00ff64;"><div style="font-size: 64px;">✓</div><div class="cardTitle" style="color: #00ff64;">Correto!</div></div>`;
-  setTimeout(() => { proximaPergunta(); }, 1200);
+  const total = perguntas.length;
+  const idx = perguntaIndex + 1;
+
+  document.getElementById("quizArea").innerHTML = `
+    <div class="formCard" style="text-align:center; border-color: rgba(0,255,100,0.45); background: rgba(0,255,100,0.10);">
+      <div style="font-size: 54px; margin-bottom: 6px;">✅</div>
+      <div class="questionTitle" style="margin-bottom: 6px;">Correto!</div>
+      <div class="small" style="opacity:.85;">Avançando para a próxima pergunta...</div>
+    </div>
+  `;
+
+  const bar = document.getElementById("quizProgressBar");
+  if (bar) {
+    const pct = Math.round((idx / total) * 100);
+    bar.style.width = pct + "%";
+  }
+
+  setTimeout(() => { proximaPergunta(); }, 800);
 }
 
 function mostrarPopupErro(p) {
@@ -154,11 +263,26 @@ function proximaPergunta() {
 function mostrarResultadoFinal() {
   const { acertos, total } = quizState;
   const pct = Math.round((acertos / total) * 100);
-  let emoji, msg, grad;
-  if (pct >= 81) { emoji = "🥇"; msg = "Ouro!"; grad = "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)"; }
-  else if (pct >= 61) { emoji = "🥈"; msg = "Prata!"; grad = "linear-gradient(135deg, #C0C0C0 0%, #808080 100%)"; }
-  else { emoji = "🥉"; msg = "Bronze!"; grad = "linear-gradient(135deg, #CD7F32 0%, #8B4513 100%)"; }
-  document.getElementById("quizArea").innerHTML = `<div class="card" style="padding: 40px; text-align: center; background: ${grad}; border: none;"><div style="font-size: 80px;">${emoji}</div><div style="font-size: 28px; font-weight: 900;">${msg}</div><div style="font-size: 48px; font-weight: 900; margin: 20px 0;">${pct}%</div><div style="font-size: 18px;">${acertos} de ${total}</div><button class="btnPrimary" onclick="proximoKBD()" style="margin-top: 30px; background: rgba(0,0,0,0.3); border: 2px solid white;">Próximo →</button></div>`;
+
+  const bar = document.getElementById("quizProgressBar");
+  if (bar) bar.style.width = "100%";
+
+  let titulo;
+  if (pct >= 81) titulo = "Excelente!";
+  else if (pct >= 61) titulo = "Boa!";
+  else titulo = "Bora reforçar!";
+
+  document.getElementById("quizArea").innerHTML = `
+    <div class="resultCard">
+      <div style="font-size: 46px;">🏁</div>
+      <div class="questionTitle" style="margin-top: 10px;">${titulo}</div>
+      <div class="resultScore">${pct}%</div>
+      <div class="small" style="opacity:.9;">${acertos} de ${total} respostas corretas</div>
+      <button class="btnPrimaryForm" onclick="proximoKBD()" style="margin-top: 16px; width: 100%;">
+        Próximo KBD →
+      </button>
+    </div>
+  `;
 }
 
 function proximoKBD() {

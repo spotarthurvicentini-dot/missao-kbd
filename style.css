@@ -504,3 +504,188 @@ button:active {
     font-size: 28px;
   }
 }
+
+
+/* ====== QUIZ (UX estilo Google Forms / Mobile-first) ====== */
+body.quiz-form {
+  padding-top: 60px;
+}
+
+.quiz-form .container {
+  max-width: 680px;
+  padding: 16px;
+}
+
+.formHeader {
+  margin: 14px 0 10px;
+}
+
+.formTitle {
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 6px;
+  color: #ffffff;
+}
+
+.formSubtitle {
+  font-size: 13px;
+  opacity: 0.9;
+  color: #c8b6ff;
+}
+
+.progressWrap {
+  margin: 14px 0 18px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 10px;
+  width: 0%;
+  background: rgba(0, 217, 255, 0.9);
+  transition: width 0.25s ease;
+}
+
+.formCard {
+  background: rgba(10, 1, 24, 0.55);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+}
+
+.questionMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.questionMeta .pill {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.14);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  color: #e9ddff;
+}
+
+.questionTitle {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.35;
+  margin-bottom: 14px;
+  color: #ffffff;
+}
+
+.options {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.option {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  cursor: pointer;
+  transition: transform 0.08s ease, border-color 0.2s ease, background 0.2s ease;
+  user-select: none;
+}
+
+.option:active {
+  transform: scale(0.99);
+}
+
+.option:hover {
+  border-color: rgba(0, 217, 255, 0.5);
+  background: rgba(0, 217, 255, 0.08);
+}
+
+.option input[type="radio"] {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  accent-color: rgba(0, 217, 255, 0.95);
+  flex-shrink: 0;
+}
+
+.optionText {
+  font-size: 14px;
+  line-height: 1.35;
+  color: #ffffff;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+}
+
+.btnGhost {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.06);
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btnGhost:hover {
+  border-color: rgba(0, 217, 255, 0.55);
+  background: rgba(0, 217, 255, 0.08);
+}
+
+.btnPrimaryForm {
+  flex: 2;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(0, 217, 255, 0.85);
+  color: #0a0118;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 217, 255, 0.25);
+  transition: transform 0.12s ease, opacity 0.2s ease;
+}
+
+.btnPrimaryForm:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btnPrimaryForm:active {
+  transform: translateY(1px);
+}
+
+/* Resultado final: card mais clean */
+.resultCard {
+  text-align: center;
+  padding: 26px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(10, 1, 24, 0.55);
+}
+
+.resultScore {
+  font-size: 44px;
+  font-weight: 900;
+  margin: 10px 0 6px;
+}
+
+@media (max-width: 480px) {
+  .quiz-form .container { padding: 14px; }
+  .formTitle { font-size: 20px; }
+  .questionTitle { font-size: 15px; }
+  .option { padding: 12px; }
+}
