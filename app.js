@@ -5,15 +5,112 @@ const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWERu4e0iNLG
 const CONTENT = {
   marcas: [
     { id: "always", nome: "ALWAYS", logo: "logos/always.jpg", kbds: [{ id: "kbd1", nome: "KBD Absorventes – Always Suave", videoId: null, imagens: [] }] },
-    { id: "downy", nome: "DOWNY", logo: "logos/downy.png", kbds: [{ id: "kbd1", nome: "KBD Ponto Extra – Brisa", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD Bloco Azul (50%)", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Bloco Colorido (40%) ou [Alfazema ou Lírios]", videoId: null, imagens: [] }] },
+    // Vídeo: "KBD Downy (A loja possui Ponto Extra tamanhos grandes)"
+    { id: "downy", nome: "DOWNY", logo: "logos/downy.png", kbds: [{ id: "kbd1", nome: "KBD Ponto Extra – Brisa", videoId: "sY8R7z2jwuI", imagens: [] }, { id: "kbd2", nome: "KBD Bloco Azul (50%)", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Bloco Colorido (40%) ou [Alfazema ou Lírios]", videoId: null, imagens: [] }] },
     { id: "pantene", nome: "PANTENE", logo: "logos/pantene.png", kbds: [{ id: "kbd1", nome: "KBD Bond Repair (20%)", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD Top Versões – Bambu, Colágeno e Biotinamina B3 (40%)", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Óleo – 2 Pontos de Contato", videoId: null, imagens: [] }, { id: "kbd4", nome: "KBD Rio/Cachoeira Dourada", videoId: null, imagens: [] }] },
     { id: "pampers", nome: "PAMPERS", logo: "logos/pampers.png", kbds: [{ id: "kbd1", nome: "KBD Ponto Extra – 50% Tamanhos Grandes", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD Pants", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Pants + Premium (Lojas Sul)", videoId: null, imagens: [] }, { id: "kbd4", nome: "KBD Vale Night – SOS Gôndola", videoId: null, imagens: [] }, { id: "kbd5", nome: "KBD Vale Night – Ponto Extra Farma", videoId: null, imagens: [] }] },
     { id: "secret", nome: "SECRET", logo: "logos/secret.png", kbds: [{ id: "kbd1", nome: "KBD 2 Bandejas", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD Bloco 15 Frentes ou 3 Bandejas", videoId: null, imagens: [] }] },
     { id: "oral-b", nome: "ORAL-B", logo: "logos/oral-b.png", kbds: [{ id: "kbd1", nome: "KBD Branqueamento (60%)", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD 2 Pontos de Contato – Escovas", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Layout BIPE – Escovas", videoId: null, imagens: [] }] },
-    { id: "gillette", nome: "GILLETTE", logo: "logos/gillette.png", kbds: [{ id: "kbd1", nome: "KBD Sistemas – % de Ganchos", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD 2 Pontos de Contato – Mach3/Presto3", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Carga Mach3 c/8 – 2 Ganchos", videoId: null, imagens: [] }] },
+    // Vídeo: "KBD Gillette Carga Mach3 (Na região do CKO)"
+    { id: "gillette", nome: "GILLETTE", logo: "logos/gillette.png", kbds: [{ id: "kbd1", nome: "KBD Sistemas – % de Ganchos", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD 2 Pontos de Contato – Mach3/Presto3", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Carga Mach3 c/8 – 2 Ganchos", videoId: "qaQl_otdN9Y", imagens: [] }] },
     { id: "venus", nome: "VENUS", logo: "logos/venus.png", kbds: [{ id: "kbd1", nome: "KBD Sistemas – 20% de Ganchos", videoId: null, imagens: [] }, { id: "kbd2", nome: "KBD 2 Pontos de Contato", videoId: null, imagens: [] }, { id: "kbd3", nome: "KBD Checkout – Venus Pele Sensível", videoId: null, imagens: [] }] }
   ]
 };
+
+// ====== APP SHELL (NAVEGAÇÃO) ======
+function appTitle(t) {
+  const el = document.getElementById('appTitle');
+  if (el) el.textContent = t || 'Missão KBD';
+}
+
+function goBack() {
+  // Se houver histórico, volta; senão, tenta fallback sensato.
+  if (window.history.length > 1) return window.history.back();
+  const path = (location.pathname || '').toLowerCase();
+  if (path.includes('kbd.html') || path.includes('quiz.html')) return voltarMarca();
+  if (path.includes('marca.html')) return voltarHome();
+  return window.location.href = 'home.html';
+}
+
+function navToHome() { window.location.href = 'home.html'; }
+
+function navToMarcaAtual() {
+  const p = new URLSearchParams(window.location.search);
+  const m = p.get('marca');
+  if (m) window.location.href = 'marca.html?marca=' + encodeURIComponent(m);
+  else navToHome();
+}
+
+function navToKbdAtual(view) {
+  const p = new URLSearchParams(window.location.search);
+  const m = p.get('marca');
+  const k = p.get('kbd');
+  if (!m || !k) return navToHome();
+  const qs = new URLSearchParams({ marca: m, kbd: k });
+  if (view) qs.set('view', view);
+  window.location.href = 'kbd.html?' + qs.toString();
+}
+
+function navToQuizAtual() {
+  const p = new URLSearchParams(window.location.search);
+  const m = p.get('marca');
+  const k = p.get('kbd');
+  if (!m || !k) return navToHome();
+  window.location.href = 'quiz.html?marca=' + encodeURIComponent(m) + '&kbd=' + encodeURIComponent(k);
+}
+
+function setActiveNav(key) {
+  document.querySelectorAll('.bottomNav .navItem').forEach(b => {
+    const k = b.getAttribute('data-nav');
+    if (k === key) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+}
+
+function abrirMenu() {
+  criarModal({
+    icon: '☰',
+    title: 'Navegação',
+    text: `
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button class="btnPrimaryForm" style="width:100%;" onclick="navToHome();fecharModal()">🏠 Ir para Home</button>
+        <button class="btnPrimaryForm" style="width:100%;" onclick="navToMarcaAtual();fecharModal()">🗂️ Lista de KBDs (marca)</button>
+        <button class="btnPrimaryForm" style="width:100%;" onclick="trocarSetor()">🔁 Trocar setor</button>
+      </div>
+    `,
+    buttons: [{ label: 'Fechar', class: 'modal-btn-cancel', action: 'fecharModal()' }]
+  });
+}
+
+function initAppShell(opts = {}) {
+  // Setor
+  const s = getSetor();
+  const chip = document.getElementById('navSetor');
+  if (chip) chip.textContent = s || '---';
+
+  // Título
+  if (opts.title) appTitle(opts.title);
+
+  // Botões
+  const back = document.getElementById('navBack');
+  if (back) back.onclick = goBack;
+  const menu = document.getElementById('navMenu');
+  if (menu) menu.onclick = abrirMenu;
+
+  // Bottom nav
+  const home = document.querySelector('[data-nav="home"]');
+  if (home) home.onclick = navToHome;
+  const kbd = document.querySelector('[data-nav="kbd"]');
+  if (kbd) kbd.onclick = () => navToKbdAtual();
+  const quiz = document.querySelector('[data-nav="quiz"]');
+  if (quiz) quiz.onclick = navToQuizAtual;
+  const fotos = document.querySelector('[data-nav="fotos"]');
+  if (fotos) fotos.onclick = () => navToKbdAtual('fotos');
+  const videos = document.querySelector('[data-nav="videos"]');
+  if (videos) videos.onclick = () => navToKbdAtual('videos');
+
+  if (opts.active) setActiveNav(opts.active);
+}
 
 function criarModal(c) {
   const o = document.createElement('div');
@@ -77,19 +174,71 @@ function renderKbd() {
   const params = new URLSearchParams(window.location.search);
   const marcaId = params.get("marca");
   const kbdId = params.get("kbd");
+  const view = (params.get('view') || 'all').toLowerCase();
   const marca = CONTENT.marcas.find(m => m.id === marcaId);
   if (!marca) { alert("Marca não encontrada"); voltarHome(); return; }
   const kbd = (marca.kbds || []).find(k => k.id === kbdId);
   if (!kbd) { alert("KBD não encontrado"); voltarMarca(); return; }
-  document.getElementById("kbdTitulo").textContent = `${marca.nome} • ${kbd.nome}`;
-  const topbarSetor = document.getElementById("topbarSetor");
-  if (topbarSetor) topbarSetor.textContent = getSetor();
+
+  // App shell
+  initAppShell({ title: `${marca.nome}`, active: view === 'fotos' ? 'fotos' : view === 'videos' ? 'videos' : 'kbd' });
+
+  // Título dentro do conteúdo
+  const titulo = document.getElementById("kbdTitulo");
+  if (titulo) titulo.textContent = `${kbd.nome}`;
+
+  // Dropdown: mudar KBD
+  const sel = document.getElementById('kbdSelect');
+  if (sel) {
+    sel.innerHTML = '';
+    marca.kbds.forEach(k => {
+      const o = document.createElement('option');
+      o.value = k.id;
+      o.textContent = k.nome;
+      if (k.id === kbdId) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.onchange = () => {
+      const qs = new URLSearchParams({ marca: marcaId, kbd: sel.value });
+      if (view && view !== 'all') qs.set('view', view);
+      window.location.href = 'kbd.html?' + qs.toString();
+    };
+  }
   const iframe = document.getElementById("videoFrame");
   const placeholder = document.getElementById("videoPlaceholder");
   if (kbd.videoId) { iframe.src = "https://www.youtube.com/embed/" + kbd.videoId; iframe.style.display = "block"; placeholder.style.display = "none"; } else { iframe.style.display = "none"; placeholder.style.display = "flex"; }
   const imgBox = document.getElementById("imagensKbd");
   imgBox.innerHTML = "";
   if (kbd.imagens && kbd.imagens.length > 0) { kbd.imagens.forEach(src => { const img = document.createElement("img"); img.src = src; imgBox.appendChild(img); }); } else { const msg = document.createElement("div"); msg.className = "small"; msg.style.marginTop = "16px"; msg.style.opacity = ".8"; msg.textContent = "Imagens em breve."; imgBox.appendChild(msg); }
+
+  // Tabs (Tudo / Vídeos / Fotos)
+  const tabs = document.querySelectorAll('[data-view-tab]');
+  tabs.forEach(b => {
+    const v = b.getAttribute('data-view-tab');
+    if (v === view) b.classList.add('active');
+    else if (view === 'all' && v === 'all') b.classList.add('active');
+    else b.classList.remove('active');
+
+    b.onclick = () => {
+      const qs = new URLSearchParams({ marca: marcaId, kbd: kbdId });
+      if (v && v !== 'all') qs.set('view', v);
+      window.location.href = 'kbd.html?' + qs.toString();
+    };
+  });
+
+  // Aplicar filtro
+  const vb = document.getElementById('videoSection');
+  const ib = document.getElementById('imagesSection');
+  if (view === 'videos') {
+    if (vb) vb.style.display = 'block';
+    if (ib) ib.style.display = 'none';
+  } else if (view === 'fotos') {
+    if (vb) vb.style.display = 'none';
+    if (ib) ib.style.display = 'block';
+  } else {
+    if (vb) vb.style.display = 'block';
+    if (ib) ib.style.display = 'block';
+  }
 }
 
 function irParaQuiz() { const p = new URLSearchParams(window.location.search); window.location.href = "quiz.html?marca=" + encodeURIComponent(p.get("marca")) + "&kbd=" + encodeURIComponent(p.get("kbd")); }
@@ -132,8 +281,24 @@ function renderQuiz() {
   const kbd = (marca.kbds || []).find(k => k.id === kbdId);
   const perguntas = QUIZZES[marcaId] || [];
 
-  const topbarSetor = document.getElementById("topbarSetor");
-  if (topbarSetor) topbarSetor.textContent = getSetor();
+  // App shell
+  initAppShell({ title: 'Quiz', active: 'quiz' });
+
+  // Dropdown: mudar KBD dentro do quiz
+  const sel = document.getElementById('quizKbdSelect');
+  if (sel) {
+    sel.innerHTML = '';
+    (marca.kbds || []).forEach(k => {
+      const o = document.createElement('option');
+      o.value = k.id;
+      o.textContent = k.nome;
+      if (k.id === kbdId) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.onchange = () => {
+      window.location.href = 'quiz.html?marca=' + encodeURIComponent(marcaId) + '&kbd=' + encodeURIComponent(sel.value);
+    };
+  }
 
   document.getElementById("quizTitulo").textContent = `Quiz • ${marca.nome}`;
   document.getElementById("quizSubtitulo").textContent = kbd ? kbd.nome : "Teste seus conhecimentos";
