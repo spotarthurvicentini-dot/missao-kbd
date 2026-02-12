@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Missão KBD</title>
-
-  <!-- conecta o CSS -->
+  <title>Missão KBD - Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div class="container">
-    <h1>Missão KBD</h1>
-    <p>Digite seu <strong>SETOR</strong> para começar</p>
+    <div style="text-align: center; margin-bottom: 30px;">
+      <img src="logo-missao-kbd.png" alt="Missão KBD" style="width: 100%; max-width: 300px; filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.6));">
+    </div>
+    
+    <h1 style="text-align: center;">Bem-vindo!</h1>
+    <p style="text-align: center;">Digite seu <strong>SETOR</strong> para começar</p>
 
-    <input id="setor" placeholder="Ex: SPI200">
+    <input id="setor" placeholder="Ex: SPI200" autocomplete="off">
     <button onclick="entrar()">Entrar</button>
   </div>
 
-  <!-- conecta o JS -->
   <script src="app.js"></script>
 </body>
 </html>
