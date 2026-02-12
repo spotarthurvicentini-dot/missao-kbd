@@ -8,10 +8,13 @@
 </head>
 <body>
   <div class="container">
-    <h1 id="kbdTitulo">KBD</h1>
-    <p class="small">Aula prática</p>
-
-    <select id="kbdSelect" class="select" aria-label="Trocar KBD"></select>
+    <div class="kbdHeader">
+      <div>
+        <h1 id="kbdTitulo">KBD</h1>
+        <p class="small">Aula prática</p>
+      </div>
+      <select id="kbdSelect" aria-label="Trocar KBD"></select>
+    </div>
 
     <div class="tabs" role="tablist" aria-label="Filtrar conteúdo">
       <button id="tabTudo" class="tab" type="button">Tudo</button>
@@ -19,17 +22,36 @@
       <button id="tabFotos" class="tab" type="button">Fotos</button>
     </div>
 
-    <div id="videoBox" class="videoBox">
-      <div id="videoPlaceholder" class="videoPlaceholder">
-        🎬 Vídeo em breve
-        <div class="small">Enquanto isso, veja as imagens abaixo</div>
+    <div id="videoBox" class="mediaBox">
+      <div id="videoPlaceholder" class="card" style="padding:14px; text-align:center;">
+        <div class="bigIcon">🎬</div>
+        <div class="cardTitle">Vídeo em breve</div>
+        <div class="cardSub">Enquanto isso, confira as fotos.</div>
       </div>
-      <iframe id="videoFrame" allowfullscreen></iframe>
+
+      <div class="videoFrame" style="margin-top:12px;">
+        <iframe
+          id="videoFrame"
+          title="Vídeo do KBD"
+          width="100%"
+          height="100%"
+          style="border:0;"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen></iframe>
+      </div>
+
+      <div id="videoLinkBox" class="small" style="margin-top:10px; display:none;">
+        Se aparecer “privado”, abra direto no YouTube:
+        <a id="videoDirectLink" class="btnInline" target="_blank" rel="noopener">Abrir vídeo</a>
+      </div>
     </div>
 
-    <div id="imagensKbd" class="imageRow"></div>
+    <div id="imagensKbd" class="lista" style="margin-top:12px;"></div>
 
-    <button class="btnPrimary" onclick="irParaQuiz()">Responder o quiz</button>
+    <div class="btnRow" style="justify-content:flex-end; margin-top:14px;">
+      <button class="btnPrimary" onclick="irParaQuiz()">Responder o quiz</button>
+    </div>
   </div>
 
   <script src="app.js"></script>

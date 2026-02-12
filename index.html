@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Missão KBD - Login</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Missão KBD</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="splash">
+  <div class="splashCard">
+    <img class="splashLogo" src="logo-splash.png" alt="Missão KBD" />
+    <div class="splashTitle">Acesse com seu SETOR</div>
+    <div class="splashSub">Ex.: PRCOORD04 • SPI200 • RSCOORD01</div>
 
-  <div class="container">
-    <div style="text-align: center; margin-bottom: 30px;">
-      <img src="logo-missao-kbd.png" alt="Missão KBD" style="width: 100%; max-width: 300px; filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.6));">
+    <input id="setor" placeholder="Digite seu setor" autocomplete="off" />
+    <button class="btnPrimary" onclick="entrar()">Entrar</button>
+
+    <div class="small" style="margin-top:12px; color: rgba(255,255,255,.85); text-align:center;">
+      Dica: o setor fica salvo neste dispositivo.
     </div>
-    
-    <h1 style="text-align: center;">Bem-vindo!</h1>
-    <p style="text-align: center;">Digite seu <strong>SETOR</strong> para começar</p>
-
-    <input id="setor" placeholder="Ex: SPI200" autocomplete="off">
-    <button onclick="entrar()">Entrar</button>
   </div>
 
   <script src="app.js"></script>
