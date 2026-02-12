@@ -8,39 +8,12 @@
 </head>
 <body>
   <div class="container">
-    <h1>Missão KBD</h1>
-    <p class="small">Escolha para onde você quer ir.</p>
-
-    <div class="listStack" style="margin-top:14px;">
-      <div class="card" style="padding:14px;">
-        <div class="cardTitle">🏠 Home</div>
-        <div class="cardSub">Visão geral e atalhos.</div>
-      </div>
-
-      <a class="card" href="marcas.html" style="padding:14px; text-decoration:none; color:inherit;">
-        <div class="cardTitle">🗂️ Marcas</div>
-        <div class="cardSub">Acessar lista de marcas e KBDs.</div>
-      </a>
-
-      <a class="card" href="quiz.html" style="padding:14px; text-decoration:none; color:inherit;">
-        <div class="cardTitle">📝 Quiz</div>
-        <div class="cardSub">Ver quizzes concluídos e pontuações.</div>
-      </a>
-    </div>
-
-    <div class="card" style="padding:14px; margin-top:14px;">
-      <div class="cardTitle" style="margin-bottom:6px;">Seu setor</div>
-      <div class="small">SETOR atual:</div>
-      <div style="margin-top:8px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-        <div class="pill" id="setorBadge" style="background: rgba(11,99,206,.10); color: var(--brand-1);">---</div>
-        <button class="btnSecondary" onclick="trocarSetor()">Trocar setor</button>
-      </div>
-    </div>
+    <h1>Marcas</h1>
+    <p class="small">Selecione uma marca para começar</p>
+    <div class="lista" id="listaMarcas"></div>
   </div>
 
   <script src="app.js"></script>
-  <script>
-    renderHome();
-  </script>
+  <script>renderHome();</script>
 </body>
 </html>

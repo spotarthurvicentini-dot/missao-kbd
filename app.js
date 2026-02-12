@@ -40,28 +40,22 @@ function goBackFallback(fallbackHref){
 function openMenu(){
   const existing = document.getElementById("appMenuOverlay");
   if (existing) return;
-
   const overlay = document.createElement("div");
   overlay.id = "appMenuOverlay";
   overlay.className = "modal-overlay";
-
   const params = new URLSearchParams(window.location.search);
   const marca = params.get("marca");
-
+  const kbd = params.get("kbd");
   overlay.innerHTML = `
-    <div class="modal-content">
-      <div class="modal-title">Menu</div>
-
-      <div class="modal-actions">
-        <button class="modal-btn primary" onclick="window.location.href='home.html'">🏠 Home</button>
-        <button class="modal-btn primary" onclick="window.location.href='marcas.html'">🗂️ Marcas</button>
-        <button class="modal-btn primary" onclick="window.location.href='quiz.html'">📝 Quiz</button>
-        ${marca ? `<button class="modal-btn" onclick="window.location.href='marca.html?marca=${encodeURIComponent(marca)}'">🧩 KBDs da marca</button>` : ``}
-        <button class="modal-btn" onclick="confirmarSaida()">🔁 Trocar setor</button>
-        <button class="modal-btn" onclick="closeMenu()">Fechar</button>
+    <div class="modal-content" style="max-width:420px; width: calc(100% - 40px);">
+      <div class="modal-title" style="margin-bottom:14px;">Menu</div>
+      <div class="modal-text" style="display:grid; gap:10px;">
+        <button class="modal-btn modal-btn-confirm" onclick="window.location.href='home.html'">🏠 Home</button>
+        ${marca ? `<button class="modal-btn modal-btn-confirm" onclick="window.location.href='marca.html?marca=${encodeURIComponent(marca)}'">🧩 Trocar KBD</button>` : ``}
+        <button class="modal-btn modal-btn-cancel" onclick="confirmarSaida()">🔁 Trocar setor</button>
+        <button class="modal-btn modal-btn-cancel" onclick="closeMenu()">Fechar</button>
       </div>
     </div>`;
-
   overlay.addEventListener("click", (e)=>{ if(e.target===overlay) closeMenu(); });
   document.body.appendChild(overlay);
 }
@@ -97,25 +91,26 @@ function injectShell(opts){
       <button class="iconBtn" aria-label="Voltar" onclick="goBackFallback('${backFallback}')">←</button>
       <button class="iconBtn" aria-label="Menu" onclick="openMenu()">☰</button>
     </div>
-    <div class="appbar-brand">
-      <a class="brandLink" href="home.html" aria-label="Home">
-        <img class="brandLogo" src="logo-topbar.png" alt="Missão KBD">
-      </a>
-      ${subtitle ? `<div class="brandSubtitle">${subtitle}</div>` : ``}
+    <div class="appbar-title">
+      ${title}
+      ${subtitle ? `<span>${subtitle}</span>` : ``}
     </div>
     <div class="appbar-right">
       <div class="pill" id="pillSetor">---</div>
     </div>
   `;
 
-const nav = document.createElement("nav");
+  const nav = document.createElement("nav");
   nav.className = "bottomNav";
   nav.innerHTML = `
     <a class="navItem ${active==='home'?'active':''}" href="home.html"><div class="navIcon">🏠</div><div>Home</div></a>
-    <a class="navItem ${active==='marcas'?'active':''}" href="marcas.html"><div class="navIcon">🗂️</div><div>Marcas</div></a>
-    <a class="navItem ${active==='quiz'?'active':''}" href="quiz.html"><div class="navIcon">📝</div><div>Quiz</div></a>
+    <a class="navItem ${active==='aula'?'active':''}" href="${hrefAula}"><div class="navIcon">📘</div><div>Aula</div></a>
+    <a class="navItem ${active==='quiz'?'active':''}" href="${hrefQuiz}"><div class="navIcon">📝</div><div>Quiz</div></a>
+    <a class="navItem ${active==='fotos'?'active':''}" href="${hrefFotos}"><div class="navIcon">🖼️</div><div>Fotos</div></a>
+    <a class="navItem ${active==='videos'?'active':''}" href="${hrefVideos}"><div class="navIcon">🎬</div><div>Vídeos</div></a>
   `;
-document.body.prepend(appbar);
+
+  document.body.prepend(appbar);
   document.body.appendChild(nav);
 
   const pill = document.getElementById("pillSetor");
@@ -126,30 +121,19 @@ document.body.prepend(appbar);
 
 function renderHome() {
   ensureSetor();
-  injectShell({active:'home', title:'Missão KBD', subtitle:'Home', backFallback:'home.html'});
+  injectShell({active:'home', title:'Missão KBD', subtitle:'Marcas', backFallback:'home.html'});
   const badge = document.getElementById("setorBadge");
   if (badge) badge.textContent = getSetor();
-}
-
-function renderMarcas() {
-  ensureSetor();
-  injectShell({active:'marcas', title:'Missão KBD', subtitle:'Marcas', backFallback:'home.html'});
   const lista = document.getElementById("listaMarcas");
   if (!lista) return;
   lista.innerHTML = "";
   CONTENT.marcas.forEach((m) => {
+    const div = document.createElement("div");
+    div.className = "card";
     const totalKbds = (m.kbds || []).length;
-    const row = document.createElement("div");
-    row.className = "card cardRow";
-    row.innerHTML = `
-      <div class="cardLogo"><img src="${m.logo}" alt="${m.nome}"></div>
-      <div class="cardContent">
-        <div class="cardTitle">${m.nome}</div>
-        <div class="cardSub">${totalKbds} KBD${totalKbds > 1 ? 's' : ''}</div>
-      </div>
-    `;
-    row.onclick = () => { window.location.href = "marca.html?marca=" + encodeURIComponent(m.id); };
-    lista.appendChild(row);
+    div.innerHTML = `<div class="cardLogo"><img src="${m.logo}" alt="${m.nome}"></div><div class="cardContent"><div class="cardTitle">${m.nome}</div><div class="cardSub">${totalKbds} KBD${totalKbds > 1 ? 's' : ''}</div></div>`;
+    div.onclick = () => { window.location.href = "marca.html?marca=" + encodeURIComponent(m.id); };
+    lista.appendChild(div);
   });
 }
 
@@ -157,7 +141,7 @@ function voltarHome() { window.location.href = "home.html"; }
 
 function renderMarca() {
   ensureSetor();
-  injectShell({active:'marcas', title:'Missão KBD', subtitle:'Marcas', backFallback:'home.html'});
+  injectShell({active:'aula', title:'Missão KBD', subtitle:'Selecione o KBD', backFallback:'home.html'});
   const params = new URLSearchParams(window.location.search);
   const marcaId = params.get("marca");
   const marca = CONTENT.marcas.find(m => m.id === marcaId);
@@ -169,7 +153,7 @@ function renderMarca() {
   lista.innerHTML = "";
   marca.kbds.forEach(kbd => {
     const div = document.createElement("div");
-    div.className = "card cardRow";
+    div.className = "card";
     div.innerHTML = `<div class="cardContent"><div class="cardTitle">${kbd.nome}</div><div class="cardSub">Clique para abrir</div></div>`;
     div.onclick = () => { window.location.href = "kbd.html?marca=" + encodeURIComponent(marca.id) + "&kbd=" + encodeURIComponent(kbd.id); };
     lista.appendChild(div);
@@ -182,7 +166,7 @@ function renderKbd() {
   ensureSetor();
   // view=fotos|videos controla o que aparece
   const _view = new URLSearchParams(window.location.search).get('view') || 'tudo';
-  injectShell({active:'marcas', title:'Missão KBD', subtitle:'Aula prática', backFallback:'home.html'});
+  injectShell({active: (_view==='fotos'?'fotos':(_view==='videos'?'videos':'aula')), title:'Missão KBD', subtitle:'Aula prática', backFallback:'home.html'});
   const params = new URLSearchParams(window.location.search);
   const marcaId = params.get("marca");
   const kbdId = params.get("kbd");
@@ -234,20 +218,13 @@ function renderKbd() {
 
   const iframe = document.getElementById("videoFrame");
   const placeholder = document.getElementById("videoPlaceholder");
-  const linkBox = document.getElementById("videoLinkBox");
-  const direct = document.getElementById("videoDirectLink");
-
   if (kbd.videoId) {
-    iframe.src = "https://www.youtube-nocookie.com/embed/" + kbd.videoId + "?rel=0&modestbranding=1";
+    iframe.src = "https://www.youtube.com/embed/" + kbd.videoId;
     iframe.style.display = "block";
     placeholder.style.display = "none";
-
-    if (direct) direct.href = "https://youtu.be/" + kbd.videoId;
-    if (linkBox) linkBox.style.display = "block";
   } else {
     iframe.style.display = "none";
-    placeholder.style.display = "block";
-    if (linkBox) linkBox.style.display = "none";
+    placeholder.style.display = "flex";
   }
 
   // Controla exibição por view
@@ -268,314 +245,86 @@ function renderKbd() {
 
 function irParaQuiz() { const p = new URLSearchParams(window.location.search); window.location.href = "quiz.html?marca=" + encodeURIComponent(p.get("marca")) + "&kbd=" + encodeURIComponent(p.get("kbd")); }
 
-
-let quizState = {
-  marcaAtual: null,
-  kbdAtual: null,
-  perguntaIndex: 0,
-  tentativa: 1,
-  acertos: 0,
-  total: 0,
-  historico: [],
-  respondendo: false,
-  perguntas: [],
-  selecionada: null
-};
-
-function getQuizKey(marcaId, kbdId){ return `mkbd_quiz_${marcaId||'__'}_${kbdId||'__'}`; }
-
-function salvarResultadoLocal({marcaId, kbdId, marcaNome, kbdNome, scorePct, acertos, total}) {
-  try{
-    const all = JSON.parse(localStorage.getItem("mkbd_quiz_scores") || "{}");
-    const key = getQuizKey(marcaId, kbdId);
-    all[key] = { marcaId, kbdId, marcaNome, kbdNome, scorePct, acertos, total, updatedAt: new Date().toISOString() };
-    localStorage.setItem("mkbd_quiz_scores", JSON.stringify(all));
-  }catch(e){ console.warn(e); }
-}
-
-function lerResultadosLocal() {
-  try{
-    const all = JSON.parse(localStorage.getItem("mkbd_quiz_scores") || "{}");
-    return Object.values(all).sort((a,b)=> (b.updatedAt||"").localeCompare(a.updatedAt||""));
-  }catch(e){ return []; }
-}
+let quizState = { marcaAtual: null, kbdAtual: null, perguntaIndex: 0, tentativa: 1, acertos: 0, total: 0, historico: [], respondendo: false };
 
 function renderQuiz() {
   ensureSetor();
   injectShell({active:'quiz', title:'Missão KBD', subtitle:'Quiz', backFallback:'home.html'});
-
   const params = new URLSearchParams(window.location.search);
   const marcaId = params.get("marca");
   const kbdId = params.get("kbd");
-
-  // Se não veio marca/kbd, mostrar painel de resultados (tipo "quizzes feitos")
-  if (!marcaId || !kbdId) {
-    renderQuizDashboard();
-    return;
-  }
-
   const marca = CONTENT.marcas.find(m => m.id === marcaId);
   if (!marca) { alert("Marca não encontrada"); voltarHome(); return; }
-
   const kbd = (marca.kbds || []).find(k => k.id === kbdId);
   const perguntas = QUIZZES[marcaId] || [];
-
-  if (perguntas.length === 0) {
-    document.getElementById("quizTitulo").textContent = "Quiz";
-    document.getElementById("quizSubtitulo").textContent = "Em breve";
-    document.getElementById("quizArea").innerHTML = `
-      <div class="card centerCard">
-        <div class="bigIcon">📝</div>
-        <div class="cardTitle">Quiz em breve</div>
-        <div class="cardSub">Enquanto isso, revise a aula e tente outro KBD.</div>
-        <div class="btnRow">
-          <a class="btnSecondary" href="marca.html?marca=${encodeURIComponent(marcaId)}">Voltar para KBDs</a>
-          <a class="btnPrimary" href="home.html">Home</a>
-        </div>
-      </div>`;
-    return;
-  }
-
-  quizState = {
-    marcaAtual: marca,
-    kbdAtual: kbd,
-    perguntaIndex: 0,
-    tentativa: 1,
-    acertos: 0,
-    total: perguntas.length,
-    historico: [],
-    perguntas,
-    respondendo: false,
-    selecionada: null
-  };
-
-  document.getElementById("quizTitulo").textContent = `Quiz • ${marca.nome}`;
+  if (perguntas.length === 0) { document.getElementById("quizArea").innerHTML = `<div class="card" style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 16px;">📝</div><div class="cardTitle">Quiz em breve</div><button class="btnPrimary" onclick="proximoKBD()">Próximo KBD →</button></div>`; return; }
+  quizState = { marcaAtual: marca, kbdAtual: kbd, perguntaIndex: 0, tentativa: 1, acertos: 0, total: perguntas.length, historico: [], perguntas: perguntas, respondendo: false };
+  document.getElementById("quizTitulo").textContent = `Quiz ${marca.nome}`;
   document.getElementById("quizSubtitulo").textContent = kbd ? kbd.nome : "";
-
-  mostrarPerguntaForms();
+  const topbarSetor = document.getElementById("topbarSetor");
+  if (topbarSetor) topbarSetor.textContent = getSetor();
+  mostrarPergunta();
 }
 
-function renderQuizDashboard() {
-  const box = document.getElementById("quizArea");
-  document.getElementById("quizTitulo").textContent = "Quiz";
-  document.getElementById("quizSubtitulo").textContent = "Quizzes concluídos e pontuação";
-
-  const resultados = lerResultadosLocal();
-
-  if (!resultados.length) {
-    box.innerHTML = `
-      <div class="card centerCard">
-        <div class="bigIcon">🧠</div>
-        <div class="cardTitle">Nenhum quiz concluído ainda</div>
-        <div class="cardSub">Entre em uma marca e finalize um quiz para salvar sua pontuação.</div>
-        <div class="btnRow">
-          <a class="btnPrimary" href="marcas.html">Ir para Marcas</a>
-        </div>
-      </div>`;
-    return;
-  }
-
-  box.innerHTML = `
-    <div class="card" style="padding:16px;">
-      <div class="cardTitle" style="margin-bottom:8px;">Seu histórico</div>
-      <div class="small">Baseado nos quizzes concluídos neste aparelho (localStorage).</div>
-    </div>
-    <div class="listStack" id="listaScores"></div>
-  `;
-
-  const lista = document.getElementById("listaScores");
-  resultados.forEach(r => {
-    const div = document.createElement("div");
-    div.className = "card scoreCard";
-    div.innerHTML = `
-      <div class="scoreLeft">
-        <div class="scorePct">${r.scorePct}%</div>
-        <div class="small">${r.acertos}/${r.total}</div>
-      </div>
-      <div class="scoreMid">
-        <div class="cardTitle">${r.marcaNome}</div>
-        <div class="cardSub">${r.kbdNome || "KBD"}</div>
-        <div class="tiny">Atualizado em ${new Date(r.updatedAt).toLocaleString('pt-BR')}</div>
-      </div>
-      <div class="scoreRight">
-        <a class="btnInline" href="quiz.html?marca=${encodeURIComponent(r.marcaId)}&kbd=${encodeURIComponent(r.kbdId)}">Refazer</a>
-      </div>
-    `;
-    lista.appendChild(div);
-  });
-}
-
-function mostrarPerguntaForms() {
-  const { perguntas, perguntaIndex, acertos } = quizState;
+function mostrarPergunta() {
+  const { perguntas, perguntaIndex } = quizState;
   const p = perguntas[perguntaIndex];
   quizState.respondendo = false;
-  quizState.selecionada = null;
-
-  const progressPct = Math.round((perguntaIndex / perguntas.length) * 100);
-
-  const altsHtml = p.alternativas.map((alt, i) => {
-    const letter = String.fromCharCode(65 + i);
-    const clean = alt.replace(/^[A-D]\)\s*/, '');
-    const id = `alt_${letter}`;
-    return `
-      <label class="formOption" for="${id}">
-        <input type="radio" name="quiz_alt" id="${id}" value="${letter}">
-        <span class="optLetter">${letter}</span>
-        <span class="optText">${clean}</span>
-      </label>
-    `;
-  }).join("");
-
-  document.getElementById("quizArea").innerHTML = `
-    <div class="card" style="padding:16px;">
-      <div class="progressWrap">
-        <div class="progressBar"><div class="progressFill" style="width:${progressPct}%;"></div></div>
-        <div class="progressMeta">
-          <div class="small"><strong>Pergunta ${perguntaIndex + 1}</strong> de ${perguntas.length}</div>
-          <div class="small">${acertos} acertos</div>
-        </div>
-      </div>
-
-      <div class="questionTitle">${p.pergunta}</div>
-
-      <div class="optionsWrap">
-        ${altsHtml}
-      </div>
-
-      <div class="actionsRow">
-        <button class="btnPrimary" id="btnConfirmar" disabled>Confirmar resposta</button>
-      </div>
-    </div>
-  `;
-
-  const radios = Array.from(document.querySelectorAll('input[name="quiz_alt"]'));
-  const btn = document.getElementById("btnConfirmar");
-
-  radios.forEach(r => r.addEventListener("change", () => {
-    quizState.selecionada = r.value;
-    btn.disabled = false;
-  }));
-
-  btn.addEventListener("click", () => confirmarResposta());
+  document.getElementById("quizArea").innerHTML = `<div class="card" style="padding: 24px;"><div style="text-align: center; margin-bottom: 20px;"><div class="small" style="font-weight: 700;">Pergunta ${perguntaIndex + 1} de ${perguntas.length}</div></div><div class="cardTitle" style="margin-bottom: 24px; font-size: 18px;">${p.pergunta}</div><div style="display: grid; gap: 12px;">${p.alternativas.map((alt, i) => { const l = String.fromCharCode(65 + i); return `<button onclick="responderQuiz('${l}')" style="width: 100%; padding: 16px; text-align: left; border-radius: 12px; background: rgba(168, 85, 247, 0.1); border: 2px solid rgba(0, 217, 255, 0.3); color: white; cursor: pointer; font-size: 15px;"><strong>${l})</strong> ${alt.replace(/^[A-D]\)\s*/, '')}</button>`; }).join('')}</div></div>`;
 }
 
-function confirmarResposta() {
+async function responderQuiz(r) {
   if (quizState.respondendo) return;
-  const r = quizState.selecionada;
-  if (!r) return;
-
   quizState.respondendo = true;
-
   const { perguntas, perguntaIndex, marcaAtual, kbdAtual } = quizState;
   const p = perguntas[perguntaIndex];
-  const correta = r === p.gabarito;
-
-  quizState.historico.push({ pergunta: p.pergunta, resposta: r, correta: p.gabarito, acertou: correta });
-  if (correta) quizState.acertos++;
-
-  const scorePct = Math.round((quizState.acertos / quizState.total) * 100);
-
-  // Envia (best-effort) para Sheets, mas também salva localmente.
-  enviarParaSheets({
-    setor: getSetor(),
-    marca: marcaAtual.nome,
-    kbd: kbdAtual ? kbdAtual.nome : "N/A",
-    pergunta: p.pergunta,
-    resposta: r,
-    correta: p.gabarito,
-    acertou: correta,
-    score: scorePct,
-    tentativa: quizState.tentativa
-  });
-
-  if (correta) {
-    mostrarFeedbackInline(true);
-  } else {
-    mostrarFeedbackInline(false, p);
-  }
+  const c = r === p.gabarito;
+  quizState.historico.push({ pergunta: p.pergunta, resposta: r, correta: p.gabarito, acertou: c });
+  if (c) quizState.acertos++;
+  enviarParaSheets({ setor: getSetor(), marca: marcaAtual.nome, kbd: kbdAtual ? kbdAtual.nome : "N/A", pergunta: p.pergunta, resposta: r, correta: p.gabarito, acertou: c, score: Math.round((quizState.acertos / quizState.total) * 100), tentativa: quizState.tentativa });
+  if (c) { mostrarFeedbackCorreto(); } else { mostrarPopupErro(p); }
 }
 
-function mostrarFeedbackInline(ok, p=null) {
+function mostrarFeedbackCorreto() {
   const { perguntas, perguntaIndex } = quizState;
-
-  const rt = (!ok && p)
-    ? p.alternativas[p.gabarito.charCodeAt(0) - 65].replace(/^[A-D]\)\s*/, '')
-    : "";
-
-  const just = (!ok && p && p.justificativa) ? p.justificativa : "";
-
-  document.getElementById("quizArea").insertAdjacentHTML("beforeend", `
-    <div class="card feedbackCard ${ok ? 'ok' : 'bad'}">
-      <div class="feedbackTitle">${ok ? '✅ Correto!' : '❌ Incorreto'}</div>
-      ${!ok ? `<div class="small" style="margin-top:6px;"><strong>Resposta correta:</strong> ${p.gabarito}) ${rt}</div>` : ``}
-      ${(!ok && just) ? `<div class="small" style="margin-top:8px; opacity:.9;">${just}</div>` : ``}
-      <div class="actionsRow" style="margin-top:12px;">
-        <button class="btnPrimary" onclick="proximaPergunta()">Próxima</button>
-      </div>
-    </div>
-  `);
-
-  // trava inputs
-  const inputs = document.querySelectorAll('input[name="quiz_alt"]');
-  inputs.forEach(i => i.disabled = true);
-  const btn = document.getElementById("btnConfirmar");
-  if (btn) btn.disabled = true;
+  document.getElementById("quizArea").innerHTML = `<div class="card" style="padding: 40px; text-align: center; background: rgba(0, 255, 100, 0.15); border: 2px solid #00ff64;"><div style="font-size: 64px;">✓</div><div class="cardTitle" style="color: #00ff64;">Correto!</div></div>`;
+  setTimeout(() => { proximaPergunta(); }, 1200);
 }
+
+function mostrarPopupErro(p) {
+  const rt = p.alternativas[p.gabarito.charCodeAt(0) - 65].replace(/^[A-D]\)\s*/, '');
+  criarModal({ icon: '✗', title: 'Incorreto', text: `<div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: 12px; margin: 16px 0;"><div style="font-weight: 700; margin-bottom: 8px;">Resposta correta:</div><div style="font-size: 16px; font-weight: 900; color: #00ff64;">${p.gabarito}) ${rt}</div>${p.justificativa ? `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); font-size: 14px;">${p.justificativa}</div>` : ''}</div>`, buttons: [{ label: 'Entendi', class: 'modal-btn-confirm', action: 'fecharModalEProximo()' }] });
+}
+
+function fecharModalEProximo() { fecharModal(); proximaPergunta(); }
 
 function proximaPergunta() {
   quizState.perguntaIndex++;
-  if (quizState.perguntaIndex < quizState.perguntas.length) {
-    mostrarPerguntaForms();
-  } else {
-    mostrarResultadoFinal();
-  }
+  if (quizState.perguntaIndex < quizState.perguntas.length) { mostrarPergunta(); } else { mostrarResultadoFinal(); }
 }
 
 function mostrarResultadoFinal() {
-  const { acertos, total, marcaAtual, kbdAtual } = quizState;
+  const { acertos, total } = quizState;
   const pct = Math.round((acertos / total) * 100);
-
-  salvarResultadoLocal({
-    marcaId: marcaAtual.id,
-    kbdId: kbdAtual ? kbdAtual.id : "__",
-    marcaNome: marcaAtual.nome,
-    kbdNome: kbdAtual ? kbdAtual.nome : "KBD",
-    scorePct: pct,
-    acertos,
-    total
-  });
-
-  document.getElementById("quizArea").innerHTML = `
-    <div class="card centerCard">
-      <div class="bigIcon">🏁</div>
-      <div class="cardTitle">Resultado final</div>
-      <div class="scoreBig">${pct}%</div>
-      <div class="cardSub">${acertos} de ${total} corretas</div>
-
-      <div class="btnRow">
-        <a class="btnSecondary" href="quiz.html">Ver histórico</a>
-        <a class="btnPrimary" href="marcas.html">Ir para Marcas</a>
-      </div>
-    </div>
-  `;
+  let emoji, msg, grad;
+  if (pct >= 81) { emoji = "🥇"; msg = "Ouro!"; grad = "linear-gradient(135deg, #FFD700 0%, #FFA500 100%)"; }
+  else if (pct >= 61) { emoji = "🥈"; msg = "Prata!"; grad = "linear-gradient(135deg, #C0C0C0 0%, #808080 100%)"; }
+  else { emoji = "🥉"; msg = "Bronze!"; grad = "linear-gradient(135deg, #CD7F32 0%, #8B4513 100%)"; }
+  document.getElementById("quizArea").innerHTML = `<div class="card" style="padding: 40px; text-align: center; background: ${grad}; border: none;"><div style="font-size: 80px;">${emoji}</div><div style="font-size: 28px; font-weight: 900;">${msg}</div><div style="font-size: 48px; font-weight: 900; margin: 20px 0;">${pct}%</div><div style="font-size: 18px;">${acertos} de ${total}</div><button class="btnPrimary" onclick="proximoKBD()" style="margin-top: 30px; background: rgba(0,0,0,0.3); border: 2px solid white;">Próximo →</button></div>`;
 }
 
 function proximoKBD() {
-  // Mantido por compatibilidade com botões antigos (se existirem em algum HTML), mas agora não é usado.
   const p = new URLSearchParams(window.location.search);
   const mid = p.get("marca");
   const kid = p.get("kbd");
   const ma = CONTENT.marcas.find(m => m.id === mid);
   if (!ma) { voltarHome(); return; }
   const ki = ma.kbds.findIndex(k => k.id === kid);
-  if (ki + 1 < ma.kbds.length) {
-    const nk = ma.kbds[ki + 1];
-    window.location.href = "kbd.html?marca=" + encodeURIComponent(mid) + "&kbd=" + encodeURIComponent(nk.id);
-    return;
-  }
-  window.location.href = "marca.html?marca=" + encodeURIComponent(mid);
+  if (ki + 1 < ma.kbds.length) { const nk = ma.kbds[ki + 1]; window.location.href = "kbd.html?marca=" + encodeURIComponent(mid) + "&kbd=" + encodeURIComponent(nk.id); return; }
+  const mi = CONTENT.marcas.findIndex(m => m.id === mid);
+  if (mi + 1 < CONTENT.marcas.length) { const nm = CONTENT.marcas[mi + 1]; const pk = nm.kbds[0]; window.location.href = "kbd.html?marca=" + encodeURIComponent(nm.id) + "&kbd=" + encodeURIComponent(pk.id); return; }
+  alert("Parabéns! 🎉"); voltarHome();
 }
-
 
 async function enviarParaSheets(d) {
   try {
