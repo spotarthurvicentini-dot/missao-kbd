@@ -1,21 +1,56 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quiz - Missão KBD</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div class="container">
-    <h1 id="quizTitulo">Quiz</h1>
-    <p class="small" id="quizSubtitulo">Teste seus conhecimentos</p>
+<body class="quiz-form" data-page="quiz">
 
-    <div id="quizArea" style="margin-top: 18px;"></div>
-  </div>
+  <header class="appBar">
+    <button class="iconBtn" id="navBack" aria-label="Voltar">←</button>
+    <div class="appBarTitle" id="appTitle">Quiz</div>
+    <div class="appBarRight">
+      <div class="chip" id="navSetor">---</div>
+      <button class="iconBtn" id="navMenu" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <main class="container appContent quizPage">
+    <div class="quizTop">
+      <div class="quizTitleWrap">
+        <div class="quizTitle" id="quizTitulo">Quiz</div>
+        <div class="quizMeta" id="quizSubtitulo">Teste seus conhecimentos</div>
+      </div>
+      <div class="quizPill" id="quizCounter">0/0</div>
+    </div>
+
+    <div class="quizProgress" aria-label="Progresso do quiz">
+      <div class="quizProgressFill" id="quizProgressBar"></div>
+    </div>
+
+    <div class="quizKbdRow">
+      <div class="kbdSwitcher" style="flex:1;">
+        <label class="small" for="quizKbdSelect" style="opacity:.85;">Mudar KBD</label>
+        <select id="quizKbdSelect" class="select"></select>
+      </div>
+      <button class="btnGhost" id="btnRevisar" onclick="navToKbdAtual()">📚 Revisar material</button>
+    </div>
+
+    <div id="quizArea"></div>
+  </main>
+
+  <nav class="bottomNav" aria-label="Navegação">
+    <button class="navItem" data-nav="home"><span class="navIcon">🏠</span><span>Home</span></button>
+    <button class="navItem" data-nav="marcas"><span class="navIcon">🏷️</span><span>Marcas</span></button>
+    <button class="navItem" data-nav="quiz"><span class="navIcon">📝</span><span>Quiz</span></button>
+  </nav>
 
   <script src="quizzes.js"></script>
   <script src="app.js"></script>
-  <script>renderQuiz();</script>
+  <script>
+    renderQuiz();
+  </script>
 </body>
 </html>
