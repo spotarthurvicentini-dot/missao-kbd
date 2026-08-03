@@ -4,7 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Missão KBD • Aula</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070f">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="icon" href="assets/favicon-32.png">
   <link rel="stylesheet" href="style.css">
+  <script defer src="quizzes.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body onload="renderKbd()">
@@ -26,7 +31,10 @@
       <section class="summary-card" style="margin:16px 16px 0;">
         <div class="summary-card-top">
           <div>
-            <span id="kbdStatusBadge" class="status-badge">Quiz pendente</span>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+              <span id="kbdStatusBadge" class="status-badge">Quiz pendente</span>
+              <span id="kbdStatusPill" class="status-badge status-manteve">—</span>
+            </div>
             <div id="kbdTitle" class="section-title" style="margin-top:8px;font-size:17px;">—</div>
             <p id="kbdSubtitle" class="helper-text" style="margin-top:2px;">—</p>
           </div>
@@ -41,6 +49,10 @@
       </section>
 
       <div style="height:16px;"></div>
+
+      <div id="pilulaKbd" class="pilula-card hidden"></div>
+
+      <div style="height:12px;"></div>
 
       <div class="card content-stack" style="gap:16px;">
         <div class="section-head" style="padding:0;">
@@ -68,6 +80,8 @@
       </button>
 
     </main>
+
+    <nav id="bottomNav" class="bottom-nav"></nav>
   </div>
 </body>
 </html>

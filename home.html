@@ -4,6 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Missão KBD • Home</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#05070f">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="icon" href="assets/favicon-32.png">
   <link rel="stylesheet" href="style.css">
   <script defer src="app.js"></script>
 </head>
@@ -13,6 +17,9 @@
   <div class="app-shell">
 
     <header class="topbar topbar-home-only">
+      <div class="topbar-left">
+        <img class="topbar-logo" src="assets/icon-192.png" alt="Missão KBD">
+      </div>
       <div class="topbar-right topbar-right-home">
         <span id="topbarSetor" class="setor-badge">—</span>
       </div>
@@ -21,10 +28,9 @@
     <main class="main-content">
 
       <section class="hero-card">
-        <div class="hero-logo">
-          <img src="logo-missao-kbd-v2.png" alt="Missão KBD">
-        </div>
+        <img class="hero-mascot" src="assets/mascot-hero.jpg" alt="Mascote Missão KBD">
         <div class="hero-head">
+          <span id="heroCiclo" class="hero-ciclo">Ciclo</span>
           <h1 class="hero-title">Treinamentos</h1>
           <p id="heroSummary" class="hero-subtitle">Carregando progresso...</p>
         </div>
@@ -44,6 +50,23 @@
         </div>
       </section>
 
+      <section class="quick-actions">
+        <a class="quick-action" href="novidades.html">
+          <span class="quick-action-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 3v4"></path><path d="M12 17v4"></path><path d="M3 12h4"></path><path d="M17 12h4"></path><path d="m5.6 5.6 2.8 2.8"></path><path d="m15.6 15.6 2.8 2.8"></path><path d="m18.4 5.6-2.8 2.8"></path><path d="m8.4 15.6-2.8 2.8"></path></svg>
+          </span>
+          <span class="quick-action-title">Novidades do ciclo</span>
+          <span class="quick-action-sub">Veja o que entrou, mudou e saiu</span>
+        </a>
+        <a class="quick-action tone-cyan" href="checklist.html">
+          <span class="quick-action-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 6h11"></path><path d="M9 12h11"></path><path d="M9 18h11"></path><path d="M4 6h.01"></path><path d="M4 12h.01"></path><path d="M4 18h.01"></path></svg>
+          </span>
+          <span class="quick-action-title">Checklist de visita</span>
+          <span class="quick-action-sub">Consulta rápida em loja</span>
+        </a>
+      </section>
+
       <section class="section-head">
         <h2 class="section-title">Marcas</h2>
       </section>
@@ -51,6 +74,8 @@
       <section id="listaMarcas" class="brand-list"></section>
 
     </main>
+
+    <nav id="bottomNav" class="bottom-nav"></nav>
   </div>
 </body>
 </html>

@@ -8,48 +8,222 @@ function normalizeSector(value) {
 
 const ALLOWED_SECTORS_NORMALIZED = new Set(ALLOWED_SECTORS.map((sector) => normalizeSector(sector)));
 
+const CICLO_INFO = {
+  titulo: "Julho–Dezembro 2026",
+  foco: "Entender o que é novo, o que mudou e como executar corretamente na loja.",
+};
+
 const CONTENT = {
   marcas: [
-    { id: "always", nome: "ALWAYS", logo: "logos/always.jpg", kbds: [{ id: "kbd1", nome: "KBD Absorventes – Always", videoId: "eaFGK2Wgtgg", imagens: ["kbds/Always.jpg"] }] },
+    { id: "tampax", nome: "TAMPAX", logo: "logos/tampax.png", kbds: [
+      { id: "kbd1", nome: "Bandeja no Ponto Natural (DPP)", status: "novo", canais: "DPP",
+        resumo: "No canal DPP, a loja deve possuir bandeja de Tampax executada no ponto natural de absorventes internos.",
+        comoConta: ["Bandeja de Tampax posicionada dentro da categoria de absorventes internos", "Produto abastecido e visível"],
+        erroComum: ["Bandeja no ponto extra (fora da categoria)", "Bandeja fora da categoria de absorventes internos", "Bandeja vazia", "Execução fora do ponto natural"],
+        produtosValidos: ["Tampax Compak Super", "Tampax Compak Intenso", "Tampax Compak Muito Intenso"],
+        focoPromotor: "Garantir bandeja abastecida e bem posicionada no ponto natural.",
+        videoId: "", imagens: ["kbds/pilulas/pilula-tampax-ponto-natural.jpg"] },
+    ] },
+    { id: "always", nome: "ALWAYS", logo: "logos/always.jpg", kbds: [
+      { id: "kbd1", nome: "Absorventes – Always Suave (70%)", status: "manteve", canais: "Todos os canais",
+        resumo: "Garantir 70% da gôndola de Always com versões Suave.",
+        comoConta: ["Medição em centímetros", "Considerar apenas absorventes Always", "Suave = Always Suave, Ultra Suave, Cobertura Suave e Suave Noturno"],
+        erroComum: ["Contar protetor diário Always", "Misturar versões Suave e Secas sem bloco"],
+        focoPromotor: "Garantir 70% da gôndola de Always com versões Suave.",
+        videoId: "eaFGK2Wgtgg", imagens: ["kbds/Always.jpg"] },
+    ] },
     { id: "downy", nome: "DOWNY", logo: "logos/downy.png", kbds: [
-      { id: "kbd1", nome: "KBD Ponto Extra – Brisa", videoId: "6nk1VYvq2WI", imagens: ["kbds/ponto extra - downy.jpg"] },
-      { id: "kbd2", nome: "KBD Bloco Azul (50%)", videoId: "HP3Aed4vsUI", imagens: ["kbds/bloco azul downy.jpg"] },
-      { id: "kbd3", nome: "KBD Bloco Colorido (40%)", videoId: "Wzx9avaPOCw", imagens: ["kbds/bloco colorido downy.jpg"] },
+      { id: "kbd1", nome: "Ponto Extra – Brisa de Verão + Brisa Intenso", status: "manteve", canais: "C&C, NMR/GMR, CLUB, LASA e HFS",
+        resumo: "Ponto Extra de Downy precisa reunir Brisa de Verão + Brisa Intenso, podendo somar Brisa Suave ou Verão Tropical.",
+        comoConta: ["Brisa de Verão e Brisa Intenso sempre juntos no ponto extra", "Pode incluir Brisa Suave ou Verão Tropical"],
+        erroComum: ["Ponto extra fora dos canais elegíveis", "Ponto extra vazio ou incompleto"],
+        focoPromotor: "Garantir Ponto Extra completo com as versões obrigatórias.",
+        videoId: "6nk1VYvq2WI", imagens: ["kbds/ponto extra - downy.jpg"] },
+      { id: "kbd2", nome: "Bloco Azul (50%)", status: "manteve", canais: "Canais elegíveis Downy",
+        resumo: "Downy precisa ter pelo menos 50% do espaço com Bloco Azul.",
+        comoConta: ["Medir o espaço de Bloco Azul em relação ao total de Downy"],
+        erroComum: ["Contar outras linhas fora do Bloco Azul"],
+        focoPromotor: "Garantir pelo menos 50% do espaço com Bloco Azul.",
+        videoId: "HP3Aed4vsUI", imagens: ["kbds/bloco azul downy.jpg"] },
+      { id: "kbd3", nome: "Bloco Colorido (40%)", status: "manteve", canais: "Canais elegíveis Downy",
+        resumo: "Downy precisa ter pelo menos 40% do espaço com Bloco Colorido nos canais elegíveis.",
+        comoConta: ["Medir o espaço de Bloco Colorido em relação ao total de Downy"],
+        erroComum: ["Contar outras linhas fora do Bloco Colorido"],
+        focoPromotor: "Garantir pelo menos 40% do espaço com Bloco Colorido.",
+        videoId: "Wzx9avaPOCw", imagens: ["kbds/bloco colorido downy.jpg"] },
     ] },
     { id: "pantene", nome: "PANTENE", logo: "logos/pantene.png", kbds: [
-      { id: "kbd1", nome: "KBD Bond Repair (20%)", videoId: "Bbd5nfGj6to", imagens: ["kbds/bond repair pantene.jpg"] },
-      { id: "kbd2", nome: "KBD Top Versões – Bambu, Colágeno e Biotinamina B3 (40%)", videoId: "fvdNLD-KDOY", imagens: ["kbds/top versões pantene .jpg"] },
-      { id: "kbd3", nome: "KBD Óleo – 2 Pontos de Contato", videoId: "a9hnQFciQxo", imagens: ["kbds/oleo pantene.jpg"] },
-      { id: "kbd4", nome: "KBD Rio/Cachoeira Dourada", videoId: "O523onnWAMc", imagens: ["kbds/rio cachoeira dourada pantene.jpg"] },
+      { id: "kbd1", nome: "Bond Repair (mín. 20% do espaço)", status: "manteve", canais: "Todos os canais",
+        resumo: "Garantir pelo menos 20% do espaço de Pantene na gôndola para Bond Repair, excluindo packs.",
+        comoConta: ["Medição em centímetros", "Considerar apenas Pantene Bond Repair", "Excluir packs do cálculo"],
+        erroComum: ["Contar packs para completar o percentual"],
+        focoPromotor: "Garantir no mínimo 20% do espaço de Pantene para Bond Repair.",
+        videoId: "Bbd5nfGj6to", imagens: ["kbds/bond repair pantene.jpg"] },
+      { id: "kbd5", nome: "Finalizadores com Espaço Garantido (Óleo, Sérum e Leave-in)", status: "novo", canais: "DPP, C&C, NMR/GMR, CLUB, LASA, HFS e PERFUMARIA",
+        resumo: "Óleo, Sérum e Leave-in agora precisam ter quantidade mínima de frentes na gôndola: 8 em DPP, 6 nos demais canais.",
+        comoConta: ["Cada produto voltado para frente = 1 frente", "Contar apenas frentes visíveis na gôndola", "Não duplicar a mesma frente", "Meta DPP: pelo menos 8 frentes", "Meta demais canais elegíveis: pelo menos 6 frentes"],
+        erroComum: ["Produto fora da gôndola", "Produto em clipstrip, checkout, ilha ou display", "Contar a mesma frente duas vezes", "Somar produtos que não são finalizadores"],
+        focoPromotor: "Garantir finalizadores abastecidos e com a quantidade mínima de frentes na gôndola.",
+        videoId: "fvdNLD-KDOY", imagens: ["kbds/pilulas/pilula-pantene-finalizadores.jpg"] },
+      { id: "kbd3", nome: "2 Pontos de Contato com Finalizadores (Óleo, Sérum e Leave-in)", status: "mudou", canais: "Todos, exceto CLUB e HFS",
+        resumo: "Agora Sérum e Leave-in também contam, além do Óleo, para os pontos de contato de finalizadores Pantene.",
+        comoConta: ["No mínimo 2 pontos de contato com Óleo, Sérum ou Leave-in Pantene", "Pode incluir checkout/balcão, clipstrip, ilha, ponta de gôndola e display", "Checkout vale apenas 1 ponto"],
+        erroComum: ["Contar o ponto natural como ponto de contato", "Contar 2 checkouts como 2 pontos"],
+        focoPromotor: "Garantir 2 pontos de contato válidos com finalizadores Pantene, fora do ponto natural.",
+        videoId: "a9hnQFciQxo", imagens: ["kbds/oleo pantene.jpg"] },
     ] },
     { id: "pampers", nome: "PAMPERS", logo: "logos/pampers.png", kbds: [
-      { id: "kbd1", nome: "KBD Ponto Extra – 50% Tamanhos Grandes", videoId: "PpaBq-2-dSU", imagens: ["kbds/ponto extra pampers.jpg"] },
-      { id: "kbd2", nome: "KBD Pants SP", videoId: "LNkl9cjM_4w", imagens: ["kbds/pants sp pampers.jpg"] },
-      { id: "kbd3", nome: "KBD Pants + Premium (Lojas Sul)", videoId: "2MJR7PN4H_I", imagens: ["kbds/pants + premium sul pampers.jpg"] },
-      { id: "kbd4", nome: "KBD Vale Night – SOS Gôndola", videoId: "VzUKIRxz1J0", imagens: ["kbds/vale night SOS pampers.jpg"] },
-      { id: "kbd5", nome: "KBD Vale Night – Ponto Extra Farma", videoId: "VzUKIRxz1J0", imagens: ["kbds/vale night ponto extra pammpers .jpg"] },
+      { id: "kbd1", nome: "Ponto Extra – 50% Tamanhos Grandes (XG, XXG, XXXG)", status: "manteve", canais: "Canais elegíveis Pampers",
+        resumo: "Existir Ponto Extra de Pampers com pelo menos 50% de fraldas XG, XXG ou XXXG.",
+        comoConta: ["Medir a proporção de fraldas grandes no ponto extra"],
+        erroComum: ["Ponto extra sem tamanhos grandes suficientes"],
+        focoPromotor: "Garantir Ponto Extra com pelo menos 50% de tamanhos grandes.",
+        videoId: "PpaBq-2-dSU", imagens: ["kbds/ponto extra pampers.jpg"] },
+      { id: "kbd2", nome: "Pants SP", status: "manteve", canais: "Canais elegíveis Pampers",
+        resumo: "Executar o espaço de Pants conforme a meta do canal.",
+        comoConta: ["Verificar meta de espaço de Pants por canal"],
+        erroComum: ["Não atingir a meta mínima de espaço de Pants"],
+        focoPromotor: "Garantir o espaço de Pants conforme a meta do canal.",
+        videoId: "LNkl9cjM_4w", imagens: ["kbds/pants sp pampers.jpg"] },
+      { id: "kbd3", nome: "Pants + Premium (Lojas Sul)", status: "manteve", canais: "Lojas da região Sul",
+        resumo: "Em lojas do Sul, Pampers possui o espaço de Pants + Premium conforme a meta do canal.",
+        comoConta: ["Verificar meta de espaço combinando Pants e Premium"],
+        erroComum: ["Não considerar a meta específica das lojas do Sul"],
+        focoPromotor: "Garantir o espaço de Pants + Premium conforme a meta do canal.",
+        videoId: "2MJR7PN4H_I", imagens: ["kbds/pants + premium sul pampers.jpg"] },
+      { id: "kbd4", nome: "Vale Night – SOS Gôndola", status: "manteve", canais: "Canais elegíveis Pampers",
+        resumo: "A gôndola de Pampers possui materiais de Vale Night com ícone de mamadeira.",
+        comoConta: ["Verificar presença do material de Vale Night com ícone de mamadeira na gôndola"],
+        erroComum: ["Gôndola sem o material de comunicação Vale Night"],
+        focoPromotor: "Garantir materiais de Vale Night com ícone de mamadeira na gôndola.",
+        videoId: "VzUKIRxz1J0", imagens: ["kbds/vale night SOS pampers.jpg"] },
+      { id: "kbd5", nome: "Vale Night – Ponto Extra Farma (DPP)", status: "manteve", canais: "DPP",
+        resumo: "Em DPP, existe Ponto Extra de Pampers com comunicação Vale Night e ícone de mamadeira.",
+        comoConta: ["Ponto Extra em DPP com comunicação Vale Night visível"],
+        erroComum: ["Ponto Extra sem a comunicação/ícone de mamadeira"],
+        focoPromotor: "Garantir Ponto Extra em DPP com comunicação Vale Night.",
+        videoId: "VzUKIRxz1J0", imagens: ["kbds/vale night ponto extra pammpers .jpg"] },
     ] },
     { id: "secret", nome: "SECRET", logo: "logos/secret.png", kbds: [
-      { id: "kbd1", nome: "KBD 2 Bandejas", videoId: "rnY1L6xHrQc", imagens: ["kbds/2 bandejas secret.jpg"] },
-      { id: "kbd2", nome: "KBD Bloco 15 Frentes ou 3 Bandejas", videoId: "BPB6kyRuYHw", imagens: ["kbds/15 frentes secret.jpg"] },
+      { id: "kbd1", nome: "DPP e HFS – 10 Frentes ou 2 Bandejas", status: "mudou", canais: "DPP e HFS",
+        resumo: "Agora DPP e HFS podem bater o KBD com 10 frentes na gôndola OU 2 bandejas de Secret.",
+        comoConta: ["10 frentes visíveis na gôndola", "OU 2 bandejas de Secret na loja"],
+        erroComum: ["Contar produto fora da gôndola", "Bandeja vazia ou mal posicionada", "Misturar bandejas e frentes sem respeitar a regra do canal"],
+        focoPromotor: "Entender a regra do canal e garantir a quantidade correta de frentes ou bandejas.",
+        videoId: "rnY1L6xHrQc", imagens: ["kbds/2 bandejas secret.jpg", "kbds/pilulas/pilula-secret-frentes-bandejas.jpg"] },
+      { id: "kbd2", nome: "Demais Canais – 15 Frentes ou 3 Bandejas", status: "manteve", canais: "C&C, NMR/GMR, CLUB, LASA e Perfumaria",
+        resumo: "Nos demais canais elegíveis, a regra permanece: 15 frentes na gôndola OU 3 bandejas de Secret.",
+        comoConta: ["15 frentes visíveis na gôndola", "OU 3 bandejas de Secret na loja"],
+        erroComum: ["Contar frentes que não estão visíveis", "Bandeja mal posicionada"],
+        focoPromotor: "Garantir a quantidade correta de frentes ou bandejas nos canais elegíveis.",
+        videoId: "BPB6kyRuYHw", imagens: ["kbds/15 frentes secret.jpg"] },
     ] },
     { id: "oral-b", nome: "ORAL-B", logo: "logos/oral-b.png", kbds: [
-      { id: "kbd1", nome: "KBD Branqueamento (60%)", videoId: "wtCHpp6o1RM", imagens: ["kbds/branqueamento oral-b.jpg"] },
-      { id: "kbd2", nome: "KBD 2 Pontos de Contato – Escovas", videoId: "ouyhoQN_l3M", imagens: ["kbds/2 pontos de contato oral-b.jpg"] },
-      { id: "kbd3", nome: "KBD Layout BIPE – Escovas", videoId: "IrnClu_PeZs", imagens: ["kbds/layout bipe oral-b.jpg"] },
+      { id: "kbd1", nome: "Branqueamento (60%)", status: "manteve", canais: "Todos os canais",
+        resumo: "A gôndola de pastas Oral-B possui pelo menos 60% com pastas de branqueamento.",
+        comoConta: ["Medir a proporção de pastas de branqueamento na gôndola de pastas"],
+        erroComum: ["Contar pastas fora da linha branqueamento"],
+        focoPromotor: "Garantir pelo menos 60% da gôndola de pastas com branqueamento.",
+        videoId: "wtCHpp6o1RM", imagens: ["kbds/branqueamento oral-b.jpg"] },
+      { id: "kbd2", nome: "2 Pontos de Contato – Escovas", status: "manteve", canais: "Todos os canais",
+        resumo: "A loja possui pelo menos 2 pontos extras de escovas Oral-B.",
+        comoConta: ["2 pontos extras de escovas, fora do ponto natural"],
+        erroComum: ["Contar o ponto natural como ponto extra"],
+        focoPromotor: "Garantir pelo menos 2 pontos extras de escovas Oral-B.",
+        videoId: "ouyhoQN_l3M", imagens: ["kbds/2 pontos de contato oral-b.jpg"] },
+      { id: "kbd3", nome: "Layout BIPE – Escovas", status: "manteve", canais: "Todos os canais",
+        resumo: "A gôndola de escovas Oral-B está executada de acordo com o layout BIPE.",
+        comoConta: ["Sequência de execução seguindo o layout BIPE oficial"],
+        erroComum: ["Gôndola fora da sequência BIPE"],
+        focoPromotor: "Garantir a gôndola de escovas de acordo com o layout BIPE.",
+        videoId: "IrnClu_PeZs", imagens: ["kbds/layout bipe oral-b.jpg"] },
     ] },
     { id: "gillette", nome: "GILLETTE", logo: "logos/gillette.png", kbds: [
-      { id: "kbd1", nome: "KBD Sistemas – % de Ganchos", videoId: "WJdR-WIzysQ", imagens: ["kbds/ganchos c8 gillette.jpg"] },
-      { id: "kbd2", nome: "KBD 2 Pontos de Contato – Mach3/Presto3", videoId: "JErDBsNLmsg", imagens: ["kbds/KBD GILLETTE  2 PONTOS DE CONTATO .jpg"] },
-      { id: "kbd3", nome: "KBD Carga Mach3 c/8 – 2 Ganchos", videoId: "6SpNahwSGCs", imagens: ["kbds/KBD GILLETTE  CARGA MACH3 C8 (2 GANCHOS).jpg"] },
+      { id: "kbd1", nome: "Sistemas – % de Ganchos (25% C&C / 35% demais)", status: "manteve", canais: "C&C e demais canais elegíveis (exceto DPP)",
+        resumo: "Garantir um percentual de ganchos de Sistemas na gôndola Gillette Masculina: 25% em C&C e 35% nos demais canais elegíveis.",
+        comoConta: ["Leitura por ganchos: ganchos Sistemas / ganchos total Gillette Masculina", "Sistemas = cargas e aparelhos conectáveis Mach3, Fusion e Proshield"],
+        erroComum: ["Medir em centímetros", "Misturar descartáveis no cálculo", "Considerar DPP (não elegível)"],
+        focoPromotor: "Garantir o percentual correto de ganchos de Sistemas por canal.",
+        videoId: "WJdR-WIzysQ", imagens: ["kbds/ganchos c8 gillette.jpg"] },
+      { id: "kbd2", nome: "Pontos de Contato – Mach3/Presto3 Sensitive (3 em DPP+, 2 em DPP)", status: "mudou", canais: "C&C, NMR/GMR, LASA, HFS, PERFUMARIA e DPP",
+        resumo: "Agora C&C, NMR/GMR, LASA, HFS e PERFUMARIA exigem 3 pontos de contato; em DPP continuam 2 pontos.",
+        comoConta: ["Itens Mach3 Sensitive / Presto3 Sensitive com 4 unidades ou mais", "3 pontos de contato em C&C, NMR/GMR, LASA, HFS e PERFUMARIA", "2 pontos de contato em DPP", "Sempre fora do ponto natural"],
+        erroComum: ["Produto no checkout", "Produto no ponto natural", "Contar o mesmo ponto duas vezes", "Usar item fora do foco (menos de 4 unidades)"],
+        focoPromotor: "Garantir a quantidade correta de pontos de contato com Mach3 e Presto3 Sensitive.",
+        videoId: "JErDBsNLmsg", imagens: ["kbds/KBD GILLETTE  2 PONTOS DE CONTATO .jpg", "kbds/pilulas/pilula-gillette-mach3-presto3.jpg"] },
+      { id: "kbd3", nome: "Carga Mach3 c/8 – 2 Ganchos (DPP)", status: "manteve", canais: "DPP",
+        resumo: "Em DPP, existem no mínimo 2 ganchos de Carga Mach3 com 8 unidades.",
+        comoConta: ["Leitura por ganchos", "Produto correto: Carga Mach3 c/8 unidades"],
+        erroComum: ["Ler esse KBD fora de DPP", "Confundir com outra carga Gillette"],
+        focoPromotor: "Garantir no mínimo 2 ganchos de Carga Mach3 c/8 em DPP.",
+        videoId: "6SpNahwSGCs", imagens: ["kbds/KBD GILLETTE  CARGA MACH3 C8 (2 GANCHOS).jpg"] },
     ] },
     { id: "venus", nome: "VENUS", logo: "logos/venus.png", kbds: [
-      { id: "kbd1", nome: "KBD Sistemas – 20% de Ganchos", videoId: "aTdxSIGDruw", imagens: ["kbds/KBD VENUS  SISTEMAS (20_ GANCHOS).jpg"] },
-      { id: "kbd2", nome: "KBD 2 Pontos de Contato", videoId: "8S-HXL504Y8", imagens: ["kbds/KBD VENUS  2 PONTOS DE CONTATO .jpg"] },
-      { id: "kbd3", nome: "KBD Checkout – Venus Pele Sensível", videoId: "01FBpmoOQKo", imagens: ["kbds/KBD VENUS  CHECKOUT (PELE SENSÍVEL).jpg"] },
+      { id: "kbd2", nome: "3 Pontos de Contato em Todos os Canais Elegíveis", status: "mudou", canais: "Todos os canais elegíveis",
+        resumo: "Venus passou a exigir pelo menos 3 pontos de contato em todos os canais elegíveis (antes eram 2, só em DPP e Perfumaria).",
+        comoConta: ["Pelo menos 3 pontos de contato, fora do ponto natural e fora do checkout", "Cada execução separada = 1 ponto", "Priorizar Venus Pele Sensível e Venus Suave"],
+        erroComum: ["Produto no checkout", "Produto no ponto natural", "Contar o mesmo ponto duas vezes", "Usar item fora da linha Venus"],
+        focoPromotor: "Garantir 3 pontos de contato de Venus, fora do ponto natural e fora do checkout.",
+        videoId: "8S-HXL504Y8", imagens: ["kbds/KBD VENUS  2 PONTOS DE CONTATO .jpg", "kbds/pilulas/pilula-venus-3pontos.jpg"] },
+      { id: "kbd3", nome: "Checkout – Venus Pele Sensível (60%)", status: "manteve", canais: "Todos, exceto CLUB",
+        resumo: "Pelo menos 60% dos checkouts com produtos P&G possuem Aparelho Venus Pele Sensível.",
+        comoConta: ["Apenas o aparelho Venus Pele Sensível conta (não carga)", "Base de cálculo: checkouts com produtos P&G"],
+        erroComum: ["Contar carga em vez de aparelho", "Contar checkouts sem produtos P&G", "Aplicar em CLUB"],
+        focoPromotor: "Garantir Aparelho Venus Pele Sensível em pelo menos 60% dos checkouts com P&G.",
+        videoId: "01FBpmoOQKo", imagens: ["kbds/KBD VENUS  CHECKOUT (PELE SENSÍVEL).jpg"] },
     ] },
   ],
 };
+
+const NOVIDADES = {
+  novos: [
+    { marca: "Tampax", texto: "Bandeja no ponto natural em DPP" },
+    { marca: "Pantene", texto: "6 ou 8 frentes de finalizadores na gôndola" },
+    { marca: "Pantene", texto: "2 pontos de contato com finalizadores (Óleo, Sérum e Leave-in)" },
+  ],
+  mudou: [
+    { marca: "Secret", texto: "Agora pode bater o KBD por frentes ou bandejas" },
+    { marca: "Gillette", texto: "Mach3 / Presto3: mais pontos de contato em alguns canais" },
+    { marca: "Venus", texto: "Passou a exigir 3 pontos de contato em todos os canais" },
+    { marca: "Pantene", texto: "Bond Repair: ajuste na regra de leitura" },
+  ],
+  manteve: [
+    "Always", "Pampers", "Downy", "Oral-B", "Carga Mach3 c/8", "Checkout Venus Pele Sensível",
+  ],
+  sairam: [
+    { marca: "Pantene", texto: "Bambu, Colágeno e Biotinamina B3" },
+    { marca: "Pantene", texto: "Rio / Cachoeira Dourada" },
+    { marca: "Venus", texto: "% de sistemas na gôndola" },
+  ],
+};
+
+const CHECKLIST_ITEMS = [
+  { id: "chk01", marca: "tampax", marcaNome: "Tampax", texto: "Tampax possui bandeja no ponto natural de absorventes internos em DPP?" },
+  { id: "chk02", marca: "pantene", marcaNome: "Pantene", texto: "Pantene possui 6 ou 8 frentes de finalizadores (Óleo, Sérum e Leave-in)?" },
+  { id: "chk03", marca: "pantene", marcaNome: "Pantene", texto: "Existem 2 pontos de contato com finalizadores Pantene?" },
+  { id: "chk04", marca: "pantene", marcaNome: "Pantene", texto: "Pantene Bond Repair possui pelo menos 20% do espaço (excluindo packs)?" },
+  { id: "chk05", marca: "secret", marcaNome: "Secret", texto: "Secret atingiu a regra correta do canal (frentes ou bandejas)?" },
+  { id: "chk06", marca: "gillette", marcaNome: "Mach3/Presto3", texto: "Mach3 e Presto3 possuem a quantidade correta de pontos de contato?" },
+  { id: "chk07", marca: "venus", marcaNome: "Venus", texto: "Venus possui 3 pontos de contato em todos os canais elegíveis?" },
+  { id: "chk08", marca: "always", marcaNome: "Always", texto: "Always possui pelo menos 70% do espaço com versões Suave?" },
+  { id: "chk09", marca: "pampers", marcaNome: "Pampers", texto: "Pampers possui o espaço de Pants conforme a meta do canal?" },
+  { id: "chk10", marca: "pampers", marcaNome: "Pampers", texto: "Lojas do Sul: Pampers possui o espaço de Pants + Premium conforme a meta?" },
+  { id: "chk11", marca: "pampers", marcaNome: "Pampers", texto: "Existe Ponto Extra de Pampers com pelo menos 50% de fraldas XG, XXG ou XXXG?" },
+  { id: "chk12", marca: "pampers", marcaNome: "Pampers", texto: "A gôndola de Pampers possui materiais de Vale Night com ícone de mamadeira?" },
+  { id: "chk13", marca: "pampers", marcaNome: "Pampers", texto: "Em DPP, existe Ponto Extra de Pampers com comunicação Vale Night?" },
+  { id: "chk14", marca: "downy", marcaNome: "Downy", texto: "Existe Ponto Extra de Downy com Brisa de Verão + Brisa Intenso (+ Brisa Suave ou Verão Tropical)?" },
+  { id: "chk15", marca: "downy", marcaNome: "Downy", texto: "Downy possui pelo menos 50% do espaço com Bloco Azul?" },
+  { id: "chk16", marca: "downy", marcaNome: "Downy", texto: "Downy possui pelo menos 40% do espaço com Bloco Colorido nos canais elegíveis?" },
+  { id: "chk17", marca: "oral-b", marcaNome: "Oral-B", texto: "A gôndola de pastas Oral-B possui pelo menos 60% com pastas de branqueamento?" },
+  { id: "chk18", marca: "oral-b", marcaNome: "Oral-B", texto: "A loja possui pelo menos 2 pontos extras de escovas Oral-B?" },
+  { id: "chk19", marca: "oral-b", marcaNome: "Oral-B", texto: "A gôndola de escovas Oral-B está executada de acordo com o layout BIPE?" },
+  { id: "chk20", marca: "gillette", marcaNome: "Gillette", texto: "Gillette masculina possui o espaço correto de Sistemas na gôndola (25% em C&C ou 35% nos demais)?" },
+  { id: "chk21", marca: "gillette", marcaNome: "Mach3/Presto3", texto: "Existem pelo menos 3 pontos de contato de Mach3 e Presto3 Sensitive (4un+) nos canais elegíveis?" },
+  { id: "chk22", marca: "gillette", marcaNome: "Mach3/Presto3", texto: "Em DPP, existem pelo menos 2 pontos de contato de Mach3 e Presto3 Sensitive (4un+)?" },
+  { id: "chk23", marca: "gillette", marcaNome: "Gillette", texto: "Em DPP, existem no mínimo 2 ganchos de Carga Mach3 com 8 unidades?" },
+  { id: "chk24", marca: "venus", marcaNome: "Venus", texto: "Venus possui pelo menos 3 pontos de contato em todos os canais elegíveis?" },
+  { id: "chk25", marca: "venus", marcaNome: "Venus", texto: "Pelo menos 60% dos checkouts com produtos P&G possuem Aparelho Venus Pele Sensível?" },
+];
 
 const ICONS = {
   home: '<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.8V21h14V9.8"></path><path d="M9 21v-6h6v6"></path></svg>',
@@ -65,7 +239,21 @@ const ICONS = {
   x: '<svg viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>',
   trophy: '<svg viewBox="0 0 24 24"><path d="M8 21h8"></path><path d="M12 17v4"></path><path d="M7 4h10v5a5 5 0 0 1-10 0V4Z"></path><path d="M5 6H3a2 2 0 0 0 0 4h2"></path><path d="M19 6h2a2 2 0 1 1 0 4h-2"></path></svg>',
   refresh: '<svg viewBox="0 0 24 24"><path d="M21 2v6h-6"></path><path d="M3 22v-6h6"></path><path d="M20.49 9A9 9 0 0 0 5 5.5L3 8"></path><path d="M3.51 15A9 9 0 0 0 19 18.5L21 16"></path></svg>',
+  target: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle></svg>',
+  sparkles: '<svg viewBox="0 0 24 24"><path d="M12 3v4"></path><path d="M12 17v4"></path><path d="M3 12h4"></path><path d="M17 12h4"></path><path d="m5.6 5.6 2.8 2.8"></path><path d="m15.6 15.6 2.8 2.8"></path><path d="m18.4 5.6-2.8 2.8"></path><path d="m8.4 15.6-2.8 2.8"></path></svg>',
+  list: '<svg viewBox="0 0 24 24"><path d="M9 6h11"></path><path d="M9 12h11"></path><path d="M9 18h11"></path><path d="M4 6h.01"></path><path d="M4 12h.01"></path><path d="M4 18h.01"></path></svg>',
+  info: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>',
+  swap: '<svg viewBox="0 0 24 24"><path d="M7 4v10"></path><path d="m3 10 4 4 4-4"></path><path d="M17 20V10"></path><path d="m21 14-4-4-4 4"></path></svg>',
+  bolt: '<svg viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6z"></path></svg>',
 };
+
+const STATUS_META = {
+  novo: { label: "Novo", className: "status-novo" },
+  mudou: { label: "Mudou", className: "status-mudou" },
+  manteve: { label: "Manteve", className: "status-manteve" },
+};
+
+function getStatusMeta(status) { return STATUS_META[status] || STATUS_META.manteve; }
 
 let quizState = { marcaAtual: null, kbdAtual: null, perguntaIndex: 0, acertos: 0, total: 0, perguntas: [], selectedOption: null, answeredCurrent: false, respostasDetalhadas: [] };
 
@@ -85,7 +273,7 @@ function getOverallProgress() { const total = getAllKbdsTotal(); const done = ge
 function escapeHtml(value) { return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#39;"); }
 function renderIcon(name) { return ICONS[name] || ""; }
 
-const AVAILABLE_KBD_ASSETS = ["kbds/15 frentes secret.jpg","kbds/2 bandejas secret.jpg","kbds/2 pontos de contato oral-b.jpg","kbds/Always.jpg","kbds/bloco azul downy.jpg","kbds/bloco colorido downy.jpg","kbds/bond repair pantene.jpg","kbds/branqueamento oral-b.jpg","kbds/ganchos c8 gillette.jpg","kbds/KBD GILLETTE  2 PONTOS DE CONTATO .jpg","kbds/KBD GILLETTE  CARGA MACH3 C8 (2 GANCHOS).jpg","kbds/KBD VENUS  2 PONTOS DE CONTATO .jpg","kbds/KBD VENUS  CHECKOUT (PELE SENSÍVEL).jpg","kbds/KBD VENUS  SISTEMAS (20_ GANCHOS).jpg","kbds/layout bipe oral-b.jpg","kbds/oleo pantene.jpg","kbds/pants + premium sul pampers.jpg","kbds/pants sp pampers.jpg","kbds/ponto extra - downy.jpg","kbds/ponto extra pampers.jpg","kbds/rio cachoeira dourada pantene.jpg","kbds/top versões pantene .jpg","kbds/vale night ponto extra pammpers .jpg","kbds/vale night SOS pampers.jpg"];
+const AVAILABLE_KBD_ASSETS = ["kbds/15 frentes secret.jpg","kbds/2 bandejas secret.jpg","kbds/2 pontos de contato oral-b.jpg","kbds/Always.jpg","kbds/bloco azul downy.jpg","kbds/bloco colorido downy.jpg","kbds/bond repair pantene.jpg","kbds/branqueamento oral-b.jpg","kbds/ganchos c8 gillette.jpg","kbds/KBD GILLETTE  2 PONTOS DE CONTATO .jpg","kbds/KBD GILLETTE  CARGA MACH3 C8 (2 GANCHOS).jpg","kbds/KBD VENUS  2 PONTOS DE CONTATO .jpg","kbds/KBD VENUS  CHECKOUT (PELE SENSÍVEL).jpg","kbds/KBD VENUS  SISTEMAS (20_ GANCHOS).jpg","kbds/layout bipe oral-b.jpg","kbds/oleo pantene.jpg","kbds/pants + premium sul pampers.jpg","kbds/pants sp pampers.jpg","kbds/ponto extra - downy.jpg","kbds/ponto extra pampers.jpg","kbds/rio cachoeira dourada pantene.jpg","kbds/top versões pantene .jpg","kbds/vale night ponto extra pammpers .jpg","kbds/vale night SOS pampers.jpg","kbds/pilulas/pilula-pantene-finalizadores.jpg","kbds/pilulas/pilula-tampax-ponto-natural.jpg","kbds/pilulas/pilula-gillette-mach3-presto3.jpg","kbds/pilulas/pilula-secret-frentes-bandejas.jpg","kbds/pilulas/pilula-venus-3pontos.jpg"];
 
 function normalizeAssetName(value) { return String(value || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/#U00f5/gi, "o").replace(/#U00cd/gi, "I").replace(/[^a-zA-Z0-9]+/g, "").toLowerCase(); }
 function resolveKbdAsset(path) { const raw = String(path || "").trim(); if (!raw) return raw; if (AVAILABLE_KBD_ASSETS.includes(raw)) return raw; const wanted = normalizeAssetName(raw); const match = AVAILABLE_KBD_ASSETS.find((item) => normalizeAssetName(item) === wanted); return match || raw; }
@@ -184,12 +372,27 @@ function applyTopbar(config) {
   if (logoutBtn && !logoutBtn.classList.contains("hidden")) logoutBtn.onclick = () => confirmarSaida();
 }
 
-function setBottomNav(page, quizHref) {
-  document.querySelectorAll("[data-nav]").forEach((item) => {
-    const nav = item.getAttribute("data-nav");
-    item.classList.toggle("active", nav === page);
-    if (nav === "quiz" && quizHref) item.setAttribute("href", quizHref);
-  });
+function setBottomNav(page) {
+  const container = document.getElementById("bottomNav");
+  if (!container) return;
+
+  const tabs = [
+    { id: "home", label: "Home", icon: "home", href: "home.html" },
+    { id: "novidades", label: "Novidades", icon: "sparkles", href: "novidades.html" },
+    { id: "checklist", label: "Checklist", icon: "list", href: "checklist.html" },
+    { id: "quiz", label: "Quiz", icon: "quiz", href: getPrimaryQuizHref() },
+  ];
+
+  container.innerHTML = tabs
+    .map(
+      (tab) => `
+        <a class="bottom-nav-link ${tab.id === page ? "active" : ""}" href="${tab.href}">
+          ${renderIcon(tab.icon)}
+          <span>${tab.label}</span>
+        </a>
+      `
+    )
+    .join("");
 }
 
 function criarModal({ icon = "menu", title = "", text = "", buttons = [] }) {
@@ -274,7 +477,7 @@ function entrar() {
 function renderHome() {
   ensureSetor();
   applyTopbar({ eyebrow: "", title: "", subtitle: "", showBack: false, minimal: true, hideMenu: true, hideLogout: true });
-  setBottomNav("home", getPrimaryQuizHref());
+  setBottomNav("home");
 
   const overall = getOverallProgress();
   document.getElementById("heroStats").textContent = `${overall.done}/${overall.total} KBDs concluídos`;
@@ -282,11 +485,16 @@ function renderHome() {
   document.getElementById("heroSummary").textContent =
     overall.pct === 100 ? "Tudo concluído. Excelente execução." : `${overall.pct}% do treinamento finalizado`;
 
+  const cicloEl = document.getElementById("heroCiclo");
+  if (cicloEl) cicloEl.textContent = `Ciclo ${CICLO_INFO.titulo}`;
+
   const list = document.getElementById("listaMarcas");
   list.innerHTML = "";
 
   CONTENT.marcas.forEach((marca) => {
     const progress = getBrandProgress(marca.id);
+    const novosCount = marca.kbds.filter((k) => k.status === "novo").length;
+    const mudouCount = marca.kbds.filter((k) => k.status === "mudou").length;
     const card = document.createElement("button");
     card.type = "button";
     card.className = `brand-card ${getBrandThemeClass(marca.id)} ${progress.pct === 100 ? "completed" : "pending"}`;
@@ -297,12 +505,15 @@ function renderHome() {
         </div>
         <div class="brand-info">
           <div class="brand-name">${escapeHtml(marca.nome)}</div>
-          <div class="brand-meta">${progress.done} de ${progress.total} KBDs respondidos</div>
+          <div class="brand-meta">${progress.done}/${progress.total} KBDs</div>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;">
+      <div class="brand-card-footer">
+        <div class="brand-badges-row">
+          ${novosCount ? `<span class="mini-status-dot status-novo" title="${novosCount} novo(s)"></span>` : ""}
+          ${mudouCount ? `<span class="mini-status-dot status-mudou" title="${mudouCount} mudou(ram)"></span>` : ""}
+        </div>
         <span class="progress-pill ${progress.pct === 100 ? "completed" : "pending"}">${progress.pct}%</span>
-        <span class="card-arrow">${renderIcon("arrowRight")}</span>
       </div>
     `;
     card.onclick = () => {
@@ -330,7 +541,7 @@ function renderMarca() {
     hideLogout: true
   });
 
-  setBottomNav("brands", getPrimaryQuizHref(marca.id));
+  setBottomNav("marca");
 
   const progress = getBrandProgress(marca.id);
   document.getElementById("marcaSummaryLabel").textContent = `Setor ${getSetor()}`;
@@ -352,6 +563,7 @@ function renderMarca() {
   marca.kbds.forEach((kbd, index) => {
     const done = isQuizCompleted(marca.id, kbd.id);
     const quizCount = getQuizQuestions(marca.id, kbd.id).length;
+    const statusMeta = getStatusMeta(kbd.status);
     const card = document.createElement("button");
     card.type = "button";
     card.className = `kbd-card ${done ? "completed" : "pending"}`;
@@ -359,6 +571,9 @@ function renderMarca() {
       <div class="kbd-main">
         <div class="summary-card-icon">${renderIcon(done ? "check" : "quiz")}</div>
         <div class="kbd-info">
+          <div class="kbd-badges">
+            <span class="status-badge ${statusMeta.className}">${statusMeta.label}</span>
+          </div>
           <div class="kbd-name">${index + 1}. ${escapeHtml(kbd.nome)}</div>
           <div class="kbd-meta">${quizCount} perguntas • ${done ? "quiz concluído" : "pendente"}</div>
         </div>
@@ -395,13 +610,20 @@ function renderKbd() {
     hideLogout: true
   });
 
-  setBottomNav("brands", getPrimaryQuizHref(marca.id, kbd.id));
+  setBottomNav("kbd");
 
   const done = isQuizCompleted(marca.id, kbd.id);
   const brandProgress = getBrandProgress(marca.id);
+  const statusMeta = getStatusMeta(kbd.status);
 
   const badge = document.getElementById("kbdStatusBadge");
   badge.textContent = done ? "Quiz concluído" : "Quiz pendente";
+
+  const statusBadgeEl = document.getElementById("kbdStatusPill");
+  if (statusBadgeEl) {
+    statusBadgeEl.textContent = statusMeta.label;
+    statusBadgeEl.className = `status-badge ${statusMeta.className}`;
+  }
 
   document.getElementById("kbdTitle").textContent = `${marca.nome} • ${kbd.nome}`;
   document.getElementById("kbdSubtitle").textContent =
@@ -410,6 +632,59 @@ function renderKbd() {
   document.getElementById("kbdProgressCopy").textContent =
     `${brandProgress.done}/${brandProgress.total} KBDs da marca já respondidos`;
   document.getElementById("kbdQuizButton").textContent = done ? "Refazer quiz" : "Responder o Quiz";
+
+  const pilulaBox = document.getElementById("pilulaKbd");
+  if (pilulaBox) {
+    const hasPilula = kbd.resumo || (kbd.comoConta && kbd.comoConta.length) || (kbd.erroComum && kbd.erroComum.length) || kbd.focoPromotor;
+    if (hasPilula) {
+      pilulaBox.innerHTML = `
+        <div class="pilula-head">
+          <div class="pilula-canais">${renderIcon("target")} ${escapeHtml(kbd.canais || "Ver detalhes")}</div>
+        </div>
+        ${kbd.resumo ? `<p class="pilula-resumo">${escapeHtml(kbd.resumo)}</p>` : ""}
+        ${
+          kbd.comoConta && kbd.comoConta.length
+            ? `
+          <div class="pilula-block">
+            <div class="pilula-block-title tone-green">${renderIcon("check")} O que conta</div>
+            <ul class="pilula-list tone-green">
+              ${kbd.comoConta.map((item) => `<li>${renderIcon("check")}<span>${escapeHtml(item)}</span></li>`).join("")}
+            </ul>
+          </div>
+        `
+            : ""
+        }
+        ${
+          kbd.erroComum && kbd.erroComum.length
+            ? `
+          <div class="pilula-block">
+            <div class="pilula-block-title tone-red">${renderIcon("x")} Erro comum</div>
+            <ul class="pilula-list tone-red">
+              ${kbd.erroComum.map((item) => `<li>${renderIcon("x")}<span>${escapeHtml(item)}</span></li>`).join("")}
+            </ul>
+          </div>
+        `
+            : ""
+        }
+        ${
+          kbd.produtosValidos && kbd.produtosValidos.length
+            ? `
+          <div class="pilula-block">
+            <div class="pilula-block-title tone-purple">${renderIcon("sparkles")} Produtos válidos</div>
+            <div class="novidades-chip-row">
+              ${kbd.produtosValidos.map((item) => `<span class="novidades-chip">${escapeHtml(item)}</span>`).join("")}
+            </div>
+          </div>
+        `
+            : ""
+        }
+        ${kbd.focoPromotor ? `<div class="foco-box">${renderIcon("target")}<span><strong>Foco do promotor:</strong> ${escapeHtml(kbd.focoPromotor)}</span></div>` : ""}
+      `;
+      pilulaBox.classList.remove("hidden");
+    } else {
+      pilulaBox.classList.add("hidden");
+    }
+  }
 
   const videoFrame = document.getElementById("videoFrame");
   const videoPlaceholder = document.getElementById("videoPlaceholder");
@@ -471,6 +746,183 @@ function renderKbd() {
   }
 }
 
+function renderNovidades() {
+  ensureSetor();
+  applyTopbar({
+    logo: "assets/icon-192.png",
+    eyebrow: "Missão KBD",
+    title: "Novidades do ciclo",
+    subtitle: CICLO_INFO.titulo,
+    showBack: true,
+    onBack: voltarHome,
+    minimal: true,
+    hideMenu: true,
+    hideLogout: true
+  });
+  setBottomNav("novidades");
+
+  const area = document.getElementById("novidadesArea");
+  if (!area) return;
+
+  area.innerHTML = `
+    <img class="novidades-mascot" src="assets/mascot-novidades.jpg" alt="Mascote Missão KBD" loading="lazy">
+
+    <div class="section-head" style="padding-top:8px;">
+      <h1 class="section-title">O que mudou nesse ciclo?</h1>
+      <p class="section-subtitle">${escapeHtml(CICLO_INFO.foco)}</p>
+    </div>
+
+    <div class="novidades-section">
+      <div class="novidades-section-title tone-cyan">${renderIcon("sparkles")} Entraram no ciclo</div>
+      <div class="novidades-card-list">
+        ${NOVIDADES.novos
+          .map(
+            (item) => `
+          <div class="novidades-card">
+            <div class="novidades-card-marca">${escapeHtml(item.marca)}</div>
+            <div class="novidades-card-texto">${escapeHtml(item.texto)}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    </div>
+
+    <div class="novidades-section">
+      <div class="novidades-section-title tone-orange">${renderIcon("swap")} Mudanças principais</div>
+      <div class="novidades-card-list">
+        ${NOVIDADES.mudou
+          .map(
+            (item) => `
+          <div class="novidades-card">
+            <div class="novidades-card-marca">${escapeHtml(item.marca)}</div>
+            <div class="novidades-card-texto">${escapeHtml(item.texto)}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    </div>
+
+    <div class="novidades-section">
+      <div class="novidades-section-title tone-green">${renderIcon("check")} Continuam valendo</div>
+      <div class="novidades-chip-row">
+        ${NOVIDADES.manteve.map((item) => `<span class="novidades-chip">${escapeHtml(item)}</span>`).join("")}
+      </div>
+    </div>
+
+    <div class="novidades-section">
+      <div class="novidades-section-title tone-muted">${renderIcon("x")} Não fazem mais parte do ciclo</div>
+      <div class="novidades-card-list">
+        ${NOVIDADES.sairam
+          .map(
+            (item) => `
+          <div class="novidades-card" style="opacity:0.7;">
+            <div class="novidades-card-marca">${escapeHtml(item.marca)}</div>
+            <div class="novidades-card-texto">${escapeHtml(item.texto)}</div>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+    </div>
+
+    <div class="action-stack">
+      <a class="primary-button" href="checklist.html">Ver checklist completo</a>
+    </div>
+  `;
+}
+
+function getChecklistState() { return JSON.parse(localStorage.getItem("CHECKLIST_STATE") || "{}"); }
+function saveChecklistState(data) { localStorage.setItem("CHECKLIST_STATE", JSON.stringify(data)); }
+function isChecklistItemChecked(id) { return !!getChecklistState()[id]; }
+
+function toggleChecklistItem(id) {
+  const state = getChecklistState();
+  state[id] = !state[id];
+  saveChecklistState(state);
+  renderChecklist();
+}
+
+function resetChecklist() {
+  criarModal({
+    icon: "refresh",
+    title: "Reiniciar checklist?",
+    text: "Todos os itens marcados nesta visita serão desmarcados.",
+    buttons: [
+      { label: "Cancelar", action: "fecharModal()" },
+      { label: "Reiniciar", primary: true, action: "confirmarResetChecklist()" }
+    ]
+  });
+}
+
+function confirmarResetChecklist() {
+  saveChecklistState({});
+  fecharModal();
+  renderChecklist();
+}
+
+function renderChecklist() {
+  ensureSetor();
+  applyTopbar({
+    logo: "assets/icon-192.png",
+    eyebrow: "Missão KBD",
+    title: "Checklist de visita",
+    subtitle: `${CHECKLIST_ITEMS.length} itens • ${CICLO_INFO.titulo}`,
+    showBack: true,
+    onBack: voltarHome,
+    minimal: true,
+    hideMenu: true,
+    hideLogout: true
+  });
+  setBottomNav("checklist");
+
+  const area = document.getElementById("checklistArea");
+  if (!area) return;
+
+  const state = getChecklistState();
+  const doneCount = CHECKLIST_ITEMS.filter((item) => state[item.id]).length;
+  const pct = Math.round((doneCount / CHECKLIST_ITEMS.length) * 100);
+
+  area.innerHTML = `
+    <div class="summary-card" style="margin:16px 16px 0;">
+      <div class="summary-card-top">
+        <div>
+          <div class="summary-card-label">Progresso da visita</div>
+          <div class="summary-card-value">${doneCount}/${CHECKLIST_ITEMS.length}</div>
+        </div>
+        <div class="summary-card-icon">${renderIcon("list")}</div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <p class="helper-text">Salve este checklist no celular e use como consulta rápida durante a visita.</p>
+    </div>
+
+    <div class="section-head">
+      <h2 class="section-title">Confira os KBDs</h2>
+      <p class="section-subtitle">Toque em cada item para marcar como conferido.</p>
+    </div>
+
+    <div class="kbd-list" style="gap:8px;">
+      ${CHECKLIST_ITEMS.map((item) => {
+        const checked = !!state[item.id];
+        return `
+          <button type="button" class="checklist-item ${checked ? "checked" : ""}" onclick="toggleChecklistItem('${item.id}')">
+            <span class="checklist-checkbox">${renderIcon("check")}</span>
+            <span class="checklist-copy">
+              <span class="checklist-marca">${escapeHtml(item.marcaNome)}</span>
+              <span class="checklist-texto">${escapeHtml(item.texto)}</span>
+            </span>
+          </button>
+        `;
+      }).join("")}
+    </div>
+
+    <div class="action-stack">
+      <button class="secondary-button" type="button" onclick="resetChecklist()">${renderIcon("refresh")} Reiniciar checklist</button>
+    </div>
+  `;
+}
+
 function renderQuiz() {
   ensureSetor();
   const marcaId = qs().get("marca");
@@ -496,7 +948,7 @@ function renderQuiz() {
     hideLogout: true
   });
 
-  setBottomNav("quiz", getPrimaryQuizHref(marca.id, kbd.id));
+  setBottomNav("quiz");
 
   const area = document.getElementById("quizArea");
 
@@ -536,7 +988,7 @@ function renderQuiz() {
 
 function renderQuizHub() {
   applyTopbar({
-    logo: "logo-missao-kbd-v2.png",
+    logo: "assets/icon-192.png",
     eyebrow: "Missão KBD",
     title: "Central de Quiz",
     subtitle: "Acompanhe o progresso e continue de onde parou",
@@ -544,7 +996,7 @@ function renderQuizHub() {
     onBack: voltarHome
   });
 
-  setBottomNav("quiz", getPrimaryQuizHref());
+  setBottomNav("quiz");
 
   const area = document.getElementById("quizArea");
   const overall = getOverallProgress();
@@ -937,4 +1389,10 @@ async function enviarConclusaoMarcaParaSheets(marcaId) {
   } catch (error) {
     console.error(error);
   }
+}
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(() => {});
+  });
 }

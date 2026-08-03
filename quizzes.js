@@ -2,6 +2,65 @@
 // Estrutura: QUIZZES[marcaId][kbdId] = [ { pergunta, alternativas, gabarito, justificativa } ]
 
 const QUIZZES = {
+  "tampax": {
+    "kbd1": [
+      {
+        "pergunta": "Qual é a execução obrigatória do novo KBD de Tampax?",
+        "alternativas": [
+          "A) Ter Tampax em ponto extra, em qualquer lugar da loja",
+          "B) Ter bandeja de Tampax executada no ponto natural de absorventes internos",
+          "C) Ter apenas 1 unidade de Tampax exposta no checkout",
+          "D) Ter Tampax exposto junto com Always"
+        ],
+        "gabarito": "B",
+        "justificativa": "no canal DPP, a loja deve possuir bandeja de Tampax executada no ponto natural da categoria de absorventes internos, com produto abastecido e visível."
+      },
+      {
+        "pergunta": "Em qual canal esse KBD é válido?",
+        "alternativas": [
+          "A) Apenas HFS",
+          "B) Apenas C&C",
+          "C) DPP",
+          "D) Todos os canais, exceto CLUB"
+        ],
+        "gabarito": "C",
+        "justificativa": "no canal DPP, a loja deve possuir bandeja de Tampax executada no ponto natural da categoria de absorventes internos, com produto abastecido e visível."
+      },
+      {
+        "pergunta": "Onde a bandeja de Tampax precisa estar posicionada?",
+        "alternativas": [
+          "A) No ponto extra, fora da categoria",
+          "B) No checkout",
+          "C) Dentro da categoria de absorventes internos (ponto natural)",
+          "D) Em qualquer prateleira da loja"
+        ],
+        "gabarito": "C",
+        "justificativa": "no canal DPP, a loja deve possuir bandeja de Tampax executada no ponto natural da categoria de absorventes internos, com produto abastecido e visível."
+      },
+      {
+        "pergunta": "Quais produtos são válidos para essa execução?",
+        "alternativas": [
+          "A) Tampax Compak Super, Intenso e Muito Intenso",
+          "B) Apenas Tampax Compak Super",
+          "C) Qualquer absorvente interno da categoria",
+          "D) Tampax Compak com menos de 8 unidades"
+        ],
+        "gabarito": "A",
+        "justificativa": "os produtos válidos são Tampax Compak Super, Tampax Compak Intenso e Tampax Compak Muito Intenso, sempre com a bandeja abastecida e visível dentro da categoria de absorventes internos."
+      },
+      {
+        "pergunta": "Qual das situações abaixo é um erro comum e não deve ser considerada correta?",
+        "alternativas": [
+          "A) Bandeja de Tampax dentro da categoria de absorventes internos",
+          "B) Bandeja de Tampax posicionada no ponto extra",
+          "C) Produto Tampax abastecido e visível",
+          "D) Bandeja de Tampax no ponto natural em loja DPP"
+        ],
+        "gabarito": "B",
+        "justificativa": "erros comuns: bandeja fora da categoria (ponto extra), bandeja vazia ou execução fora do ponto natural. O foco do promotor é garantir a bandeja abastecida e bem posicionada no ponto natural."
+      }
+    ]
+  },
   "always": {
     "kbd1": [
       {
@@ -237,15 +296,15 @@ const QUIZZES = {
   "pantene": {
     "kbd1": [
       {
-        "pergunta": "Qual é a execução obrigatória do KBD Pantene – Bond Repair (20%)?",
+        "pergunta": "Qual é a execução obrigatória do KBD Pantene – Bond Repair?",
         "alternativas": [
           "A) Garantir 20% do espaço total da categoria cabelos para Pantene",
-          "B) Garantir 20% do espaço de Pantene para Bond Repair",
+          "B) Garantir pelo menos 20% do espaço de Pantene na gôndola para Bond Repair",
           "C) Garantir 40% do espaço de Pantene para Bond Repair",
           "D) Garantir 20% da gôndola total com packs de Bond Repair"
         ],
         "gabarito": "B",
-        "justificativa": "garantir 20% do espaço de Pantene para Bond Repair, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar apenas Pantene Bond Repair, e a recomendação é manter Bond Repair na metade de cima da gôndola. O KBD vale para todos os canais."
+        "justificativa": "garantir pelo menos 20% do espaço de Pantene na gôndola para Bond Repair, excluindo packs do cálculo. A medição é em centímetros e considera apenas produtos Pantene Bond Repair. Vale para todos os canais."
       },
       {
         "pergunta": "Como deve ser feita a medição correta desse KBD?",
@@ -256,29 +315,29 @@ const QUIZZES = {
           "D) Por número de produtos expostos"
         ],
         "gabarito": "C",
-        "justificativa": "garantir 20% do espaço de Pantene para Bond Repair, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar apenas Pantene Bond Repair, e a recomendação é manter Bond Repair na metade de cima da gôndola. O KBD vale para todos os canais."
+        "justificativa": "garantir pelo menos 20% do espaço de Pantene na gôndola para Bond Repair, excluindo packs do cálculo. A medição é em centímetros e considera apenas produtos Pantene Bond Repair. Vale para todos os canais."
       },
       {
         "pergunta": "O que deve ser excluído da leitura desse KBD?",
         "alternativas": [
-          "A) Apenas packs",
-          "B) Apenas Rio/Cachoeira Dourada",
-          "C) Packs e Rio/Cachoeira Dourada",
+          "A) Apenas os SKUs pequenos",
+          "B) Apenas os itens do topo da gôndola",
+          "C) Packs de Bond Repair",
           "D) Todas as versões de tratamento Pantene"
         ],
         "gabarito": "C",
-        "justificativa": "garantir 20% do espaço de Pantene para Bond Repair, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar apenas Pantene Bond Repair, e a recomendação é manter Bond Repair na metade de cima da gôndola. O KBD vale para todos os canais."
+        "justificativa": "garantir pelo menos 20% do espaço de Pantene na gôndola para Bond Repair, excluindo packs do cálculo. A medição é em centímetros e considera apenas produtos Pantene Bond Repair. Vale para todos os canais."
       },
       {
         "pergunta": "Qual alternativa está correta sobre o que conta nesse KBD?",
         "alternativas": [
-          "A) Somar Bond Repair e Rio/Cachoeira Dourada",
-          "B) Somar apenas Pantene Bond Repair, sem packs e sem Rio/Cachoeira",
+          "A) Somar Bond Repair com qualquer outro tratamento Pantene",
+          "B) Somar apenas Pantene Bond Repair, sem contar packs",
           "C) Contar qualquer tratamento Pantene que esteja no topo da gôndola",
           "D) Contar Bond Repair apenas se estiver em ponto extra"
         ],
         "gabarito": "B",
-        "justificativa": "garantir 20% do espaço de Pantene para Bond Repair, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar apenas Pantene Bond Repair, e a recomendação é manter Bond Repair na metade de cima da gôndola. O KBD vale para todos os canais."
+        "justificativa": "garantir pelo menos 20% do espaço de Pantene na gôndola para Bond Repair, excluindo packs do cálculo. A medição é em centímetros e considera apenas produtos Pantene Bond Repair. Vale para todos os canais."
       },
       {
         "pergunta": "Qual situação abaixo está incorreta segundo o guia?",
@@ -286,181 +345,124 @@ const QUIZZES = {
           "A) Medir o espaço de Bond Repair em centímetros",
           "B) Aplicar o KBD em todos os canais",
           "C) Contar packs para ajudar a completar o percentual",
-          "D) Recomendar Bond Repair na metade de cima da gôndola"
+          "D) Garantir no mínimo 20% do espaço de Pantene"
         ],
         "gabarito": "C",
-        "justificativa": "garantir 20% do espaço de Pantene para Bond Repair, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar apenas Pantene Bond Repair, e a recomendação é manter Bond Repair na metade de cima da gôndola. O KBD vale para todos os canais."
-      }
-    ],
-    "kbd2": [
-      {
-        "pergunta": "Qual é a execução obrigatória do KBD Pantene – Top Versões (40%)?",
-        "alternativas": [
-          "A) Garantir 20% do espaço de Pantene para Top Versões",
-          "B) Garantir 40% do espaço de Pantene para Top Versões",
-          "C) Garantir 40% do espaço da categoria cabelos para Pantene",
-          "D) Garantir 50% do espaço de Pantene para Bond Repair"
-        ],
-        "gabarito": "B",
-        "justificativa": "garantir 40% do espaço de Pantene para Top Versões, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar como Top Versões a soma de Bambu + Colágeno + Biotinamina B3, e a recomendação é executar na metade de cima da gôndola. O KBD vale para todos os canais."
-      },
-      {
-        "pergunta": "Como deve ser feita a medição correta desse KBD?",
-        "alternativas": [
-          "A) Por frentes",
-          "B) Por número de SKUs",
-          "C) Em centímetros",
-          "D) Por quantidade de embalagens"
-        ],
-        "gabarito": "C",
-        "justificativa": "garantir 40% do espaço de Pantene para Top Versões, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar como Top Versões a soma de Bambu + Colágeno + Biotinamina B3, e a recomendação é executar na metade de cima da gôndola. O KBD vale para todos os canais."
-      },
-      {
-        "pergunta": "Quais versões compõem as Top Versões de Pantene nesse KBD?",
-        "alternativas": [
-          "A) Bond Repair, Bambu e Colágeno",
-          "B) Bambu, Colágeno e Biotinamina B3",
-          "C) Colágeno, Óleo Pantene e Biotinamina B3",
-          "D) Bambu, Rio Dourado e Biotinamina B3"
-        ],
-        "gabarito": "B",
-        "justificativa": "garantir 40% do espaço de Pantene para Top Versões, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar como Top Versões a soma de Bambu + Colágeno + Biotinamina B3, e a recomendação é executar na metade de cima da gôndola. O KBD vale para todos os canais."
-      },
-      {
-        "pergunta": "O que deve ser excluído da leitura desse KBD?",
-        "alternativas": [
-          "A) Apenas packs",
-          "B) Apenas Rio/Cachoeira Dourada",
-          "C) Packs e Rio/Cachoeira Dourada",
-          "D) Todas as linhas de tratamento Pantene fora da metade superior"
-        ],
-        "gabarito": "C",
-        "justificativa": "garantir 40% do espaço de Pantene para Top Versões, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar como Top Versões a soma de Bambu + Colágeno + Biotinamina B3, e a recomendação é executar na metade de cima da gôndola. O KBD vale para todos os canais."
-      },
-      {
-        "pergunta": "Qual situação abaixo está incorreta segundo o guia?",
-        "alternativas": [
-          "A) Somar Bambu, Colágeno e Biotinamina B3",
-          "B) Medir o espaço em centímetros",
-          "C) Contar packs para ajudar a completar o percentual",
-          "D) Aplicar o KBD em todos os canais"
-        ],
-        "gabarito": "C",
-        "justificativa": "garantir 40% do espaço de Pantene para Top Versões, medir em centímetros, excluir packs e Rio/Cachoeira Dourada, considerar como Top Versões a soma de Bambu + Colágeno + Biotinamina B3, e a recomendação é executar na metade de cima da gôndola. O KBD vale para todos os canais."
+        "justificativa": "garantir pelo menos 20% do espaço de Pantene na gôndola para Bond Repair, excluindo packs do cálculo. A medição é em centímetros e considera apenas produtos Pantene Bond Repair. Vale para todos os canais."
       }
     ],
     "kbd3": [
       {
-        "pergunta": "Qual é a execução obrigatória do KBD Pantene – Óleo?",
+        "pergunta": "Qual é a execução obrigatória do KBD 2 Pontos de Contato com Finalizadores Pantene?",
         "alternativas": [
           "A) Executar 2 frentes de Óleo Pantene na gôndola",
-          "B) Executar no mínimo 2 pontos de contato com Óleo Pantene",
-          "C) Executar 2 checkouts com Óleo Pantene",
-          "D) Executar 2 SKUs de Óleo Pantene no ponto natural"
+          "B) Executar no mínimo 2 pontos de contato com Óleo, Sérum ou Leave-in Pantene",
+          "C) Executar 2 checkouts com qualquer item Pantene",
+          "D) Executar 2 SKUs de finalizadores no ponto natural"
         ],
         "gabarito": "B",
-        "justificativa": "executar no mínimo 2 pontos de contato com Óleo Pantene, podendo incluir checkout/balcão, clipstrip, ilha, ponta de gôndola e display. O checkout vale apenas 1 ponto, não pode contar ponto natural, e os canais CLUB e HFS não são elegíveis. Também conta como clipstrip quando houver gôndola de finalizadores com Óleo Pantene, desde que esteja fora do ponto natural."
+        "justificativa": "executar no mínimo 2 pontos de contato com finalizadores Pantene (Óleo, Sérum e Leave-in), sempre fora do ponto natural. Cada execução separada conta como 1 ponto. O que mudou: antes valia só para Óleo, agora Sérum e Leave-in também entram na conta."
       },
       {
-        "pergunta": "Quais formatos podem ser considerados como pontos de contato válidos para esse KBD?",
+        "pergunta": "Quais produtos agora contam para esse KBD, além do Óleo?",
         "alternativas": [
-          "A) Apenas checkout e ponta de gôndola",
-          "B) Checkout/balcão, clipstrip, ilha, ponta de gôndola e display",
-          "C) Apenas display e ponto natural",
-          "D) Checkout, gôndola natural e ilha"
+          "A) Apenas embalagens promocionais",
+          "B) Sérum e Leave-in Pantene",
+          "C) Shampoo e Condicionador Pantene",
+          "D) Máscaras de tratamento Pantene"
         ],
         "gabarito": "B",
-        "justificativa": "executar no mínimo 2 pontos de contato com Óleo Pantene, podendo incluir checkout/balcão, clipstrip, ilha, ponta de gôndola e display. O checkout vale apenas 1 ponto, não pode contar ponto natural, e os canais CLUB e HFS não são elegíveis. Também conta como clipstrip quando houver gôndola de finalizadores com Óleo Pantene, desde que esteja fora do ponto natural."
+        "justificativa": "executar no mínimo 2 pontos de contato com finalizadores Pantene (Óleo, Sérum e Leave-in), sempre fora do ponto natural. Cada execução separada conta como 1 ponto. O que mudou: antes valia só para Óleo, agora Sérum e Leave-in também entram na conta."
+      },
+      {
+        "pergunta": "Onde os pontos de contato precisam estar localizados?",
+        "alternativas": [
+          "A) Dentro do ponto natural, junto com a gôndola",
+          "B) Fora do ponto natural",
+          "C) Apenas no checkout",
+          "D) Não importa, desde que o produto esteja na loja"
+        ],
+        "gabarito": "B",
+        "justificativa": "executar no mínimo 2 pontos de contato com finalizadores Pantene (Óleo, Sérum e Leave-in), sempre fora do ponto natural. Cada execução separada conta como 1 ponto. O que mudou: antes valia só para Óleo, agora Sérum e Leave-in também entram na conta."
       },
       {
         "pergunta": "Qual das situações abaixo não pode ser considerada correta?",
         "alternativas": [
-          "A) Ter Óleo Pantene em clipstrip e em ilha",
-          "B) Ter Óleo Pantene em display e ponta de gôndola",
-          "C) Contar 2 checkouts como 2 pontos de contato",
-          "D) Executar Óleo Pantene fora do ponto natural"
+          "A) Ter Óleo Pantene em clipstrip e Sérum em ilha",
+          "B) Ter Leave-in em display fora do ponto natural",
+          "C) Contar o ponto natural como 1 dos 2 pontos de contato",
+          "D) Executar finalizadores fora do ponto natural"
         ],
         "gabarito": "C",
-        "justificativa": "executar no mínimo 2 pontos de contato com Óleo Pantene, podendo incluir checkout/balcão, clipstrip, ilha, ponta de gôndola e display. O checkout vale apenas 1 ponto, não pode contar ponto natural, e os canais CLUB e HFS não são elegíveis. Também conta como clipstrip quando houver gôndola de finalizadores com Óleo Pantene, desde que esteja fora do ponto natural."
+        "justificativa": "executar no mínimo 2 pontos de contato com finalizadores Pantene (Óleo, Sérum e Leave-in), sempre fora do ponto natural. Cada execução separada conta como 1 ponto. O que mudou: antes valia só para Óleo, agora Sérum e Leave-in também entram na conta."
       },
       {
-        "pergunta": "Como deve ser tratada uma gôndola de finalizadores com Óleo Pantene, segundo o guia?",
+        "pergunta": "O que mudou nesse KBD em relação ao ciclo anterior?",
         "alternativas": [
-          "A) Deve ser lida como ponto natural",
-          "B) Deve ser desconsiderada",
-          "C) Deve ser lida como clipstrip",
-          "D) Deve contar apenas em canal CLUB"
-        ],
-        "gabarito": "C",
-        "justificativa": "executar no mínimo 2 pontos de contato com Óleo Pantene, podendo incluir checkout/balcão, clipstrip, ilha, ponta de gôndola e display. O checkout vale apenas 1 ponto, não pode contar ponto natural, e os canais CLUB e HFS não são elegíveis. Também conta como clipstrip quando houver gôndola de finalizadores com Óleo Pantene, desde que esteja fora do ponto natural."
-      },
-      {
-        "pergunta": "Em quais canais esse KBD não é elegível?",
-        "alternativas": [
-          "A) C&C e LASA",
-          "B) NMR/GMR e CLUB",
-          "C) CLUB e HFS",
-          "D) HFS e DPP"
-        ],
-        "gabarito": "C",
-        "justificativa": "executar no mínimo 2 pontos de contato com Óleo Pantene, podendo incluir checkout/balcão, clipstrip, ilha, ponta de gôndola e display. O checkout vale apenas 1 ponto, não pode contar ponto natural, e os canais CLUB e HFS não são elegíveis. Também conta como clipstrip quando houver gôndola de finalizadores com Óleo Pantene, desde que esteja fora do ponto natural."
-      }
-    ],
-    "kbd4": [
-      {
-        "pergunta": "Qual é a execução obrigatória do KBD Pantene – Rio/Cachoeira Dourada?",
-        "alternativas": [
-          "A) Executar tratamentos de Pantene apenas em ponto extra",
-          "B) Executar tratamentos de Pantene em Rio ou Cachoeira Dourada",
-          "C) Executar qualquer versão de Pantene com 14 frentes ou mais",
-          "D) Executar somente Óleo Pantene na gôndola"
+          "A) Reduziu de 2 para 1 ponto de contato",
+          "B) Passou a valer também para Sérum e Leave-in, além do Óleo",
+          "C) Passou a aceitar ponto natural como ponto válido",
+          "D) Ficou restrito apenas ao canal DPP"
         ],
         "gabarito": "B",
-        "justificativa": "executar tratamentos de Pantene em Rio ou Cachoeira Dourada na gôndola de cabelos; Cachoeira Dourada só vale quando tiver menos de 14 frentes; e o KBD é válido em todos os canais, exceto CLUB. O guia também deixa claro que não pode considerar CLUB e não pode executar Cachoeira com 14 ou mais frentes."
+        "justificativa": "executar no mínimo 2 pontos de contato com finalizadores Pantene (Óleo, Sérum e Leave-in), sempre fora do ponto natural. Cada execução separada conta como 1 ponto. O que mudou: antes valia só para Óleo, agora Sérum e Leave-in também entram na conta."
+      }
+    ],
+    "kbd5": [
+      {
+        "pergunta": "Qual é a execução obrigatória do novo KBD Finalizadores com Espaço Garantido?",
+        "alternativas": [
+          "A) Ter qualquer quantidade de Óleo, Sérum e Leave-in na gôndola",
+          "B) Garantir uma quantidade mínima de frentes de Óleo, Sérum e Leave-in na gôndola",
+          "C) Ter apenas 1 frente de cada finalizador",
+          "D) Garantir 100% do espaço de finalizadores da categoria"
+        ],
+        "gabarito": "B",
+        "justificativa": "Óleo, Sérum e Leave-in agora precisam ter uma quantidade mínima de frentes visíveis na gôndola: 8 frentes em DPP e 6 frentes nos demais canais elegíveis (C&C, NMR/GMR, CLUB, LASA, HFS e PERFUMARIA). Cada produto voltado para frente conta 1 vez, sem duplicar a mesma frente."
       },
       {
-        "pergunta": "Em qual local essa execução deve acontecer, segundo o guia?",
+        "pergunta": "Qual é a meta de frentes no canal DPP?",
         "alternativas": [
-          "A) Na área de checkout",
-          "B) Na ponta de gôndola",
-          "C) Na gôndola de Cabelos (Pantene)",
-          "D) Em clipstrip obrigatoriamente"
+          "A) Pelo menos 6 frentes",
+          "B) Pelo menos 8 frentes",
+          "C) Pelo menos 10 frentes",
+          "D) Não há meta específica para DPP"
         ],
-        "gabarito": "C",
-        "justificativa": "executar tratamentos de Pantene em Rio ou Cachoeira Dourada na gôndola de cabelos; Cachoeira Dourada só vale quando tiver menos de 14 frentes; e o KBD é válido em todos os canais, exceto CLUB. O guia também deixa claro que não pode considerar CLUB e não pode executar Cachoeira com 14 ou mais frentes."
+        "gabarito": "B",
+        "justificativa": "Óleo, Sérum e Leave-in agora precisam ter uma quantidade mínima de frentes visíveis na gôndola: 8 frentes em DPP e 6 frentes nos demais canais elegíveis (C&C, NMR/GMR, CLUB, LASA, HFS e PERFUMARIA). Cada produto voltado para frente conta 1 vez, sem duplicar a mesma frente."
       },
       {
-        "pergunta": "Quando a execução pode ser considerada como Cachoeira Dourada?",
+        "pergunta": "Qual é a meta de frentes em C&C, NMR/GMR, CLUB, LASA, HFS e PERFUMARIA?",
         "alternativas": [
-          "A) Quando tiver exatamente 14 frentes",
-          "B) Quando tiver 14 frentes ou mais",
-          "C) Quando tiver menos de 14 frentes",
-          "D) Quando tiver qualquer quantidade de frentes"
+          "A) Pelo menos 6 frentes",
+          "B) Pelo menos 8 frentes",
+          "C) Pelo menos 10 frentes",
+          "D) Pelo menos 15 frentes"
         ],
-        "gabarito": "C",
-        "justificativa": "executar tratamentos de Pantene em Rio ou Cachoeira Dourada na gôndola de cabelos; Cachoeira Dourada só vale quando tiver menos de 14 frentes; e o KBD é válido em todos os canais, exceto CLUB. O guia também deixa claro que não pode considerar CLUB e não pode executar Cachoeira com 14 ou mais frentes."
+        "gabarito": "A",
+        "justificativa": "Óleo, Sérum e Leave-in agora precisam ter uma quantidade mínima de frentes visíveis na gôndola: 8 frentes em DPP e 6 frentes nos demais canais elegíveis (C&C, NMR/GMR, CLUB, LASA, HFS e PERFUMARIA). Cada produto voltado para frente conta 1 vez, sem duplicar a mesma frente."
       },
       {
-        "pergunta": "Qual das situações abaixo não atende a definição do KBD?",
+        "pergunta": "Qual situação abaixo é um erro comum nesse KBD?",
         "alternativas": [
-          "A) Executar Rio Dourado com tratamentos Pantene",
-          "B) Executar Cachoeira Dourada com menos de 14 frentes",
-          "C) Executar Cachoeira Dourada com 14 ou mais frentes",
-          "D) Executar na gôndola de cabelos"
+          "A) Contar apenas frentes visíveis na gôndola",
+          "B) Contar a mesma frente duas vezes",
+          "C) Somar Óleo, Sérum e Leave-in juntos",
+          "D) Garantir a meta correta por canal"
         ],
-        "gabarito": "C",
-        "justificativa": "executar tratamentos de Pantene em Rio ou Cachoeira Dourada na gôndola de cabelos; Cachoeira Dourada só vale quando tiver menos de 14 frentes; e o KBD é válido em todos os canais, exceto CLUB. O guia também deixa claro que não pode considerar CLUB e não pode executar Cachoeira com 14 ou mais frentes."
+        "gabarito": "B",
+        "justificativa": "Óleo, Sérum e Leave-in agora precisam ter uma quantidade mínima de frentes visíveis na gôndola: 8 frentes em DPP e 6 frentes nos demais canais elegíveis (C&C, NMR/GMR, CLUB, LASA, HFS e PERFUMARIA). Cada produto voltado para frente conta 1 vez, sem duplicar a mesma frente."
       },
       {
-        "pergunta": "Qual canal não é elegível para esse KBD?",
+        "pergunta": "Qual produto exposto NÃO deve ser contado nesse KBD?",
         "alternativas": [
-          "A) C&C",
-          "B) NMR/GMR",
-          "C) HFS",
-          "D) CLUB"
+          "A) Óleo Pantene na gôndola, voltado para frente",
+          "B) Sérum Pantene em clipstrip ou checkout",
+          "C) Leave-in Pantene visível na gôndola",
+          "D) Óleo Pantene exposto corretamente em DPP"
         ],
-        "gabarito": "D",
-        "justificativa": "executar tratamentos de Pantene em Rio ou Cachoeira Dourada na gôndola de cabelos; Cachoeira Dourada só vale quando tiver menos de 14 frentes; e o KBD é válido em todos os canais, exceto CLUB. O guia também deixa claro que não pode considerar CLUB e não pode executar Cachoeira com 14 ou mais frentes."
+        "gabarito": "B",
+        "justificativa": "Somente os finalizadores expostos na gôndola (ponto natural) contam para este KBD; produto em clipstrip, checkout, ilha ou display não entra na contagem de frentes garantidas."
       }
     ]
   },
@@ -754,15 +756,15 @@ const QUIZZES = {
   "secret": {
     "kbd1": [
       {
-        "pergunta": "Qual é a execução obrigatória desse KBD?",
+        "pergunta": "Qual é a execução obrigatória do KBD Secret em DPP e HFS?",
         "alternativas": [
-          "A) Executar no mínimo 2 bandejas de Secret por loja",
-          "B) Executar 1 bandeja de Secret nas prateleiras superiores",
-          "C) Executar 2 bandejas de qualquer desodorante da categoria",
-          "D) Executar 2 bandejas de Secret apenas em roll-on"
+          "A) Executar 20 frentes de Secret na gôndola",
+          "B) Executar Secret com 10 frentes na gôndola OU 2 bandejas",
+          "C) Executar apenas 2 bandejas, sem opção de frentes",
+          "D) Executar 2 bandejas de qualquer desodorante da categoria"
         ],
-        "gabarito": "A",
-        "justificativa": "garantir 2 bandejas de Secret na loja. Esse KBD vale apenas para os canais FARMA (DPP) e HFS. A lâmina também traz como recomendação posicionar as bandejas nas prateleiras superiores. Portanto, os pontos centrais para avaliação são: quantidade mínima de bandejas, canal elegível e diferença entre regra obrigatória e recomendação de execução."
+        "gabarito": "B",
+        "justificativa": "nos canais DPP e HFS, a loja pode atingir o KBD com 10 frentes na gôndola OU 2 bandejas de Secret. O que mudou: antes só valiam bandejas; agora frentes também contam como forma válida."
       },
       {
         "pergunta": "Em quais canais esse KBD é elegível?",
@@ -773,53 +775,53 @@ const QUIZZES = {
           "D) DPP e Perfumaria"
         ],
         "gabarito": "B",
-        "justificativa": "garantir 2 bandejas de Secret na loja. Esse KBD vale apenas para os canais FARMA (DPP) e HFS. A lâmina também traz como recomendação posicionar as bandejas nas prateleiras superiores. Portanto, os pontos centrais para avaliação são: quantidade mínima de bandejas, canal elegível e diferença entre regra obrigatória e recomendação de execução."
+        "justificativa": "nos canais DPP e HFS, a loja pode atingir o KBD com 10 frentes na gôndola OU 2 bandejas de Secret. O que mudou: antes só valiam bandejas; agora frentes também contam como forma válida."
       },
       {
-        "pergunta": "O que o guia traz como recomendação de execução?",
+        "pergunta": "O que mudou nesse KBD em relação ao ciclo anterior?",
         "alternativas": [
-          "A) Bandejas na parte inferior da gôndola",
-          "B) Bandejas no checkout",
-          "C) Bandejas nas prateleiras superiores",
-          "D) Bandejas apenas na área de sprays"
+          "A) Reduziu a quantidade de bandejas exigida",
+          "B) Passou a aceitar também a contagem por frentes na gôndola",
+          "C) Deixou de valer para o canal HFS",
+          "D) Passou a exigir 3 bandejas em vez de 2"
         ],
-        "gabarito": "C",
-        "justificativa": "garantir 2 bandejas de Secret na loja. Esse KBD vale apenas para os canais FARMA (DPP) e HFS. A lâmina também traz como recomendação posicionar as bandejas nas prateleiras superiores. Portanto, os pontos centrais para avaliação são: quantidade mínima de bandejas, canal elegível e diferença entre regra obrigatória e recomendação de execução."
+        "gabarito": "B",
+        "justificativa": "nos canais DPP e HFS, a loja pode atingir o KBD com 10 frentes na gôndola OU 2 bandejas de Secret. O que mudou: antes só valiam bandejas; agora frentes também contam como forma válida."
       },
       {
-        "pergunta": "Qual das situações abaixo não atende ao KBD?",
+        "pergunta": "Qual das situações abaixo atende corretamente ao KBD em uma loja DPP?",
         "alternativas": [
-          "A) Loja DPP com 2 bandejas de Secret",
-          "B) Loja HFS com 2 bandejas de Secret",
-          "C) Loja fora de DPP/HFS com 2 bandejas de Secret",
-          "D) Loja DPP com bandejas de Secret nas prateleiras superiores"
+          "A) 8 frentes de Secret na gôndola",
+          "B) 10 frentes de Secret na gôndola",
+          "C) 1 bandeja de Secret",
+          "D) 5 frentes e nenhuma bandeja"
         ],
-        "gabarito": "C",
-        "justificativa": "garantir 2 bandejas de Secret na loja. Esse KBD vale apenas para os canais FARMA (DPP) e HFS. A lâmina também traz como recomendação posicionar as bandejas nas prateleiras superiores. Portanto, os pontos centrais para avaliação são: quantidade mínima de bandejas, canal elegível e diferença entre regra obrigatória e recomendação de execução."
+        "gabarito": "B",
+        "justificativa": "nos canais DPP e HFS, a loja pode atingir o KBD com 10 frentes na gôndola OU 2 bandejas de Secret. O que mudou: antes só valiam bandejas; agora frentes também contam como forma válida."
       },
       {
-        "pergunta": "O que conta para validar esse KBD?",
+        "pergunta": "O que conta para validar esse KBD em DPP/HFS?",
         "alternativas": [
           "A) Apenas 1 bandeja bem posicionada",
-          "B) Bandejas de Secret, com mínimo de 2",
+          "B) 10 frentes na gôndola OU 2 bandejas de Secret",
           "C) Qualquer bandeja da categoria desodorantes",
           "D) Apenas produtos Secret na área de sprays"
         ],
         "gabarito": "B",
-        "justificativa": "garantir 2 bandejas de Secret na loja. Esse KBD vale apenas para os canais FARMA (DPP) e HFS. A lâmina também traz como recomendação posicionar as bandejas nas prateleiras superiores. Portanto, os pontos centrais para avaliação são: quantidade mínima de bandejas, canal elegível e diferença entre regra obrigatória e recomendação de execução."
+        "justificativa": "nos canais DPP e HFS, a loja pode atingir o KBD com 10 frentes na gôndola OU 2 bandejas de Secret. O que mudou: antes só valiam bandejas; agora frentes também contam como forma válida."
       }
     ],
     "kbd2": [
       {
-        "pergunta": "Qual é a execução obrigatória desse KBD?",
+        "pergunta": "Qual é a execução obrigatória desse KBD nos demais canais elegíveis (Alimentar)?",
         "alternativas": [
           "A) Executar Secret com pelo menos 10 frentes ou 2 bandejas",
-          "B) Executar Secret com pelo menos 15 frentes na gôndola ou 3 bandejas",
+          "B) Executar Secret com pelo menos 15 frentes na gôndola OU 3 bandejas",
           "C) Executar 3 bandejas de qualquer desodorante da categoria",
           "D) Executar 15 frentes apenas em lojas DPP"
         ],
         "gabarito": "B",
-        "justificativa": "executar Secret em bloco de pelo menos 15 frentes na gôndola ou com 3 bandejas de Secret. Os canais elegíveis são C&C, NMR/GMR, CLUB, LASA e Perfumaria. A lâmina também deixa claro o que não pode: considerar DPP e HFS, que não são elegíveis, e validar execução com menos de 15 frentes ou menos de 3 bandejas. O ponto central desse KBD é entender que existem duas formas válidas de execução: por bloco em gôndola ou por bandejas."
+        "justificativa": "nos demais canais elegíveis (C&C, NMR/GMR, CLUB, LASA e Perfumaria), a regra permanece igual ao ciclo anterior: pelo menos 15 frentes na gôndola OU 3 bandejas de Secret."
       },
       {
         "pergunta": "Quais canais são elegíveis para esse KBD?",
@@ -830,7 +832,7 @@ const QUIZZES = {
           "D) Somente HFS, LASA e DPP"
         ],
         "gabarito": "C",
-        "justificativa": "executar Secret em bloco de pelo menos 15 frentes na gôndola ou com 3 bandejas de Secret. Os canais elegíveis são C&C, NMR/GMR, CLUB, LASA e Perfumaria. A lâmina também deixa claro o que não pode: considerar DPP e HFS, que não são elegíveis, e validar execução com menos de 15 frentes ou menos de 3 bandejas. O ponto central desse KBD é entender que existem duas formas válidas de execução: por bloco em gôndola ou por bandejas."
+        "justificativa": "nos demais canais elegíveis (C&C, NMR/GMR, CLUB, LASA e Perfumaria), a regra permanece igual ao ciclo anterior: pelo menos 15 frentes na gôndola OU 3 bandejas de Secret."
       },
       {
         "pergunta": "Qual das situações abaixo atende corretamente ao KBD?",
@@ -841,7 +843,7 @@ const QUIZZES = {
           "D) Loja HFS com 15 frentes de Secret"
         ],
         "gabarito": "C",
-        "justificativa": "executar Secret em bloco de pelo menos 15 frentes na gôndola ou com 3 bandejas de Secret. Os canais elegíveis são C&C, NMR/GMR, CLUB, LASA e Perfumaria. A lâmina também deixa claro o que não pode: considerar DPP e HFS, que não são elegíveis, e validar execução com menos de 15 frentes ou menos de 3 bandejas. O ponto central desse KBD é entender que existem duas formas válidas de execução: por bloco em gôndola ou por bandejas."
+        "justificativa": "nos demais canais elegíveis (C&C, NMR/GMR, CLUB, LASA e Perfumaria), a regra permanece igual ao ciclo anterior: pelo menos 15 frentes na gôndola OU 3 bandejas de Secret."
       },
       {
         "pergunta": "Qual situação abaixo não pode ser considerada correta?",
@@ -852,18 +854,18 @@ const QUIZZES = {
           "D) Executar 15 frentes de Secret em NMR/GMR"
         ],
         "gabarito": "C",
-        "justificativa": "executar Secret em bloco de pelo menos 15 frentes na gôndola ou com 3 bandejas de Secret. Os canais elegíveis são C&C, NMR/GMR, CLUB, LASA e Perfumaria. A lâmina também deixa claro o que não pode: considerar DPP e HFS, que não são elegíveis, e validar execução com menos de 15 frentes ou menos de 3 bandejas. O ponto central desse KBD é entender que existem duas formas válidas de execução: por bloco em gôndola ou por bandejas."
+        "justificativa": "nos demais canais elegíveis (C&C, NMR/GMR, CLUB, LASA e Perfumaria), a regra permanece igual ao ciclo anterior: pelo menos 15 frentes na gôndola OU 3 bandejas de Secret."
       },
       {
-        "pergunta": "O que conta para validar esse KBD?",
+        "pergunta": "Esse KBD mudou em relação ao ciclo anterior?",
         "alternativas": [
-          "A) Bloco de Secret com 15 frentes na gôndola ou 3 bandejas de Secret",
-          "B) Apenas 3 bandejas nas prateleiras superiores",
-          "C) Apenas 15 frentes em canal HFS",
-          "D) Qualquer exposição de Secret com boa visibilidade"
+          "A) Sim, a meta de frentes diminuiu",
+          "B) Sim, passou a valer para DPP também",
+          "C) Não, a regra desses canais permanece igual",
+          "D) Sim, deixou de aceitar bandejas"
         ],
-        "gabarito": "A",
-        "justificativa": "executar Secret em bloco de pelo menos 15 frentes na gôndola ou com 3 bandejas de Secret. Os canais elegíveis são C&C, NMR/GMR, CLUB, LASA e Perfumaria. A lâmina também deixa claro o que não pode: considerar DPP e HFS, que não são elegíveis, e validar execução com menos de 15 frentes ou menos de 3 bandejas. O ponto central desse KBD é entender que existem duas formas válidas de execução: por bloco em gôndola ou por bandejas."
+        "gabarito": "C",
+        "justificativa": "nos demais canais elegíveis (C&C, NMR/GMR, CLUB, LASA e Perfumaria), a regra permanece igual ao ciclo anterior: pelo menos 15 frentes na gôndola OU 3 bandejas de Secret."
       }
     ]
   },
@@ -1100,26 +1102,37 @@ const QUIZZES = {
     ],
     "kbd2": [
       {
-        "pergunta": "Qual é a execução obrigatória desse KBD?",
+        "pergunta": "Quantos pontos de contato de Mach3/Presto3 Sensitive (4un+) são exigidos em C&C, NMR/GMR, LASA, HFS e PERFUMARIA?",
         "alternativas": [
-          "A) Executar 2 pontos de contato fora do ponto natural e fora do checkout",
-          "B) Executar 2 checkouts com Mach3",
-          "C) Executar 2 pontos no ponto natural de Gillette",
-          "D) Executar 2 frentes de Mach3 na gôndola"
+          "A) 2 pontos, igual a antes",
+          "B) 3 pontos de contato",
+          "C) 4 pontos de contato",
+          "D) Nenhum, esses canais não são elegíveis"
         ],
-        "gabarito": "A",
-        "justificativa": "executar pelo menos 2 pontos de contato com itens de Mach3 ou Presto3, sempre fora do ponto natural e fora do checkout. O que conta são os tamanhos grandes (4 unidades ou mais) e também packs. Os canais elegíveis são todos, exceto CLUB. O guia deixa claro que não pode contar ponto natural, contar checkout ou executar itens fora da lista de tamanhos grandes/packs."
+        "gabarito": "B",
+        "justificativa": "o que mudou: agora C&C, NMR/GMR, LASA, HFS e PERFUMARIA exigem pelo menos 3 pontos de contato com Mach3 Sensitive ou Presto3 Sensitive (4 unidades ou mais), sempre fora do ponto natural. Em DPP a exigência continua sendo 2 pontos. Priorizar sempre os itens Sensitive com 4 unidades ou mais."
       },
       {
-        "pergunta": "Quais itens contam para esse KBD?",
+        "pergunta": "Quantos pontos de contato são exigidos no canal DPP?",
         "alternativas": [
-          "A) Qualquer item Gillette, desde que esteja exposto",
-          "B) Apenas aparelhos conectáveis",
-          "C) Mach3 ou Presto3 em tamanhos grandes (4 un+) ou packs",
-          "D) Somente Mach3 com 8 unidades"
+          "A) 1 ponto",
+          "B) 2 pontos, sem alteração",
+          "C) 3 pontos, igual aos demais canais",
+          "D) DPP não participa desse KBD"
         ],
-        "gabarito": "C",
-        "justificativa": "executar pelo menos 2 pontos de contato com itens de Mach3 ou Presto3, sempre fora do ponto natural e fora do checkout. O que conta são os tamanhos grandes (4 unidades ou mais) e também packs. Os canais elegíveis são todos, exceto CLUB. O guia deixa claro que não pode contar ponto natural, contar checkout ou executar itens fora da lista de tamanhos grandes/packs."
+        "gabarito": "B",
+        "justificativa": "o que mudou: agora C&C, NMR/GMR, LASA, HFS e PERFUMARIA exigem pelo menos 3 pontos de contato com Mach3 Sensitive ou Presto3 Sensitive (4 unidades ou mais), sempre fora do ponto natural. Em DPP a exigência continua sendo 2 pontos. Priorizar sempre os itens Sensitive com 4 unidades ou mais."
+      },
+      {
+        "pergunta": "Quais produtos devem ser priorizados nesse KBD?",
+        "alternativas": [
+          "A) Qualquer item Gillette, sem prioridade",
+          "B) Mach3 Sensitive e Presto3 Sensitive com 4 unidades ou mais",
+          "C) Apenas embalagens promocionais",
+          "D) Somente cargas com 8 unidades"
+        ],
+        "gabarito": "B",
+        "justificativa": "o que mudou: agora C&C, NMR/GMR, LASA, HFS e PERFUMARIA exigem pelo menos 3 pontos de contato com Mach3 Sensitive ou Presto3 Sensitive (4 unidades ou mais), sempre fora do ponto natural. Em DPP a exigência continua sendo 2 pontos. Priorizar sempre os itens Sensitive com 4 unidades ou mais."
       },
       {
         "pergunta": "Qual canal não é elegível para esse KBD?",
@@ -1130,29 +1143,18 @@ const QUIZZES = {
           "D) LASA"
         ],
         "gabarito": "B",
-        "justificativa": "executar pelo menos 2 pontos de contato com itens de Mach3 ou Presto3, sempre fora do ponto natural e fora do checkout. O que conta são os tamanhos grandes (4 unidades ou mais) e também packs. Os canais elegíveis são todos, exceto CLUB. O guia deixa claro que não pode contar ponto natural, contar checkout ou executar itens fora da lista de tamanhos grandes/packs."
+        "justificativa": "o que mudou: agora C&C, NMR/GMR, LASA, HFS e PERFUMARIA exigem pelo menos 3 pontos de contato com Mach3 Sensitive ou Presto3 Sensitive (4 unidades ou mais), sempre fora do ponto natural. Em DPP a exigência continua sendo 2 pontos. Priorizar sempre os itens Sensitive com 4 unidades ou mais."
       },
       {
         "pergunta": "Qual das situações abaixo não atende ao KBD?",
         "alternativas": [
-          "A) Ter 2 pontos extras com packs de Presto3",
-          "B) Ter 2 pontos adicionais com Mach3 4 un+",
-          "C) Contar 1 ponto natural e 1 checkout",
-          "D) Executar 2 pontos fora do checkout"
+          "A) 3 pontos de contato em C&C, fora do ponto natural",
+          "B) 2 pontos de contato em DPP",
+          "C) Contar o ponto natural como 1 dos pontos de contato",
+          "D) Priorizar Mach3 Sensitive com 4 unidades ou mais"
         ],
         "gabarito": "C",
-        "justificativa": "executar pelo menos 2 pontos de contato com itens de Mach3 ou Presto3, sempre fora do ponto natural e fora do checkout. O que conta são os tamanhos grandes (4 unidades ou mais) e também packs. Os canais elegíveis são todos, exceto CLUB. O guia deixa claro que não pode contar ponto natural, contar checkout ou executar itens fora da lista de tamanhos grandes/packs."
-      },
-      {
-        "pergunta": "O que o guia proíbe nesse KBD?",
-        "alternativas": [
-          "A) Usar pontos adicionais fora da gôndola",
-          "B) Contar checkout e ponto natural",
-          "C) Executar packs de Mach3",
-          "D) Trabalhar tamanhos grandes de Presto3"
-        ],
-        "gabarito": "B",
-        "justificativa": "executar pelo menos 2 pontos de contato com itens de Mach3 ou Presto3, sempre fora do ponto natural e fora do checkout. O que conta são os tamanhos grandes (4 unidades ou mais) e também packs. Os canais elegíveis são todos, exceto CLUB. O guia deixa claro que não pode contar ponto natural, contar checkout ou executar itens fora da lista de tamanhos grandes/packs."
+        "justificativa": "o que mudou: agora C&C, NMR/GMR, LASA, HFS e PERFUMARIA exigem pelo menos 3 pontos de contato com Mach3 Sensitive ou Presto3 Sensitive (4 unidades ou mais), sempre fora do ponto natural. Em DPP a exigência continua sendo 2 pontos. Priorizar sempre os itens Sensitive com 4 unidades ou mais."
       }
     ],
     "kbd3": [
@@ -1165,7 +1167,7 @@ const QUIZZES = {
           "D) Executar 2 ganchos de qualquer carga Gillette"
         ],
         "gabarito": "B",
-        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente FARMA. O guia deixa claro que não pode ler esse KBD fora de FARMA e não pode esquecer que o item correto é a carga Mach3 com 8 unidades. O foco aqui é bem objetivo: produto certo, quantidade certa de ganchos e canal certo."
+        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente DPP. O guia deixa claro que não pode ler esse KBD fora de DPP e não pode esquecer que o item correto é a carga Mach3 com 8 unidades."
       },
       {
         "pergunta": "Como deve ser feita a leitura correta desse KBD?",
@@ -1176,29 +1178,29 @@ const QUIZZES = {
           "D) Por quantidade de lojas atendidas"
         ],
         "gabarito": "C",
-        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente FARMA. O guia deixa claro que não pode ler esse KBD fora de FARMA e não pode esquecer que o item correto é a carga Mach3 com 8 unidades. O foco aqui é bem objetivo: produto certo, quantidade certa de ganchos e canal certo."
+        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente DPP. O guia deixa claro que não pode ler esse KBD fora de DPP e não pode esquecer que o item correto é a carga Mach3 com 8 unidades."
       },
       {
         "pergunta": "Qual é o canal elegível para esse KBD?",
         "alternativas": [
-          "A) Somente FARMA",
+          "A) Somente DPP",
           "B) CLUB e LASA",
           "C) Todos os canais",
-          "D) HFS e DPP"
+          "D) HFS e C&C"
         ],
         "gabarito": "A",
-        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente FARMA. O guia deixa claro que não pode ler esse KBD fora de FARMA e não pode esquecer que o item correto é a carga Mach3 com 8 unidades. O foco aqui é bem objetivo: produto certo, quantidade certa de ganchos e canal certo."
+        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente DPP. O guia deixa claro que não pode ler esse KBD fora de DPP e não pode esquecer que o item correto é a carga Mach3 com 8 unidades."
       },
       {
         "pergunta": "Qual das situações abaixo não pode ser considerada correta?",
         "alternativas": [
-          "A) Ter 2 ganchos de carga Mach3 c/8 em FARMA",
+          "A) Ter 2 ganchos de carga Mach3 c/8 em DPP",
           "B) Medir o KBD por ganchos",
-          "C) Validar o KBD em canal fora de FARMA",
+          "C) Validar o KBD em canal fora de DPP",
           "D) Focar especificamente na carga Mach3 com 8 unidades"
         ],
         "gabarito": "C",
-        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente FARMA. O guia deixa claro que não pode ler esse KBD fora de FARMA e não pode esquecer que o item correto é a carga Mach3 com 8 unidades. O foco aqui é bem objetivo: produto certo, quantidade certa de ganchos e canal certo."
+        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente DPP. O guia deixa claro que não pode ler esse KBD fora de DPP e não pode esquecer que o item correto é a carga Mach3 com 8 unidades."
       },
       {
         "pergunta": "O que conta para validar esse KBD?",
@@ -1209,82 +1211,36 @@ const QUIZZES = {
           "D) Dois ganchos de descartáveis Gillette"
         ],
         "gabarito": "C",
-        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente FARMA. O guia deixa claro que não pode ler esse KBD fora de FARMA e não pode esquecer que o item correto é a carga Mach3 com 8 unidades. O foco aqui é bem objetivo: produto certo, quantidade certa de ganchos e canal certo."
+        "justificativa": "executar no mínimo 2 ganchos de Carga Mach3 com 8 unidades, com leitura feita por ganchos. O canal elegível é somente DPP. O guia deixa claro que não pode ler esse KBD fora de DPP e não pode esquecer que o item correto é a carga Mach3 com 8 unidades."
       }
     ]
   },
   "venus": {
-    "kbd1": [
-      {
-        "pergunta": "Como deve ser feita a medição correta desse KBD?",
-        "alternativas": [
-          "A) Em centímetros na gôndola feminina",
-          "B) Por ganchos: ganchos Sistemas Venus / ganchos total da categoria",
-          "C) Pela quantidade de SKUs da marca",
-          "D) Pela soma das frentes de Venus"
-        ],
-        "gabarito": "B",
-        "justificativa": "garantir 20% de ganchos de Sistemas na gôndola de lâminas femininas. A leitura é feita por ganchos, pela lógica ganchos Sistemas Venus / ganchos total da categoria. Os canais elegíveis são C&C, NMR/GMR, LASA e HFS. O guia define como sistemas válidos Venus Pele Sensível, Venus Íntima Sistema e Venus Spa. Não pode medir em centímetros, não pode contar itens fora dessa lista e não pode considerar canais não elegíveis."
-      },
-      {
-        "pergunta": "Quais versões entram como sistemas válidos nesse KBD?",
-        "alternativas": [
-          "A) Venus Pele Sensível, Venus Íntima Sistema e Venus Spa",
-          "B) Venus Suave, Venus Spa e Venus Descartável",
-          "C) Apenas Venus Pele Sensível e Venus Suave",
-          "D) Qualquer item Venus exposto na categoria"
-        ],
-        "gabarito": "A",
-        "justificativa": "garantir 20% de ganchos de Sistemas na gôndola de lâminas femininas. A leitura é feita por ganchos, pela lógica ganchos Sistemas Venus / ganchos total da categoria. Os canais elegíveis são C&C, NMR/GMR, LASA e HFS. O guia define como sistemas válidos Venus Pele Sensível, Venus Íntima Sistema e Venus Spa. Não pode medir em centímetros, não pode contar itens fora dessa lista e não pode considerar canais não elegíveis."
-      },
-      {
-        "pergunta": "Qual é a meta desse KBD?",
-        "alternativas": [
-          "A) 35% dos ganchos da categoria",
-          "B) 50% dos ganchos de Venus",
-          "C) 20% de ganchos de Sistemas",
-          "D) 20% do espaço em centímetros"
-        ],
-        "gabarito": "C",
-        "justificativa": "garantir 20% de ganchos de Sistemas na gôndola de lâminas femininas. A leitura é feita por ganchos, pela lógica ganchos Sistemas Venus / ganchos total da categoria. Os canais elegíveis são C&C, NMR/GMR, LASA e HFS. O guia define como sistemas válidos Venus Pele Sensível, Venus Íntima Sistema e Venus Spa. Não pode medir em centímetros, não pode contar itens fora dessa lista e não pode considerar canais não elegíveis."
-      },
-      {
-        "pergunta": "Qual das situações abaixo não pode ser considerada correta?",
-        "alternativas": [
-          "A) Medir por ganchos",
-          "B) Aplicar em HFS",
-          "C) Contar itens fora da lista de sistemas válidos",
-          "D) Considerar Venus Spa no cálculo"
-        ],
-        "gabarito": "C",
-        "justificativa": "garantir 20% de ganchos de Sistemas na gôndola de lâminas femininas. A leitura é feita por ganchos, pela lógica ganchos Sistemas Venus / ganchos total da categoria. Os canais elegíveis são C&C, NMR/GMR, LASA e HFS. O guia define como sistemas válidos Venus Pele Sensível, Venus Íntima Sistema e Venus Spa. Não pode medir em centímetros, não pode contar itens fora dessa lista e não pode considerar canais não elegíveis."
-      },
-      {
-        "pergunta": "Qual alternativa está correta sobre os canais elegíveis?",
-        "alternativas": [
-          "A) DPP, HFS e CLUB",
-          "B) C&C, NMR/GMR, LASA e HFS",
-          "C) Todos os canais",
-          "D) Apenas DPP e HFS"
-        ],
-        "gabarito": "B",
-        "justificativa": "garantir 20% de ganchos de Sistemas na gôndola de lâminas femininas. A leitura é feita por ganchos, pela lógica ganchos Sistemas Venus / ganchos total da categoria. Os canais elegíveis são C&C, NMR/GMR, LASA e HFS. O guia define como sistemas válidos Venus Pele Sensível, Venus Íntima Sistema e Venus Spa. Não pode medir em centímetros, não pode contar itens fora dessa lista e não pode considerar canais não elegíveis."
-      }
-    ],
     "kbd2": [
       {
-        "pergunta": "Qual é a execução obrigatória desse KBD?",
+        "pergunta": "Quantos pontos de contato de Venus são exigidos agora em todos os canais elegíveis?",
         "alternativas": [
-          "A) Executar 2 checkouts com Venus",
-          "B) Executar 2 pontos de contato fora do ponto natural e fora do checkout",
-          "C) Executar 2 frentes de Venus na gôndola",
-          "D) Executar 1 ponto natural e 1 ponto adicional"
+          "A) 1 ponto de contato",
+          "B) 2 pontos de contato",
+          "C) 3 pontos de contato",
+          "D) 4 pontos de contato"
         ],
-        "gabarito": "B",
-        "justificativa": "executar pelo menos 2 pontos de contato fora do ponto natural e fora do checkout. O guia orienta priorizar Venus Pele Sensível e Venus Suave. Os canais elegíveis são DPP e HFS. Não pode contar ponto natural, não pode contar checkout e não pode executar em canais fora de DPP/HFS."
+        "gabarito": "C",
+        "justificativa": "o que mudou: antes eram 2 pontos de contato apenas em DPP e Perfumaria; agora são pelo menos 3 pontos de contato em TODOS os canais elegíveis, sempre fora do ponto natural e fora do checkout. Priorizar Venus Pele Sensível e Venus Suave."
       },
       {
-        "pergunta": "Quais itens o guia orienta priorizar?",
+        "pergunta": "Em quais canais esse KBD passou a ser exigido?",
+        "alternativas": [
+          "A) Apenas DPP e HFS",
+          "B) Apenas Perfumaria",
+          "C) Em todos os canais elegíveis",
+          "D) Somente C&C"
+        ],
+        "gabarito": "C",
+        "justificativa": "o que mudou: antes eram 2 pontos de contato apenas em DPP e Perfumaria; agora são pelo menos 3 pontos de contato em TODOS os canais elegíveis, sempre fora do ponto natural e fora do checkout. Priorizar Venus Pele Sensível e Venus Suave."
+      },
+      {
+        "pergunta": "Quais itens o guia orienta priorizar nesse KBD?",
         "alternativas": [
           "A) Venus Pele Sensível e Venus Suave",
           "B) Venus Spa e Venus Íntima Sistema",
@@ -1292,40 +1248,29 @@ const QUIZZES = {
           "D) Qualquer item Venus da categoria"
         ],
         "gabarito": "A",
-        "justificativa": "executar pelo menos 2 pontos de contato fora do ponto natural e fora do checkout. O guia orienta priorizar Venus Pele Sensível e Venus Suave. Os canais elegíveis são DPP e HFS. Não pode contar ponto natural, não pode contar checkout e não pode executar em canais fora de DPP/HFS."
-      },
-      {
-        "pergunta": "Em quais canais esse KBD é válido?",
-        "alternativas": [
-          "A) Todos os canais, exceto CLUB",
-          "B) C&C e NMR/GMR",
-          "C) DPP e HFS",
-          "D) LASA e CLUB"
-        ],
-        "gabarito": "C",
-        "justificativa": "executar pelo menos 2 pontos de contato fora do ponto natural e fora do checkout. O guia orienta priorizar Venus Pele Sensível e Venus Suave. Os canais elegíveis são DPP e HFS. Não pode contar ponto natural, não pode contar checkout e não pode executar em canais fora de DPP/HFS."
+        "justificativa": "o que mudou: antes eram 2 pontos de contato apenas em DPP e Perfumaria; agora são pelo menos 3 pontos de contato em TODOS os canais elegíveis, sempre fora do ponto natural e fora do checkout. Priorizar Venus Pele Sensível e Venus Suave."
       },
       {
         "pergunta": "Qual das situações abaixo não atende ao KBD?",
         "alternativas": [
-          "A) Ter 2 pontos adicionais com Venus em HFS",
-          "B) Ter 2 pontos adicionais com Venus em DPP",
-          "C) Contar 1 ponto natural e 1 checkout",
-          "D) Executar fora do checkout em canal elegível"
+          "A) Ter 3 pontos adicionais com Venus, fora do ponto natural",
+          "B) Ter 3 pontos adicionais com Venus, fora do checkout",
+          "C) Contar 1 ponto natural como ponto de contato válido",
+          "D) Cada execução separada contando como 1 ponto"
         ],
         "gabarito": "C",
-        "justificativa": "executar pelo menos 2 pontos de contato fora do ponto natural e fora do checkout. O guia orienta priorizar Venus Pele Sensível e Venus Suave. Os canais elegíveis são DPP e HFS. Não pode contar ponto natural, não pode contar checkout e não pode executar em canais fora de DPP/HFS."
+        "justificativa": "o que mudou: antes eram 2 pontos de contato apenas em DPP e Perfumaria; agora são pelo menos 3 pontos de contato em TODOS os canais elegíveis, sempre fora do ponto natural e fora do checkout. Priorizar Venus Pele Sensível e Venus Suave."
       },
       {
         "pergunta": "O que o guia proíbe nesse KBD?",
         "alternativas": [
           "A) Priorizar Venus Pele Sensível",
-          "B) Executar em DPP e HFS",
-          "C) Contar ponto natural e checkout",
-          "D) Fazer dois pontos adicionais"
+          "B) Executar em todos os canais elegíveis",
+          "C) Contar ponto natural ou checkout como ponto de contato",
+          "D) Fazer três pontos adicionais"
         ],
         "gabarito": "C",
-        "justificativa": "executar pelo menos 2 pontos de contato fora do ponto natural e fora do checkout. O guia orienta priorizar Venus Pele Sensível e Venus Suave. Os canais elegíveis são DPP e HFS. Não pode contar ponto natural, não pode contar checkout e não pode executar em canais fora de DPP/HFS."
+        "justificativa": "o que mudou: antes eram 2 pontos de contato apenas em DPP e Perfumaria; agora são pelo menos 3 pontos de contato em TODOS os canais elegíveis, sempre fora do ponto natural e fora do checkout. Priorizar Venus Pele Sensível e Venus Suave."
       }
     ],
     "kbd3": [

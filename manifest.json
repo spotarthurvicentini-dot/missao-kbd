@@ -1,0 +1,24 @@
+{
+  "name": "Missão KBD: Execução de Elite",
+  "short_name": "Missão KBD",
+  "description": "Treinamento de KBDs SPOT × P&G — ciclo Julho–Dezembro 2026. Vídeos, quizzes, novidades do ciclo e checklist de visita.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#05070f",
+  "theme_color": "#05070f",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "assets/icon-48.png", "sizes": "48x48", "type": "image/png" },
+    { "src": "assets/icon-72.png", "sizes": "72x72", "type": "image/png" },
+    { "src": "assets/icon-96.png", "sizes": "96x96", "type": "image/png" },
+    { "src": "assets/icon-128.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "assets/icon-144.png", "sizes": "144x144", "type": "image/png" },
+    { "src": "assets/icon-152.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
