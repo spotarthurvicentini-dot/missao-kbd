@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-fluxo-visual";
+const CACHE_NAME = "missao-kbd-v2-login-sem-recorte";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",

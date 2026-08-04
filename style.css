@@ -602,14 +602,54 @@ img { max-width: 100%; display: block; }
   height: 3px;
   background: var(--grad);
 }
-.login-visual-logo {
-  width: 68%;
-  max-height: 92px;
-  object-fit: contain;
-  object-position: left center;
+.login-lockup {
+  width: 61%;
   position: relative;
   z-index: 1;
-  filter: drop-shadow(0 3px 12px rgba(0,0,0,0.72));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: #fff;
+  filter: drop-shadow(0 3px 12px rgba(0,0,0,0.76));
+}
+.login-spot {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 9px;
+}
+.login-spot span,
+.login-spot i {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #11131b;
+  font-size: 15px;
+  line-height: 1;
+  font-style: normal;
+  font-weight: 900;
+}
+.login-spot i { background: #ef233c; }
+.login-mission {
+  font-size: clamp(22px, 7vw, 29px);
+  font-weight: 950;
+  font-style: italic;
+  letter-spacing: -0.055em;
+  line-height: 0.92;
+  white-space: nowrap;
+}
+.login-tagline {
+  margin-top: 7px;
+  font-size: clamp(9px, 2.7vw, 11px);
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  color: rgba(255,255,255,0.88);
 }
 
 .login-head { display: flex; flex-direction: column; gap: 4px; }
@@ -905,13 +945,6 @@ img { max-width: 100%; display: block; }
   display: flex;
   align-items: center;
   padding: 16px;
-}
-.novidades-visual img {
-  width: 58%;
-  max-height: 72px;
-  object-fit: contain;
-  object-position: left center;
-  filter: drop-shadow(0 3px 12px rgba(0,0,0,0.72));
 }
 .novidades-section { margin: 0 16px 14px; }
 .novidades-section-title {

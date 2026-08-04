@@ -672,9 +672,7 @@ function renderNovidades() {
   if (!area) return;
 
   area.innerHTML = `
-    <div class="novidades-visual" role="img" aria-label="Robô da Missão KBD em um cenário digital">
-      <img src="assets/logo-lockup.png" alt="Missão KBD: Execução de Elite">
-    </div>
+    <div class="novidades-visual" role="img" aria-label="Robô da Missão KBD em um cenário digital"></div>
 
     <div class="section-head" style="padding-top:8px;">
       <h1 class="section-title">Conteúdos do ciclo</h1>
