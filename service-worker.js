@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v1";
+const CACHE_NAME = "missao-kbd-v2-content-scope";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -32,7 +32,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
 
-  // Never intercept cross-origin requests (YouTube, Google Sheets/Apps Script)
+  // Never intercept cross-origin requests (storage de vídeo, Google Sheets/Apps Script)
   if (new URL(req.url).origin !== self.location.origin) return;
   if (req.method !== "GET") return;
 

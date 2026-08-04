@@ -1,7 +1,7 @@
 {
   "name": "Missão KBD: Execução de Elite",
   "short_name": "Missão KBD",
-  "description": "Treinamento de KBDs SPOT × P&G — ciclo Julho–Dezembro 2026. Vídeos, quizzes, novidades do ciclo e checklist de visita.",
+  "description": "Treinamento de KBDs SPOT × P&G — ciclo Julho–Dezembro 2026. Conteúdos novos, alterados e transformacionais.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
