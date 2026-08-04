@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-content-scope";
+const CACHE_NAME = "missao-kbd-v2-quizzes-validados";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",

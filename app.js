@@ -24,14 +24,6 @@ const CONTENT = {
         focoPromotor: "Garantir bandeja abastecida e bem posicionada no ponto natural.",
         videoUrl: "", imagens: ["kbds/pilulas/pilula-tampax-ponto-natural.jpg"] },
     ] },
-    { id: "downy", nome: "DOWNY", logo: "logos/downy.png", kbds: [
-      { id: "sos-mensal", nome: "Objetivo Mensal de SOS", status: "transformacional", canais: "Todos, exceto DPP e Perfumaria",
-        resumo: "Bater o objetivo mensal de SOS de Downy nos canais elegíveis.",
-        comoConta: ["Considerar o objetivo mensal de SOS definido para a operação", "Aplicar somente nos canais elegíveis"],
-        erroComum: ["Aplicar a leitura em DPP ou Perfumaria", "Usar uma meta diferente do objetivo mensal vigente"],
-        focoPromotor: "Acompanhar e executar o objetivo mensal de SOS de Downy.",
-        videoUrl: "", imagens: [] },
-    ] },
     { id: "pantene", nome: "PANTENE", logo: "logos/pantene.png", kbds: [
       { id: "bond-repair", nome: "Bond Repair — 20% do Espaço", status: "transformacional", canais: "Todos os canais",
         resumo: "Garantir pelo menos 20% do espaço de Pantene na gôndola para Bond Repair, excluindo packs.",
@@ -48,11 +40,17 @@ const CONTENT = {
     ] },
     { id: "pampers", nome: "PAMPERS", logo: "logos/pampers.png", kbds: [
       { id: "vale-night", nome: "Vale Night — Materiais na Gôndola", status: "transformacional", canais: "C&C, NMR/GMR, CLUB, LASA, HFS e Perfumaria",
-        resumo: "A gôndola de Pampers possui materiais de Vale Night com ícone de mamadeira.",
-        comoConta: ["Verificar presença do material de Vale Night com ícone de mamadeira na gôndola"],
-        erroComum: ["Gôndola sem o material de comunicação Vale Night", "Aplicar a leitura no canal DPP"],
-        focoPromotor: "Garantir materiais de Vale Night com ícone de mamadeira na gôndola.",
+        resumo: "A gôndola de Pampers deve ter faixa de gôndola Vale Night e materiais com o ícone de mamadeira.",
+        comoConta: ["Executar a faixa de gôndola com comunicação Vale Night", "Combinar a faixa com materiais que apresentem o ícone de mamadeira", "Materiais apresentados: faixa, fita, precificador, wobbler e cartaz"],
+        erroComum: ["Executar apenas a faixa, sem materiais com o ícone de mamadeira", "Usar materiais sem o ícone de mamadeira", "Aplicar a leitura no canal DPP"],
+        focoPromotor: "Garantir a faixa Vale Night e os materiais com ícone de mamadeira na gôndola.",
         videoUrl: "", imagens: ["kbds/vale night SOS pampers.jpg"] },
+      { id: "vale-night-ponto-extra", nome: "Vale Night — Ponto Extra", status: "transformacional", canais: "DPP",
+        resumo: "Em DPP, a loja deve possuir ponto extra de Pampers com comunicação Vale Night e materiais com o ícone de mamadeira.",
+        comoConta: ["Executar um ponto extra de Pampers", "Usar comunicação Vale Night", "Aplicar materiais com o ícone de mamadeira", "Materiais apresentados: precificador, wobbler, cubo, cartaz e topo de ilha"],
+        erroComum: ["Ponto extra sem comunicação Vale Night", "Materiais sem o ícone de mamadeira", "Avaliar este KBD fora do canal DPP"],
+        focoPromotor: "Garantir o ponto extra de Pampers com comunicação Vale Night e ícone de mamadeira em DPP.",
+        videoUrl: "", imagens: ["kbds/vale night ponto extra pammpers .jpg"] },
     ] },
     { id: "secret", nome: "SECRET", logo: "logos/secret.png", kbds: [
       { id: "frentes-bandejas", nome: "Frentes ou Bandejas por Canal", status: "alterado", canais: "Todos os canais elegíveis",
@@ -99,11 +97,11 @@ const NOVIDADES = {
     { marca: "Gillette", texto: "Mach3 / Presto3: 3 pontos na maioria dos canais e 2 em DPP" },
   ],
   transformacionais: [
-    { marca: "Downy", texto: "Objetivo mensal de SOS" },
     { marca: "Pantene", texto: "20% de Bond Repair, excluindo packs" },
     { marca: "Venus", texto: "3 pontos de contato nos canais elegíveis" },
     { marca: "Oral-B", texto: "60% do espaço de branqueamento" },
-    { marca: "Pampers", texto: "Materiais Vale Night na gôndola" },
+    { marca: "Pampers", texto: "Faixa e materiais Vale Night na gôndola" },
+    { marca: "Pampers", texto: "Ponto extra Vale Night em DPP" },
   ],
 };
 
@@ -112,11 +110,11 @@ const CHECKLIST_ITEMS = [
   { id: "chk02", marca: "pantene", marcaNome: "Pantene • Novo", texto: "Há 8 frentes de finalizadores em DPP ou 6 nos demais canais elegíveis?" },
   { id: "chk03", marca: "secret", marcaNome: "Secret • Alterado", texto: "A execução atingiu a meta de frentes ou bandejas correspondente ao canal?" },
   { id: "chk04", marca: "gillette", marcaNome: "Gillette • Alterado", texto: "Mach3 e Presto3 possuem 3 pontos de contato ou 2 em DPP?" },
-  { id: "chk05", marca: "downy", marcaNome: "Downy • Transformacional", texto: "O objetivo mensal de SOS foi atingido no canal elegível?" },
-  { id: "chk06", marca: "pantene", marcaNome: "Pantene • Transformacional", texto: "Bond Repair possui pelo menos 20% do espaço, excluindo packs?" },
-  { id: "chk07", marca: "venus", marcaNome: "Venus • Transformacional", texto: "Existem 3 pontos de contato válidos nos canais elegíveis?" },
-  { id: "chk08", marca: "oral-b", marcaNome: "Oral-B • Transformacional", texto: "Pastas de branqueamento ocupam pelo menos 60% do espaço?" },
-  { id: "chk09", marca: "pampers", marcaNome: "Pampers • Transformacional", texto: "A gôndola possui materiais Vale Night com ícone de mamadeira?" },
+  { id: "chk05", marca: "pantene", marcaNome: "Pantene • Transformacional", texto: "Bond Repair possui pelo menos 20% do espaço, excluindo packs?" },
+  { id: "chk06", marca: "venus", marcaNome: "Venus • Transformacional", texto: "Existem 3 pontos de contato válidos nos canais elegíveis?" },
+  { id: "chk07", marca: "oral-b", marcaNome: "Oral-B • Transformacional", texto: "Pastas de branqueamento ocupam pelo menos 60% do espaço?" },
+  { id: "chk08", marca: "pampers", marcaNome: "Pampers • Transformacional", texto: "A gôndola tem faixa Vale Night e materiais com ícone de mamadeira?" },
+  { id: "chk09", marca: "pampers", marcaNome: "Pampers • Transformacional", texto: "Em DPP, há ponto extra Vale Night com materiais e ícone de mamadeira?" },
 ];
 
 const ICONS = {
