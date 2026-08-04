@@ -1,0 +1,7 @@
+# Materiais de referência usados no desenvolvimento; não publicar no GitHub Pages.
+PDFs Base/
+
+# Arquivos locais do sistema e ferramentas.
+.DS_Store
+Thumbs.db
+desktop.ini
