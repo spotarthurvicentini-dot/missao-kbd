@@ -4,7 +4,8 @@ const REPORT_CONFIG = {
   hour: 8,
   triggerHandler: "sendDailyInteractionReport",
   spreadsheetProperty: "MISSAO_KBD_SPREADSHEET_ID",
-  emailProperty: "MISSAO_KBD_REPORT_EMAIL"
+  emailProperty: "MISSAO_KBD_REPORT_EMAIL",
+  defaultRecipients: ["a.vicentini@spotpromo.com.br", "n.lima@spotpromo.com.br"]
 };
 
 const TABLES = {
@@ -228,8 +229,7 @@ function installDailyReport() {
   const book = SpreadsheetApp.getActiveSpreadsheet();
   if (!book) throw new Error("Execute esta função a partir do Apps Script aberto pela planilha.");
 
-  const email = Session.getEffectiveUser().getEmail();
-  if (!email) throw new Error("Não foi possível identificar o e-mail da conta proprietária.");
+  const email = REPORT_CONFIG.defaultRecipients.join(",");
 
   const properties = PropertiesService.getScriptProperties();
   properties.setProperty(REPORT_CONFIG.spreadsheetProperty, book.getId());
@@ -249,9 +249,25 @@ function installDailyReport() {
   return "Relatório diário instalado para " + email + ", por volta das 08h.";
 }
 
+function configureReportRecipients() {
+  const recipients = REPORT_CONFIG.defaultRecipients.join(",");
+  PropertiesService.getScriptProperties().setProperty(REPORT_CONFIG.emailProperty, recipients);
+  return "Destinatários configurados: " + recipients;
+}
+
 function sendDailyInteractionReport() {
   const period = previousDayPeriod_();
   return sendInteractionReport_(period, false);
+}
+
+function sendCurrentDayInteractionReport() {
+  const end = new Date();
+  const dateKey = Utilities.formatDate(end, REPORT_CONFIG.timeZone, "yyyy-MM-dd");
+  return sendInteractionReport_({
+    start: localMidnight_(dateKey),
+    end: end,
+    label: "Hoje — " + Utilities.formatDate(end, REPORT_CONFIG.timeZone, "dd/MM/yyyy")
+  }, false);
 }
 
 function sendDailyInteractionReportPreview() {
@@ -265,11 +281,11 @@ function sendDailyInteractionReportPreview() {
 }
 
 function sendInteractionReport_(period, preview) {
-  const email = PropertiesService.getScriptProperties().getProperty(REPORT_CONFIG.emailProperty) || Session.getEffectiveUser().getEmail();
+  const email = PropertiesService.getScriptProperties().getProperty(REPORT_CONFIG.emailProperty) || REPORT_CONFIG.defaultRecipients.join(",");
   if (!email) throw new Error("E-mail do relatório não configurado. Execute installDailyReport.");
 
   const report = buildInteractionReport_(period.start, period.end);
-  const attachment = createReportWorkbook_(report, period.label);
+  updateDailyReportSheet_(report, period.label);
   const subject = (preview ? "[PRÉVIA] " : "") + "Missão KBD — resumo diário — " + period.label;
 
   MailApp.sendEmail({
@@ -277,7 +293,6 @@ function sendInteractionReport_(period, preview) {
     subject: subject,
     body: buildPlainTextReport_(report, period.label),
     htmlBody: buildHtmlReport_(report, period.label, preview),
-    attachments: [attachment],
     name: "Missão KBD"
   });
 
@@ -421,71 +436,72 @@ function localMidnight_(dateKey) {
   return new Date(dateKey + "T00:00:00" + isoOffset);
 }
 
-function createReportWorkbook_(report, label) {
-  const sheets = [
-    {
-      name: "Resumo por setor",
-      rows: [["Setor", "Acessos", "Dispositivos", "Respostas", "Acertos", "% de acerto", "Vídeos", "% médio assistido", "Vídeos concluídos"]].concat(
-        report.sectors.map(function (item) {
-          return [item.setor, item.accesses, item.devices, item.answers, item.correct, item.accuracy + "%", item.videos, item.videoPercent + "%", item.completedVideos];
-        })
-      )
-    },
-    {
-      name: "Respostas",
-      rows: [["Recebido em", "Setor", "Marca", "KBD", "Pergunta", "Resposta enviada", "Resposta correta", "Acertou", "Score", "Sessão", "Dispositivo"]].concat(
-        report.answers.map(function (row) {
-          return [formatReportDate_(row[0]), row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11]];
-        })
-      )
-    },
-    {
-      name: "Vídeos",
-      rows: [["Setor", "Marca", "KBD", "Video ID", "% máximo assistido", "Segundos assistidos", "Duração", "Concluído", "Sessão", "Dispositivo"]].concat(
-        report.videos.map(function (video) {
-          return [video.setor, video.marca, video.kbd, video.videoId, video.percent + "%", video.watchedSeconds, video.durationSeconds, video.completed ? "SIM" : "NÃO", video.sessionId, video.deviceId];
-        })
-      )
-    }
-  ];
+function updateDailyReportSheet_(report, label) {
+  const book = getBook_();
+  let sheet = book.getSheetByName("Relatorio Diario");
+  if (!sheet) sheet = book.insertSheet("Relatorio Diario");
+  sheet.getDataRange().breakApart();
+  sheet.clear();
 
-  const xml = buildSpreadsheetXml_(sheets);
-  return Utilities.newBlob(xml, "application/vnd.ms-excel", "Missao-KBD-Relatorio-" + Utilities.formatDate(new Date(), REPORT_CONFIG.timeZone, "yyyy-MM-dd") + ".xml");
-}
+  sheet.getRange(1, 1, 1, 11).merge()
+    .setValue("Missão KBD — Relatório Diário — " + label)
+    .setBackground("#11162F")
+    .setFontColor("#FFFFFF")
+    .setFontWeight("bold")
+    .setFontSize(16);
 
-function buildSpreadsheetXml_(sheets) {
-  const workbook = [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    '<?mso-application progid="Excel.Sheet"?>',
-    '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">',
-    '<Styles><Style ss:ID="Header"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#11162F" ss:Pattern="Solid"/></Style></Styles>'
-  ];
+  const totals = report.totals;
+  sheet.getRange(3, 1, 2, 8).setValues([
+    ["Acessos", "Setores", "Dispositivos", "Respostas", "Acertos", "% de acerto", "Vídeos", "% médio assistido"],
+    [totals.accesses, totals.sectors, totals.devices, totals.answers, totals.correct, totals.accuracy + "%", totals.videos, totals.videoPercent + "%"]
+  ]);
+  styleReportHeader_(sheet.getRange(3, 1, 1, 8));
 
-  sheets.forEach(function (sheet) {
-    workbook.push('<Worksheet ss:Name="' + escapeXml_(sheet.name) + '"><Table>');
-    sheet.rows.forEach(function (row, rowIndex) {
-      workbook.push("<Row>" + row.map(function (value) { return spreadsheetXmlCell_(value, rowIndex === 0); }).join("") + "</Row>");
-    });
-    workbook.push("</Table></Worksheet>");
+  let row = 6;
+  row = writeReportSection_(sheet, row, "RESUMO POR SETOR",
+    ["Setor", "Acessos", "Dispositivos", "Respostas", "Acertos", "% de acerto", "Vídeos", "% médio assistido", "Vídeos concluídos"],
+    report.sectors.map(function (item) {
+      return [item.setor, item.accesses, item.devices, item.answers, item.correct, item.accuracy + "%", item.videos, item.videoPercent + "%", item.completedVideos];
+    })
+  );
+
+  row = writeReportSection_(sheet, row + 1, "RESPOSTAS DOS QUIZZES",
+    ["Recebido em", "Setor", "Marca", "KBD", "Pergunta", "Resposta enviada", "Resposta correta", "Acertou", "Score", "Sessão", "Dispositivo"],
+    report.answers.map(function (answer) {
+      return [formatReportDate_(answer[0]), answer[2], answer[3], answer[4], answer[5], answer[6], answer[7], answer[8], answer[9], answer[10], answer[11]];
+    })
+  );
+
+  writeReportSection_(sheet, row + 1, "VÍDEOS ASSISTIDOS",
+    ["Setor", "Marca", "KBD", "Video ID", "% máximo assistido", "Segundos assistidos", "Duração", "Concluído", "Sessão", "Dispositivo"],
+    report.videos.map(function (video) {
+      return [video.setor, video.marca, video.kbd, video.videoId, video.percent + "%", video.watchedSeconds, video.durationSeconds, video.completed ? "SIM" : "NÃO", video.sessionId, video.deviceId];
+    })
+  );
+
+  sheet.setFrozenRows(1);
+  sheet.getDataRange().setVerticalAlignment("middle");
+  sheet.autoResizeColumns(1, 11);
+  [4, 5, 6, 7].forEach(function (column) {
+    if (sheet.getColumnWidth(column) > 320) sheet.setColumnWidth(column, 320);
   });
-  workbook.push("</Workbook>");
-  return workbook.join("");
+  SpreadsheetApp.flush();
 }
 
-function spreadsheetXmlCell_(value, header) {
-  const isNumber = typeof value === "number" && isFinite(value);
-  const type = isNumber ? "Number" : "String";
-  const style = header ? ' ss:StyleID="Header"' : "";
-  return "<Cell" + style + '><Data ss:Type="' + type + '">' + escapeXml_(value) + "</Data></Cell>";
+function writeReportSection_(sheet, startRow, title, headers, rows) {
+  sheet.getRange(startRow, 1, 1, headers.length).merge()
+    .setValue(title)
+    .setBackground("#22D3EE")
+    .setFontColor("#05070F")
+    .setFontWeight("bold");
+  sheet.getRange(startRow + 1, 1, 1, headers.length).setValues([headers]);
+  styleReportHeader_(sheet.getRange(startRow + 1, 1, 1, headers.length));
+  if (rows.length) sheet.getRange(startRow + 2, 1, rows.length, headers.length).setValues(rows.map(function (item) { return item.map(safeCell_); }));
+  return startRow + 2 + rows.length;
 }
 
-function escapeXml_(value) {
-  return text_(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&apos;");
+function styleReportHeader_(range) {
+  range.setBackground("#171C3D").setFontColor("#FFFFFF").setFontWeight("bold");
 }
 
 function formatReportDate_(value) {
@@ -526,7 +542,7 @@ function buildHtmlReport_(report, label, preview) {
           '<div style="margin-top:26px"><h2 style="font-size:18px;margin:0 0 10px">Resumo por setor</h2>' + reportTable_(["Setor", "Acessos", "Respostas", "% acerto", "Vídeos", "% assistido"], sectorRows) + '</div>' +
           '<div style="margin-top:26px"><h2 style="font-size:18px;margin:0 0 10px">Últimas respostas</h2>' + reportTable_(["Setor", "Marca", "KBD", "Resposta", "Resultado"], answerRows) + '</div>' +
           '<div style="margin-top:26px"><h2 style="font-size:18px;margin:0 0 10px">Vídeos assistidos</h2>' + reportTable_(["Setor", "Marca", "KBD", "% assistido"], videoRows) + '</div>' +
-          '<div style="margin-top:24px;padding:16px;border-radius:14px;background:#151a35;color:#c8cbda;font-size:13px;line-height:1.5">O arquivo Excel anexado contém o detalhamento completo por setor, respostas dos quizzes e percentual máximo assistido de cada vídeo.</div>' +
+          '<div style="margin-top:24px;padding:16px;border-radius:14px;background:#151a35;color:#c8cbda;font-size:13px;line-height:1.5">A aba <strong>Relatorio Diario</strong> da planilha contém o detalhamento por setor, respostas dos quizzes e percentual máximo assistido de cada vídeo.</div>' +
           '<div style="margin-top:18px"><a href="' + escapeHtml_(report.bookUrl) + '" style="display:inline-block;padding:13px 18px;border-radius:12px;background:#22d3ee;color:#05070f;text-decoration:none;font-weight:700">Abrir planilha completa</a></div>' +
         '</div>' +
       '</div>' +
