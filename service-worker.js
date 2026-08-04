@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-a36-fast";
+const CACHE_NAME = "missao-kbd-v2-a36-fast-2";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -7,8 +7,8 @@ const CORE_ASSETS = [
   "./quiz.html",
   "./novidades.html",
   "./checklist.html",
-  "./style.css?v=20260804-5",
-  "./app.js?v=20260804-5",
+  "./style.css?v=20260804-6",
+  "./app.js?v=20260804-6",
   "./quizzes.js?v=20260804-2",
   "./manifest.json",
   "./assets/mission-hero-v2.webp",
