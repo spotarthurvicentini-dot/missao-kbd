@@ -585,16 +585,11 @@ img { max-width: 100%; display: block; }
 .login-visual {
   width: 100%;
   min-height: 210px;
-  background:
-    linear-gradient(90deg, rgba(5,7,15,0.38), rgba(5,7,15,0.02)),
-    url("assets/mission-hero-v2.webp") 62% center / cover no-repeat;
+  background: url("assets/login-hero-final.webp?v=2") center / cover no-repeat;
   border-radius: var(--r-2xl);
   border: 0.5px solid var(--sep-op);
   position: relative;
   overflow: hidden;
-  display: flex;
-  align-items: flex-start;
-  padding: 20px;
 }
 .login-visual::before {
   content: "";
@@ -602,28 +597,6 @@ img { max-width: 100%; display: block; }
   height: 3px;
   background: var(--grad);
 }
-.login-logo-blend {
-  width: 64%;
-  height: 112px;
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  isolation: isolate;
-  filter: drop-shadow(0 5px 14px rgba(0,0,0,0.7));
-  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 86%, transparent 100%);
-  mask-image: linear-gradient(to right, #000 0%, #000 86%, transparent 100%);
-}
-.login-logo-blend img {
-  display: block;
-  width: 112%;
-  max-width: none;
-  height: auto;
-  transform: translateX(-1.5%);
-  mix-blend-mode: screen;
-}
-
 .login-head { display: flex; flex-direction: column; gap: 4px; }
 .login-title { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.03em; }
 .login-subtitle { margin: 0; font-size: 15px; color: var(--label-2); line-height: 1.5; }

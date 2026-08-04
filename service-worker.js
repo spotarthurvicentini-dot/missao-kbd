@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-cache-recovery";
+const CACHE_NAME = "missao-kbd-v2-login-hero-final";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -7,11 +7,12 @@ const CORE_ASSETS = [
   "./quiz.html",
   "./novidades.html",
   "./checklist.html",
-  "./style.css?v=20260804-2",
+  "./style.css?v=20260804-3",
   "./app.js?v=20260804-2",
   "./quizzes.js?v=20260804-2",
   "./manifest.json",
   "./assets/mission-hero-v2.webp",
+  "./assets/login-hero-final.webp?v=2",
 ];
 
 self.addEventListener("install", (event) => {
