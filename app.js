@@ -106,15 +106,15 @@ const NOVIDADES = {
 };
 
 const CHECKLIST_ITEMS = [
-  { id: "chk01", marca: "tampax", marcaNome: "Tampax • Novo", texto: "Existe bandeja de Tampax abastecida no ponto natural em DPP?" },
-  { id: "chk02", marca: "pantene", marcaNome: "Pantene • Novo", texto: "Há 8 frentes de finalizadores em DPP ou 6 nos demais canais elegíveis?" },
-  { id: "chk03", marca: "secret", marcaNome: "Secret • Alterado", texto: "A execução atingiu a meta de frentes ou bandejas correspondente ao canal?" },
-  { id: "chk04", marca: "gillette", marcaNome: "Gillette • Alterado", texto: "Mach3 e Presto3 possuem 3 pontos de contato ou 2 em DPP?" },
-  { id: "chk05", marca: "pantene", marcaNome: "Pantene • Transformacional", texto: "Bond Repair possui pelo menos 20% do espaço, excluindo packs?" },
-  { id: "chk06", marca: "venus", marcaNome: "Venus • Transformacional", texto: "Existem 3 pontos de contato válidos nos canais elegíveis?" },
-  { id: "chk07", marca: "oral-b", marcaNome: "Oral-B • Transformacional", texto: "Pastas de branqueamento ocupam pelo menos 60% do espaço?" },
-  { id: "chk08", marca: "pampers", marcaNome: "Pampers • Transformacional", texto: "A gôndola tem faixa Vale Night e materiais com ícone de mamadeira?" },
-  { id: "chk09", marca: "pampers", marcaNome: "Pampers • Transformacional", texto: "Em DPP, há ponto extra Vale Night com materiais e ícone de mamadeira?" },
+  { id: "chk01", marca: "tampax", kbdId: "ponto-natural", marcaNome: "Tampax • Novo", texto: "Existe bandeja de Tampax abastecida no ponto natural em DPP?" },
+  { id: "chk02", marca: "pantene", kbdId: "finalizadores", marcaNome: "Pantene • Novo", texto: "Há 8 frentes de finalizadores em DPP ou 6 nos demais canais elegíveis?" },
+  { id: "chk03", marca: "secret", kbdId: "frentes-bandejas", marcaNome: "Secret • Alterado", texto: "A execução atingiu a meta de frentes ou bandejas correspondente ao canal?" },
+  { id: "chk04", marca: "gillette", kbdId: "mach3-presto3", marcaNome: "Gillette • Alterado", texto: "Mach3 e Presto3 possuem 3 pontos de contato ou 2 em DPP?" },
+  { id: "chk05", marca: "pantene", kbdId: "bond-repair", marcaNome: "Pantene • Transformacional", texto: "Bond Repair possui pelo menos 20% do espaço, excluindo packs?" },
+  { id: "chk06", marca: "venus", kbdId: "tres-pontos", marcaNome: "Venus • Transformacional", texto: "Existem 3 pontos de contato válidos nos canais elegíveis?" },
+  { id: "chk07", marca: "oral-b", kbdId: "branqueamento", marcaNome: "Oral-B • Transformacional", texto: "Pastas de branqueamento ocupam pelo menos 60% do espaço?" },
+  { id: "chk08", marca: "pampers", kbdId: "vale-night", marcaNome: "Pampers • Transformacional", texto: "A gôndola tem faixa Vale Night e materiais com ícone de mamadeira?" },
+  { id: "chk09", marca: "pampers", kbdId: "vale-night-ponto-extra", marcaNome: "Pampers • Transformacional", texto: "Em DPP, há ponto extra Vale Night com materiais e ícone de mamadeira?" },
 ];
 
 const ICONS = {
@@ -273,7 +273,7 @@ function setBottomNav(page) {
     { id: "home", label: "Home", icon: "home", href: "home.html" },
     { id: "novidades", label: "Novidades", icon: "sparkles", href: "novidades.html" },
     { id: "checklist", label: "Checklist", icon: "list", href: "checklist.html" },
-    { id: "quiz", label: "Quiz", icon: "quiz", href: getPrimaryQuizHref() },
+    { id: "quiz", label: "Quiz", icon: "quiz", href: "quiz.html" },
   ];
 
   container.innerHTML = tabs
@@ -672,7 +672,9 @@ function renderNovidades() {
   if (!area) return;
 
   area.innerHTML = `
-    <img class="novidades-mascot" src="assets/mascot-novidades.jpg" alt="Mascote Missão KBD" loading="lazy">
+    <div class="novidades-visual" role="img" aria-label="Robô da Missão KBD em um cenário digital">
+      <img src="assets/logo-lockup.png" alt="Missão KBD: Execução de Elite">
+    </div>
 
     <div class="section-head" style="padding-top:8px;">
       <h1 class="section-title">Conteúdos do ciclo</h1>
@@ -744,6 +746,42 @@ function toggleChecklistItem(id) {
   renderChecklist();
 }
 
+function fecharPilulaChecklist() {
+  const overlay = document.getElementById("checklistPillOverlay");
+  if (overlay) overlay.remove();
+  document.body.style.overflow = "";
+}
+
+function abrirPilulaChecklist(id) {
+  const item = CHECKLIST_ITEMS.find((entry) => entry.id === id);
+  const kbd = item ? getKbdById(item.marca, item.kbdId) : null;
+  const imagem = kbd && kbd.imagens && kbd.imagens.length ? resolveKbdAsset(kbd.imagens[0]) : "";
+  if (!item || !imagem) return;
+
+  fecharPilulaChecklist();
+  const overlay = document.createElement("div");
+  overlay.id = "checklistPillOverlay";
+  overlay.className = "checklist-pill-overlay";
+  overlay.innerHTML = `
+    <div class="checklist-pill-stage">
+      <img src="${assetPath(imagem)}" alt="${escapeHtml(item.marcaNome)} — pílula de execução">
+    </div>
+    <div class="checklist-pill-action">
+      <button class="primary-button" type="button" onclick="confirmarPilulaChecklist('${item.id}')">${isChecklistItemChecked(item.id) ? "Voltar ao checklist" : "Conferido — voltar ao checklist"}</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.body.style.overflow = "hidden";
+}
+
+function confirmarPilulaChecklist(id) {
+  const state = getChecklistState();
+  state[id] = true;
+  saveChecklistState(state);
+  fecharPilulaChecklist();
+  renderChecklist();
+}
+
 function resetChecklist() {
   criarModal({
     icon: "refresh",
@@ -799,14 +837,14 @@ function renderChecklist() {
 
     <div class="section-head">
       <h2 class="section-title">Confira os KBDs</h2>
-      <p class="section-subtitle">Toque em cada item para marcar como conferido.</p>
+      <p class="section-subtitle">Toque em um KBD, confira a pílula visual e confirme a execução.</p>
     </div>
 
     <div class="kbd-list" style="gap:8px;">
       ${CHECKLIST_ITEMS.map((item) => {
         const checked = !!state[item.id];
         return `
-          <button type="button" class="checklist-item ${checked ? "checked" : ""}" onclick="toggleChecklistItem('${item.id}')">
+          <button type="button" class="checklist-item ${checked ? "checked" : ""}" onclick="abrirPilulaChecklist('${item.id}')">
             <span class="checklist-checkbox">${renderIcon("check")}</span>
             <span class="checklist-copy">
               <span class="checklist-marca">${escapeHtml(item.marcaNome)}</span>
@@ -900,9 +938,6 @@ function renderQuizHub() {
 
   const area = document.getElementById("quizArea");
   const overall = getOverallProgress();
-  const next = getFirstPendingQuiz();
-  const nextMarca = next ? getMarcaById(next.marcaId) : null;
-  const nextKbd = next ? getKbdById(next.marcaId, next.kbdId) : null;
 
   if (overall.total === 0) {
     area.innerHTML = `
@@ -939,38 +974,31 @@ function renderQuizHub() {
         <div class="helper-text">${overall.done} de ${overall.total} KBDs respondidos neste aparelho.</div>
       </div>
 
-      ${
-        next
-          ? `
-        <div class="question-card">
-          <div class="feedback-top">
-            <div class="feedback-badge success">${renderIcon("quiz")}</div>
-            <div class="feedback-copy">
-              <h2 class="section-title">Próximo quiz recomendado</h2>
-              <p class="feedback-text">${escapeHtml(nextMarca.nome)} • ${escapeHtml(nextKbd.nome)}</p>
-            </div>
-          </div>
-          <div class="action-stack">
-            <a class="primary-button" href="kbd.html?marca=${encodeURIComponent(next.marcaId)}&kbd=${encodeURIComponent(next.kbdId)}">Abrir próximo KBD</a>
-            <a class="secondary-button" href="marca.html?marca=${encodeURIComponent(next.marcaId)}">Ver marca</a>
-          </div>
-        </div>
-      `
-          : `
-        <div class="result-card">
-          <div class="result-top">
-            <div class="feedback-badge success">${renderIcon("check")}</div>
-            <div class="result-copy">
-              <h2 class="result-title">Tudo concluído</h2>
-              <p class="result-subtitle">Você respondeu todos os quizzes disponíveis. Pode revisar qualquer marca quando quiser.</p>
-            </div>
-          </div>
-          <div class="action-stack">
-            <a class="primary-button" href="home.html">Voltar para a home</a>
-          </div>
-        </div>
-      `
-      }
+      <div class="section-head quiz-brand-head">
+        <h2 class="section-title">Quizzes por marca</h2>
+        <p class="section-subtitle">Veja o que já foi concluído e o que ainda está pendente.</p>
+      </div>
+
+      <div class="quiz-brand-list">
+        ${CONTENT.marcas.map((marca) => {
+          const progress = getBrandProgress(marca.id);
+          const pending = Math.max(progress.total - progress.done, 0);
+          const complete = progress.total > 0 && progress.done === progress.total;
+          return `
+            <a class="quiz-brand-card ${complete ? "completed" : "pending"} ${getBrandThemeClass(marca.id)}" href="marca.html?marca=${encodeURIComponent(marca.id)}">
+              <div class="quiz-brand-top">
+                <div class="brand-logo-wrap compact"><img class="brand-logo" src="${marca.logo}" alt="${escapeHtml(marca.nome)}"></div>
+                <div class="quiz-brand-copy">
+                  <div class="quiz-brand-title">${escapeHtml(marca.nome)}</div>
+                  <div class="quiz-brand-meta">${progress.done} concluído${progress.done === 1 ? "" : "s"} • ${pending} pendente${pending === 1 ? "" : "s"}</div>
+                </div>
+                <span class="summary-chip ${complete ? "completed" : "pending"}">${progress.pct}%</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill" style="width:${progress.pct}%"></div></div>
+            </a>
+          `;
+        }).join("")}
+      </div>
     </div>
   `;
 }

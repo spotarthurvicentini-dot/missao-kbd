@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-quizzes-validados";
+const CACHE_NAME = "missao-kbd-v2-fluxo-visual";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -11,6 +11,7 @@ const CORE_ASSETS = [
   "./app.js",
   "./quizzes.js",
   "./manifest.json",
+  "./assets/mission-hero-v2.webp",
 ];
 
 self.addEventListener("install", (event) => {

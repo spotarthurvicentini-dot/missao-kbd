@@ -249,7 +249,9 @@ img { max-width: 100%; display: block; }
 .hero-card {
   margin: 16px;
   border-radius: var(--r-2xl);
-  background: linear-gradient(180deg, var(--bg-secondary), var(--bg-tertiary));
+  background:
+    linear-gradient(90deg, rgba(5,7,15,0.96) 0%, rgba(5,7,15,0.82) 48%, rgba(5,7,15,0.22) 100%),
+    url("assets/mission-hero-v2.webp") 62% center / cover no-repeat;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -265,15 +267,6 @@ img { max-width: 100%; display: block; }
   background: var(--grad);
 }
 
-.hero-mascot {
-  position: absolute;
-  top: -18px; right: -28px;
-  width: 132px; height: auto;
-  opacity: 0.94;
-  pointer-events: none;
-  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.45));
-}
-
 .hero-logo {
   width: 100%;
   border-radius: var(--r-lg);
@@ -287,7 +280,7 @@ img { max-width: 100%; display: block; }
   object-fit: contain;
 }
 
-.hero-head { display: flex; flex-direction: column; gap: 4px; max-width: 68%; }
+.hero-head { display: flex; flex-direction: column; gap: 4px; max-width: 72%; position: relative; z-index: 1; }
 .hero-title { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.03em; }
 .hero-subtitle { margin: 0; font-size: 14px; color: var(--label-2); line-height: 1.4; }
 .hero-ciclo {
@@ -589,33 +582,34 @@ img { max-width: 100%; display: block; }
   position: relative;
 }
 
-.login-mascot {
-  position: absolute;
-  top: -74px; right: -8px;
-  width: 128px;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-  pointer-events: none;
-}
-
-.login-logo {
+.login-visual {
   width: 100%;
-  background: var(--bg-secondary);
+  min-height: 210px;
+  background:
+    linear-gradient(90deg, rgba(5,7,15,0.38), rgba(5,7,15,0.02)),
+    url("assets/mission-hero-v2.webp") 62% center / cover no-repeat;
   border-radius: var(--r-2xl);
-  padding: 22px 20px;
   border: 0.5px solid var(--sep-op);
   position: relative;
   overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  padding: 20px;
 }
-.login-logo::before {
+.login-visual::before {
   content: "";
   position: absolute; inset: -2px -2px auto -2px;
   height: 3px;
   background: var(--grad);
 }
-.login-logo img {
-  width: 100%;
-  max-height: 96px;
+.login-visual-logo {
+  width: 68%;
+  max-height: 92px;
   object-fit: contain;
+  object-position: left center;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 3px 12px rgba(0,0,0,0.72));
 }
 
 .login-head { display: flex; flex-direction: column; gap: 4px; }
@@ -899,7 +893,26 @@ img { max-width: 100%; display: block; }
 }
 
 /* ─── Novidades page ─────────────────────────────────────── */
-.novidades-mascot { width: 100%; max-width: 220px; margin: 0 auto; display: block; }
+.novidades-visual {
+  min-height: 138px;
+  margin: 0 16px 8px;
+  border-radius: var(--r-xl);
+  border: 0.5px solid var(--sep-op);
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(5,7,15,0.45), rgba(5,7,15,0.04)),
+    url("assets/mission-hero-v2.webp") 62% center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+}
+.novidades-visual img {
+  width: 58%;
+  max-height: 72px;
+  object-fit: contain;
+  object-position: left center;
+  filter: drop-shadow(0 3px 12px rgba(0,0,0,0.72));
+}
 .novidades-section { margin: 0 16px 14px; }
 .novidades-section-title {
   display: flex; align-items: center; gap: 8px;
@@ -957,6 +970,56 @@ img { max-width: 100%; display: block; }
 .checklist-marca { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--label-3); }
 .checklist-texto { font-size: 13.5px; line-height: 1.4; color: var(--label-1); }
 .checklist-item.checked .checklist-texto { color: var(--label-2); text-decoration: line-through; text-decoration-color: var(--label-4); }
+
+.checklist-pill-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  background: #05070f;
+  display: flex;
+  flex-direction: column;
+  padding: max(12px, env(safe-area-inset-top, 0px)) 12px max(12px, env(safe-area-inset-bottom, 0px));
+  animation: fadeIn 0.18s ease;
+}
+.checklist-pill-stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.checklist-pill-stage img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 104px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  border-radius: var(--r-xl);
+  object-fit: contain;
+}
+.checklist-pill-action {
+  flex-shrink: 0;
+  padding-top: 12px;
+}
+.checklist-pill-action .primary-button { width: 100%; }
+
+/* ─── Quiz hub by brand ──────────────────────────────────── */
+.quiz-brand-head { padding: 6px 0 0; }
+.quiz-brand-list { display: flex; flex-direction: column; gap: 10px; }
+.quiz-brand-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--r-lg);
+  border: 0.5px solid var(--sep-op);
+  background: var(--bg-secondary);
+  transition: transform 0.12s, border-color 0.12s;
+}
+.quiz-brand-card:active { transform: scale(0.98); }
+.quiz-brand-card.completed { border-color: var(--green-border); }
+.quiz-brand-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.quiz-brand-copy { flex: 1; min-width: 0; }
+.quiz-brand-title { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
+.quiz-brand-meta { margin-top: 3px; font-size: 12.5px; color: var(--label-3); }
 
 /* ─── Image lightbox ─────────────────────────────────────── */
 .image-lightbox {
