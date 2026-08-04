@@ -1,4 +1,4 @@
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxQ-b_cU7ciBGCuRav6BVf4gY0Xy0Qp5oKa1T0SVIv0gkvb6P9N57BkjqnMSPfshnV/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWAAaDDwVQjwh2qddHr55-hlOU64SboDwdYx4KihXGnYAAnyGncz9yRghsjuzysO4W/exec";
 const APP_VERSION = "2.0.0";
 const DEVICE_ID_KEY = "KBD_DEVICE_ID";
 const SESSION_ID_KEY = "KBD_SESSION_ID";
