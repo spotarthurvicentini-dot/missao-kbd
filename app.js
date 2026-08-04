@@ -604,7 +604,7 @@ function trocarSetor() {
   });
 }
 
-async function entrar() {
+function entrar() {
   const raw = document.getElementById("setor")?.value || "";
   const normalized = normalizeSector(raw);
 
@@ -619,14 +619,15 @@ async function entrar() {
   }
 
   localStorage.setItem("SETOR", normalized);
-  await Promise.race([
-    enviarPerguntaParaSheets({
-      eventType: "session_start",
-      timestamp: new Date().toISOString(),
-      setor: normalized,
-    }),
-    new Promise((resolve) => setTimeout(resolve, 1200)),
-  ]);
+  const sessionEvent = prepareEventPayload({
+    eventType: "session_start",
+    timestamp: new Date().toISOString(),
+    setor: normalized,
+  });
+  queueEvent(sessionEvent);
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(GOOGLE_SCRIPT_URL, JSON.stringify(sessionEvent));
+  }
   window.location.href = "home.html";
 }
 

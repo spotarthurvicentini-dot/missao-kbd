@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-sheets-live";
+const CACHE_NAME = "missao-kbd-v2-a36-fast";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -7,8 +7,8 @@ const CORE_ASSETS = [
   "./quiz.html",
   "./novidades.html",
   "./checklist.html",
-  "./style.css?v=20260804-4",
-  "./app.js?v=20260804-4",
+  "./style.css?v=20260804-5",
+  "./app.js?v=20260804-5",
   "./quizzes.js?v=20260804-2",
   "./manifest.json",
   "./assets/mission-hero-v2.webp",
@@ -38,32 +38,15 @@ self.addEventListener("fetch", (event) => {
   if (new URL(req.url).origin !== self.location.origin) return;
   if (req.method !== "GET") return;
 
-  const networkFirst = req.destination === "document" ||
-    req.destination === "style" ||
-    req.destination === "script";
+  const cachedResponse = caches.match(req);
+  const update = fetch(req).then((res) => {
+    if (res && res.status === 200) {
+      const clone = res.clone();
+      caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+    }
+    return res;
+  });
 
-  if (networkFirst) {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          if (res && res.status === 200) {
-            const clone = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-          }
-          return res;
-        })
-        .catch(() => caches.match(req))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req).then((res) => {
-      if (res && res.status === 200) {
-        const clone = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-      }
-      return res;
-    }))
-  );
+  event.waitUntil(update.catch(() => {}));
+  event.respondWith(cachedResponse.then((cached) => cached || update));
 });

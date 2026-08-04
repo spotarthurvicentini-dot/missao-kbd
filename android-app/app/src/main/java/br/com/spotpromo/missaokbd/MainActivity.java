@@ -3,11 +3,14 @@ package br.com.spotpromo.missaokbd;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Insets;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowInsets;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -42,6 +45,7 @@ public final class MainActivity extends Activity {
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
         setContentView(root);
+        applySystemBarInsets();
 
         configureWebView();
         if (savedInstanceState == null) {
@@ -49,6 +53,26 @@ public final class MainActivity extends Activity {
         } else {
             webView.restoreState(savedInstanceState);
         }
+    }
+
+    private void applySystemBarInsets() {
+        root.setOnApplyWindowInsetsListener((view, windowInsets) -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                Insets bars = windowInsets.getInsets(
+                        WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout()
+                );
+                view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            } else {
+                view.setPadding(
+                        windowInsets.getSystemWindowInsetLeft(),
+                        windowInsets.getSystemWindowInsetTop(),
+                        windowInsets.getSystemWindowInsetRight(),
+                        windowInsets.getSystemWindowInsetBottom()
+                );
+            }
+            return windowInsets;
+        });
+        root.requestApplyInsets();
     }
 
     private void configureWebView() {
@@ -97,6 +121,7 @@ public final class MainActivity extends Activity {
                 fullscreenView = view;
                 fullscreenCallback = callback;
                 webView.setVisibility(View.GONE);
+                root.setPadding(0, 0, 0, 0);
                 root.addView(view, new FrameLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT
@@ -129,6 +154,7 @@ public final class MainActivity extends Activity {
         fullscreenView = null;
         webView.setVisibility(View.VISIBLE);
         root.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        root.requestApplyInsets();
         if (fullscreenCallback != null) fullscreenCallback.onCustomViewHidden();
         fullscreenCallback = null;
     }
