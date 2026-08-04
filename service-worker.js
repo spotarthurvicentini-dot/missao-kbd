@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-integrity-fix";
+const CACHE_NAME = "missao-kbd-v2-cache-recovery";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -7,9 +7,9 @@ const CORE_ASSETS = [
   "./quiz.html",
   "./novidades.html",
   "./checklist.html",
-  "./style.css",
-  "./app.js",
-  "./quizzes.js",
+  "./style.css?v=20260804-2",
+  "./app.js?v=20260804-2",
+  "./quizzes.js?v=20260804-2",
   "./manifest.json",
   "./assets/mission-hero-v2.webp",
 ];
@@ -37,9 +37,13 @@ self.addEventListener("fetch", (event) => {
   if (new URL(req.url).origin !== self.location.origin) return;
   if (req.method !== "GET") return;
 
-  event.respondWith(
-    caches.match(req).then((cached) => {
-      const network = fetch(req)
+  const networkFirst = req.destination === "document" ||
+    req.destination === "style" ||
+    req.destination === "script";
+
+  if (networkFirst) {
+    event.respondWith(
+      fetch(req)
         .then((res) => {
           if (res && res.status === 200) {
             const clone = res.clone();
@@ -47,8 +51,18 @@ self.addEventListener("fetch", (event) => {
           }
           return res;
         })
-        .catch(() => cached);
-      return cached || network;
-    })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(req).then((cached) => cached || fetch(req).then((res) => {
+      if (res && res.status === 200) {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+      }
+      return res;
+    }))
   );
 });
