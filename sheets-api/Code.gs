@@ -422,62 +422,75 @@ function localMidnight_(dateKey) {
 }
 
 function createReportWorkbook_(report, label) {
-  const temp = SpreadsheetApp.create("Missão KBD — Relatório " + label.replace(/[^0-9A-Za-zÀ-ÿ_-]+/g, "-"));
-  try {
-    const summary = temp.getSheets()[0];
-    summary.setName("Resumo por setor");
-    writeReportSheet_(summary,
-      ["Setor", "Acessos", "Dispositivos", "Respostas", "Acertos", "% de acerto", "Vídeos", "% médio assistido", "Vídeos concluídos"],
-      report.sectors.map(function (item) {
-        return [item.setor, item.accesses, item.devices, item.answers, item.correct, item.accuracy / 100, item.videos, item.videoPercent / 100, item.completedVideos];
-      })
-    );
-    if (summary.getLastRow() > 1) {
-      summary.getRange(2, 6, summary.getLastRow() - 1, 1).setNumberFormat("0%");
-      summary.getRange(2, 8, summary.getLastRow() - 1, 1).setNumberFormat("0%");
+  const sheets = [
+    {
+      name: "Resumo por setor",
+      rows: [["Setor", "Acessos", "Dispositivos", "Respostas", "Acertos", "% de acerto", "Vídeos", "% médio assistido", "Vídeos concluídos"]].concat(
+        report.sectors.map(function (item) {
+          return [item.setor, item.accesses, item.devices, item.answers, item.correct, item.accuracy + "%", item.videos, item.videoPercent + "%", item.completedVideos];
+        })
+      )
+    },
+    {
+      name: "Respostas",
+      rows: [["Recebido em", "Setor", "Marca", "KBD", "Pergunta", "Resposta enviada", "Resposta correta", "Acertou", "Score", "Sessão", "Dispositivo"]].concat(
+        report.answers.map(function (row) {
+          return [formatReportDate_(row[0]), row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11]];
+        })
+      )
+    },
+    {
+      name: "Vídeos",
+      rows: [["Setor", "Marca", "KBD", "Video ID", "% máximo assistido", "Segundos assistidos", "Duração", "Concluído", "Sessão", "Dispositivo"]].concat(
+        report.videos.map(function (video) {
+          return [video.setor, video.marca, video.kbd, video.videoId, video.percent + "%", video.watchedSeconds, video.durationSeconds, video.completed ? "SIM" : "NÃO", video.sessionId, video.deviceId];
+        })
+      )
     }
+  ];
 
-    const answersSheet = temp.insertSheet("Respostas");
-    writeReportSheet_(answersSheet,
-      ["Recebido em", "Setor", "Marca", "KBD", "Pergunta", "Resposta enviada", "Resposta correta", "Acertou", "Score", "Sessão", "Dispositivo"],
-      report.answers.map(function (row) { return [row[0], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11]]; })
-    );
-    if (answersSheet.getLastRow() > 1) answersSheet.getRange(2, 1, answersSheet.getLastRow() - 1, 1).setNumberFormat("dd/mm/yyyy hh:mm");
-
-    const videosSheet = temp.insertSheet("Vídeos");
-    writeReportSheet_(videosSheet,
-      ["Setor", "Marca", "KBD", "Video ID", "% máximo assistido", "Segundos assistidos", "Duração", "Concluído", "Sessão", "Dispositivo"],
-      report.videos.map(function (video) {
-        return [video.setor, video.marca, video.kbd, video.videoId, video.percent / 100, video.watchedSeconds, video.durationSeconds, video.completed ? "SIM" : "NÃO", video.sessionId, video.deviceId];
-      })
-    );
-    if (videosSheet.getLastRow() > 1) videosSheet.getRange(2, 5, videosSheet.getLastRow() - 1, 1).setNumberFormat("0%");
-
-    SpreadsheetApp.flush();
-    const exportUrl = "https://docs.google.com/spreadsheets/d/" + temp.getId() + "/export?format=xlsx";
-    return UrlFetchApp.fetch(exportUrl, {
-      headers: { Authorization: "Bearer " + ScriptApp.getOAuthToken() },
-      muteHttpExceptions: false
-    }).getBlob().setName("Missao-KBD-Relatorio-" + Utilities.formatDate(new Date(), REPORT_CONFIG.timeZone, "yyyy-MM-dd") + ".xlsx");
-  } finally {
-    DriveApp.getFileById(temp.getId()).setTrashed(true);
-  }
+  const xml = buildSpreadsheetXml_(sheets);
+  return Utilities.newBlob(xml, "application/vnd.ms-excel", "Missao-KBD-Relatorio-" + Utilities.formatDate(new Date(), REPORT_CONFIG.timeZone, "yyyy-MM-dd") + ".xml");
 }
 
-function writeReportSheet_(sheet, headers, rows) {
-  sheet.clear();
-  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-  if (rows.length) sheet.getRange(2, 1, rows.length, headers.length).setValues(rows.map(function (row) { return row.map(safeCell_); }));
-  sheet.setFrozenRows(1);
-  sheet.getRange(1, 1, 1, headers.length)
-    .setBackground("#11162F")
-    .setFontColor("#FFFFFF")
-    .setFontWeight("bold");
-  sheet.getDataRange().setVerticalAlignment("middle");
-  sheet.autoResizeColumns(1, headers.length);
-  for (let column = 1; column <= headers.length; column += 1) {
-    if (sheet.getColumnWidth(column) > 360) sheet.setColumnWidth(column, 360);
-  }
+function buildSpreadsheetXml_(sheets) {
+  const workbook = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<?mso-application progid="Excel.Sheet"?>',
+    '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">',
+    '<Styles><Style ss:ID="Header"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#11162F" ss:Pattern="Solid"/></Style></Styles>'
+  ];
+
+  sheets.forEach(function (sheet) {
+    workbook.push('<Worksheet ss:Name="' + escapeXml_(sheet.name) + '"><Table>');
+    sheet.rows.forEach(function (row, rowIndex) {
+      workbook.push("<Row>" + row.map(function (value) { return spreadsheetXmlCell_(value, rowIndex === 0); }).join("") + "</Row>");
+    });
+    workbook.push("</Table></Worksheet>");
+  });
+  workbook.push("</Workbook>");
+  return workbook.join("");
+}
+
+function spreadsheetXmlCell_(value, header) {
+  const isNumber = typeof value === "number" && isFinite(value);
+  const type = isNumber ? "Number" : "String";
+  const style = header ? ' ss:StyleID="Header"' : "";
+  return "<Cell" + style + '><Data ss:Type="' + type + '">' + escapeXml_(value) + "</Data></Cell>";
+}
+
+function escapeXml_(value) {
+  return text_(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function formatReportDate_(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  return isNaN(date.getTime()) ? text_(value) : Utilities.formatDate(date, REPORT_CONFIG.timeZone, "dd/MM/yyyy HH:mm:ss");
 }
 
 function buildHtmlReport_(report, label, preview) {

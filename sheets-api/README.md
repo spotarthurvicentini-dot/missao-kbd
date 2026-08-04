@@ -29,4 +29,4 @@ Abrir a URL `/exec` no navegador retorna o estado e a versão da API.
 3. O resumo do dia anterior será enviado diariamente por volta das 08h (horário de São Paulo).
 4. Para testar imediatamente, execute `sendDailyInteractionReportPreview`.
 
-O e-mail inclui métricas, tabelas em HTML e um Excel anexado com as abas `Resumo por setor`, `Respostas` e `Vídeos`.
+O e-mail inclui métricas, tabelas em HTML e uma planilha Excel XML anexada com as abas `Resumo por setor`, `Respostas` e `Vídeos`. O arquivo é gerado em memória e não precisa de acesso de escrita ao Google Drive.
