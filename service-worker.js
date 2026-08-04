@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-logo-integrado";
+const CACHE_NAME = "missao-kbd-v2-youtube-tracking";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
