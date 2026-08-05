@@ -81,7 +81,7 @@ const CONTENT = {
         erroComum: ["Bandeja no ponto extra (fora da categoria)", "Bandeja fora da categoria de absorventes internos", "Bandeja vazia", "Execução fora do ponto natural"],
         produtosValidos: ["Tampax Compak Super", "Tampax Compak Intenso", "Tampax Compak Muito Intenso"],
         focoPromotor: "Garantir bandeja abastecida e bem posicionada no ponto natural.",
-        videoUrl: "", imagens: ["kbds/referencias-2026/tampax-ponto-natural.webp"] },
+        videoId: "4g0UL2iqWHI", videoUrl: "", imagens: ["kbds/referencias-2026/tampax-ponto-natural.webp"] },
     ] },
     { id: "pantene", nome: "PANTENE", logo: "logos/pantene.png", kbds: [
       { id: "bond-repair", nome: "Bond Repair — 20% do Espaço", status: "transformacional", canais: "Todos os canais",
@@ -95,7 +95,7 @@ const CONTENT = {
         comoConta: ["Cada produto voltado para frente = 1 frente", "Contar apenas frentes visíveis na gôndola", "Não duplicar a mesma frente", "Meta DPP: pelo menos 8 frentes", "Meta demais canais elegíveis: pelo menos 6 frentes"],
         erroComum: ["Produto fora da gôndola", "Produto em clipstrip, checkout, ilha ou display", "Contar a mesma frente duas vezes", "Somar produtos que não são finalizadores"],
         focoPromotor: "Garantir finalizadores abastecidos e com a quantidade mínima de frentes na gôndola.",
-        videoUrl: "", imagens: ["kbds/referencias-2026/pantene-finalizadores-dpp-8-frentes.webp", "kbds/referencias-2026/pantene-finalizadores-alimentar-6-frentes.webp"] },
+        videoId: "XCprppsjhz8", videoUrl: "", imagens: ["kbds/referencias-2026/pantene-finalizadores-dpp-8-frentes.webp", "kbds/referencias-2026/pantene-finalizadores-alimentar-6-frentes.webp"] },
     ] },
     { id: "pampers", nome: "PAMPERS", logo: "logos/pampers.png", kbds: [
       { id: "vale-night", nome: "Vale Night — Materiais na Gôndola", status: "transformacional", canais: "C&C, NMR/GMR, CLUB, LASA, HFS e Perfumaria",
@@ -117,7 +117,7 @@ const CONTENT = {
         comoConta: ["DPP e HFS: 10 frentes visíveis OU 2 bandejas", "C&C, NMR/GMR, CLUB, LASA e Perfumaria: 15 frentes visíveis OU 3 bandejas"],
         erroComum: ["Contar produto fora da gôndola", "Bandeja vazia ou mal posicionada", "Misturar bandejas e frentes sem respeitar a regra do canal"],
         focoPromotor: "Entender a regra do canal e garantir a quantidade correta de frentes ou bandejas.",
-        videoUrl: "", imagens: ["kbds/referencias-2026/secret-dpp-hfs-10-frentes-2-bandejas.webp", "kbds/referencias-2026/secret-alimentar-15-frentes-3-bandejas.webp"] },
+        videoId: "UTglI64T5V4", videoUrl: "", imagens: ["kbds/referencias-2026/secret-dpp-hfs-10-frentes-2-bandejas.webp", "kbds/referencias-2026/secret-alimentar-15-frentes-3-bandejas.webp"] },
     ] },
     { id: "oral-b", nome: "ORAL-B", logo: "logos/oral-b.png", kbds: [
       { id: "branqueamento", nome: "60% de Branqueamento", status: "transformacional", canais: "Todos os canais",
@@ -133,7 +133,7 @@ const CONTENT = {
         comoConta: ["Itens Mach3 Sensitive / Presto3 Sensitive com 4 unidades ou mais", "3 pontos de contato em C&C, NMR/GMR, LASA, HFS e PERFUMARIA", "2 pontos de contato em DPP", "Sempre fora do ponto natural"],
         erroComum: ["Produto no checkout", "Produto no ponto natural", "Contar o mesmo ponto duas vezes", "Usar item fora do foco (menos de 4 unidades)"],
         focoPromotor: "Garantir a quantidade correta de pontos de contato com Mach3 e Presto3 Sensitive.",
-        videoUrl: "", imagens: ["kbds/referencias-2026/gillette-alimentar-3-pontos.webp", "kbds/referencias-2026/gillette-dpp-2-pontos.webp"] },
+        videoId: "7bSEMiq4j8o", videoUrl: "", imagens: ["kbds/referencias-2026/gillette-alimentar-3-pontos.webp", "kbds/referencias-2026/gillette-dpp-2-pontos.webp"] },
     ] },
     { id: "venus", nome: "VENUS", logo: "logos/venus.png", kbds: [
       { id: "tres-pontos", nome: "3 Pontos de Contato", status: "transformacional", canais: "Todos os canais elegíveis",
@@ -141,7 +141,7 @@ const CONTENT = {
         comoConta: ["Pelo menos 3 pontos de contato, fora do ponto natural e fora do checkout", "Cada execução separada = 1 ponto", "Priorizar Venus Pele Sensível e Venus Suave"],
         erroComum: ["Produto no checkout", "Produto no ponto natural", "Contar o mesmo ponto duas vezes", "Usar item fora da linha Venus"],
         focoPromotor: "Garantir 3 pontos de contato de Venus, fora do ponto natural e fora do checkout.",
-        videoUrl: "", imagens: ["kbds/referencias-2026/venus-3-pontos.webp"] },
+        videoId: "4C9oEwpZOEo", videoUrl: "", imagens: ["kbds/referencias-2026/venus-3-pontos.webp"] },
     ] },
   ],
 };
