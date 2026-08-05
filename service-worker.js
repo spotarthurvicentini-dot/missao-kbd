@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-a36-fast-2";
+const CACHE_NAME = "missao-kbd-v2-kbd-references-2026";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -8,11 +8,23 @@ const CORE_ASSETS = [
   "./novidades.html",
   "./checklist.html",
   "./style.css?v=20260804-6",
-  "./app.js?v=20260804-6",
+  "./app.js?v=20260805-1",
   "./quizzes.js?v=20260804-2",
   "./manifest.json",
   "./assets/mission-hero-v2.webp",
   "./assets/login-hero-final.webp?v=2",
+  "./kbds/referencias-2026/tampax-ponto-natural.webp",
+  "./kbds/referencias-2026/pantene-bond-repair.webp",
+  "./kbds/referencias-2026/pantene-finalizadores-dpp-8-frentes.webp",
+  "./kbds/referencias-2026/pantene-finalizadores-alimentar-6-frentes.webp",
+  "./kbds/referencias-2026/pampers-vale-night-gondola.webp",
+  "./kbds/referencias-2026/pampers-vale-night-ponto-extra.webp",
+  "./kbds/referencias-2026/secret-dpp-hfs-10-frentes-2-bandejas.webp",
+  "./kbds/referencias-2026/secret-alimentar-15-frentes-3-bandejas.webp",
+  "./kbds/referencias-2026/oral-b-branqueamento-60.webp",
+  "./kbds/referencias-2026/gillette-alimentar-3-pontos.webp",
+  "./kbds/referencias-2026/gillette-dpp-2-pontos.webp",
+  "./kbds/referencias-2026/venus-3-pontos.webp",
 ];
 
 self.addEventListener("install", (event) => {
