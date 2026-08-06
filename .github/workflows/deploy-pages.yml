@@ -1,4 +1,5 @@
 name: Publicar site no GitHub Pages
+# Atualização de acionamento do painel gerencial
 
 on:
   push:
