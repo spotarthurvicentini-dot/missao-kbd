@@ -88,7 +88,7 @@ public final class MainActivity extends Activity {
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
-        settings.setUserAgentString(settings.getUserAgentString() + " MissaoKBD-Android/2.0");
+        settings.setUserAgentString(settings.getUserAgentString() + " MissaoKBD-Android/2.1.0");
 
         CookieManager cookies = CookieManager.getInstance();
         cookies.setAcceptCookie(true);

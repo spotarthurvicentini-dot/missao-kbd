@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "android-app/**"
+      - "APP/android-app/**"
       - ".github/workflows/build-apk.yml"
 
 jobs:
@@ -29,13 +29,13 @@ jobs:
         with:
           gradle-version: "8.7"
 
-      - name: Gerar APK instalável
-        run: gradle -p android-app :app:assembleDebug --stacktrace
+      - name: Gerar APK de teste
+        run: gradle -p APP/android-app :app:assembleDebug --stacktrace
 
-      - name: Publicar APK como artefato
+      - name: Publicar APK de teste como artefato
         uses: actions/upload-artifact@v4
         with:
-          name: missao-kbd-apk
-          path: android-app/app/build/outputs/apk/debug/app-debug.apk
+          name: missao-kbd-apk-teste
+          path: APP/android-app/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

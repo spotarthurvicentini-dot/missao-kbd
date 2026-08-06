@@ -1,0 +1,48 @@
+plugins {
+    id "com.android.application"
+}
+
+def signingPropertiesFile = rootProject.file("keystore.properties")
+def signingProperties = new Properties()
+if (signingPropertiesFile.exists()) {
+    signingProperties.load(new FileInputStream(signingPropertiesFile))
+}
+
+android {
+    namespace = "br.com.spotpromo.missaokbd"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "br.com.spotpromo.missaokbd"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = 4
+        versionName = "2.1.0"
+    }
+
+    signingConfigs {
+        if (signingPropertiesFile.exists()) {
+            release {
+                storeFile = rootProject.file(signingProperties["storeFile"])
+                storePassword = signingProperties["storePassword"]
+                keyAlias = signingProperties["keyAlias"]
+                keyPassword = signingProperties["keyPassword"]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            if (signingPropertiesFile.exists()) {
+                signingConfig = signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

@@ -1,5 +1,15 @@
-# Materiais de referência usados no desenvolvimento; não publicar no GitHub Pages.
-PDFs Base/
+# Materiais e segredos locais; nunca publicar.
+BASES/
+APP/assinatura/
+APP/android-app/keystore.properties
+
+# Saídas de build e versões antigas.
+APP/android-app/.gradle/
+APP/android-app/build/
+APP/android-app/app/build/
+APP/distribuicao/anteriores/
+SCRIPTS/temporarios/
+.android-tools/
 
 # Arquivos locais do sistema e ferramentas.
 .DS_Store

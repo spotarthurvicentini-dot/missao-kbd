@@ -1,0 +1,19 @@
+exclude:
+  - APP/android-app
+  - APP/assinatura
+  - APP/distribuicao/anteriores
+  - APP/preparar_android.ps1
+  - APP/LEIA-ME.md
+  - APP/distribuicao/LEIA-ME.md
+  - BASES
+  - CODIGO
+  - SCRIPTS
+  - SITE
+  - android-app
+  - dist
+  - PDFs Base
+  - sheets-api
+  - tmp
+  - tools
+  - kbds/pilulas
+  - README.md
