@@ -32,3 +32,17 @@ Abrir a URL `/exec` no navegador retorna o estado e a versão da API.
 O e-mail inclui métricas e tabelas em HTML, sem anexos. A aba `Relatorio Diario` da planilha é atualizada a cada envio com resumo por setor, respostas dos quizzes e percentual máximo assistido dos vídeos.
 
 Os destinatários permanentes podem ser atualizados em `REPORT_CONFIG.defaultRecipients`. Depois da alteração, execute `configureReportRecipients` uma vez.
+# Perfis e autenticação
+
+O login possui três perfis:
+
+- `admin`: acessa a visão global, mas aparece na interface apenas como **Gestor**.
+- setor contendo `COORD` ou `EXECUTIVO`: acessa o painel gerencial da própria equipe.
+- demais setores válidos: acessam a experiência do promotor.
+
+A função `setup()` cria a aba `Equipes`. Preencha uma linha por vínculo usando as colunas
+`Coordenador`, `Promotor`, `Nome` e `Regional`. O painel de um coordenador só recebe da API
+os setores de promotores vinculados a ele nessa aba.
+
+As senhas não são armazenadas no JavaScript público. A API compara hashes SHA-256 e emite
+tokens temporários de seis horas pelo `CacheService`.

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Missão KBD • Gestão</title>
+  <meta name="theme-color" content="#080b16">
+  <link rel="icon" href="assets/favicon-32.png">
+  <style>svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}@media(max-width:760px){.admin-topbar{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}.global-search{order:3;flex:1 0 100%!important;width:100%!important}}</style>
+  <link rel="stylesheet" href="admin.css?v=20260806-1">
+  <link rel="stylesheet" href="admin-mobile.css?v=20260806-1">
+  <script defer src="app.js?v=20260806-3"></script>
+  <script defer src="admin.js?v=20260806-2"></script>
+</head>
+<body onload="initAdmin()">
+  <div class="admin-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-lockup">
+        <img src="assets/icon-192.png" alt="">
+        <div><strong>Missão KBD</strong><span>Central de gestão</span></div>
+      </div>
+
+      <nav class="side-nav" aria-label="Navegação principal">
+        <span class="nav-label">Visão geral</span>
+        <button class="nav-item active" data-view="overview"><span data-icon="grid"></span>Dashboard</button>
+        <button class="nav-item" data-view="operation"><span data-icon="pulse"></span>Operação 360°</button>
+        <span class="nav-label">Gestão</span>
+        <button class="nav-item" data-view="team"><span data-icon="users"></span>Equipe</button>
+        <button class="nav-item" data-view="content"><span data-icon="book"></span>Conteúdos e KBDs</button>
+        <button class="nav-item" data-view="analytics"><span data-icon="chart"></span>Analytics</button>
+        <button class="nav-item" data-view="reports"><span data-icon="file"></span>Relatórios</button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="cycle-card"><span class="status-dot"></span><div><small>Ciclo ativo</small><strong>Jul–Dez 2026</strong></div></div>
+        <button class="nav-item" onclick="sairConfirmado()"><span data-icon="logout"></span>Sair</button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="admin-topbar">
+        <div class="mobile-brand"><button class="icon-btn" id="menuButton" aria-label="Abrir menu"><span data-icon="menu"></span></button><strong>Missão KBD</strong></div>
+        <div class="global-search">
+          <span data-icon="search"></span>
+          <input id="globalSearch" type="search" placeholder="Buscar coordenador, promotor ou setor…" autocomplete="off">
+          <kbd>Ctrl K</kbd>
+          <div class="search-results" id="searchResults"></div>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn notification" aria-label="Notificações"><span data-icon="bell"></span><i></i></button>
+          <div class="admin-user"><span class="avatar">AV</span><div><strong>Gestor SPOT</strong><small>Administrador</small></div><span data-icon="chevron"></span></div>
+        </div>
+      </header>
+
+      <div class="page" id="adminPage">
+        <section class="view active" data-page="overview">
+          <div class="page-head">
+            <div><span class="eyebrow">CENTRAL DE INTELIGÊNCIA</span><h1>Visão geral da operação</h1><p>Acompanhe engajamento, conhecimento e evolução da equipe em um só lugar.</p></div>
+            <div class="head-actions"><button class="btn secondary"><span data-icon="calendar"></span>Últimos 30 dias</button><button class="btn primary" data-open-view="reports"><span data-icon="download"></span>Exportar relatório</button></div>
+          </div>
+
+          <div class="scope-bar">
+            <div class="scope-tabs"><button class="active" data-region="Todos">Todos</button><button data-region="SP">SP</button><button data-region="PR">PR</button><button data-region="SC">SC</button><button data-region="RS">RS</button></div>
+            <span id="updatedAt"><i class="status-dot"></i> Prévia gerencial • conectando dados</span>
+          </div>
+
+          <div class="kpi-grid" id="kpiGrid"></div>
+
+          <div class="dashboard-grid">
+            <article class="panel span-2">
+              <div class="panel-head"><div><h2>Evolução do engajamento</h2><p>Acessos e conclusões por semana</p></div><div class="legend"><span><i class="cyan"></i>Acessos</span><span><i class="purple"></i>Conclusões</span></div></div>
+              <div class="line-chart" id="engagementChart"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head"><div><h2>Saúde da operação</h2><p>Índice consolidado</p></div><button class="more">•••</button></div>
+              <div class="health-score"><div class="score-ring"><strong id="healthValue">84</strong><span>/100</span></div><div class="health-copy"><strong>Operação saudável</strong><span><i class="up">↗</i> 6 pontos no período</span></div></div>
+              <div class="health-bars" id="healthBars"></div>
+            </article>
+            <article class="panel span-2">
+              <div class="panel-head"><div><h2>Desempenho por regional</h2><p>Ranking de conclusão e conhecimento</p></div><button class="text-button" data-open-view="analytics">Ver análise completa <span data-icon="arrow"></span></button></div>
+              <div class="region-table" id="regionTable"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head"><div><h2>Pontos de atenção</h2><p>Prioridades para sua gestão</p></div><span class="count-badge">3</span></div>
+              <div class="attention-list" id="attentionList"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" data-page="operation"><div class="page-head"><div><span class="eyebrow">OPERAÇÃO 360°</span><h1>Pulso da operação</h1><p>Uma leitura integrada da jornada — acesso, conteúdo, vídeo, quiz e checklist.</p></div></div><div id="operationContent"></div></section>
+        <section class="view" data-page="team"><div class="page-head"><div><span class="eyebrow">GESTÃO DE PESSOAS</span><h1>Coordenadores e promotores</h1><p>Localize pessoas, compare resultados e identifique quem precisa de apoio.</p></div><button class="btn secondary"><span data-icon="filter"></span>Filtros</button></div><div id="teamContent"></div></section>
+        <section class="view" data-page="content"><div class="page-head"><div><span class="eyebrow">CONTEÚDO</span><h1>KBDs e treinamentos</h1><p>Visibilidade completa da adesão e da performance por conteúdo.</p></div></div><div id="contentView"></div></section>
+        <section class="view" data-page="analytics"><div class="page-head"><div><span class="eyebrow">ANALYTICS</span><h1>Análises avançadas</h1><p>Cruze região, perfil e conteúdo para encontrar oportunidades.</p></div></div><div id="analyticsView"></div></section>
+        <section class="view" data-page="reports"><div class="page-head"><div><span class="eyebrow">RELATÓRIOS</span><h1>Central de relatórios</h1><p>Gere arquivos gerenciais prontos para análise e compartilhamento.</p></div></div><div id="reportsView"></div></section>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+</body>
+</html>

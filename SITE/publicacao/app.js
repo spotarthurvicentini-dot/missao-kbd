@@ -1,9 +1,11 @@
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWAAaDDwVQjwh2qddHr55-hlOU64SboDwdYx4KihXGnYAAnyGncz9yRghsjuzysO4W/exec";
-const APP_VERSION = "2.1.0";
+const APP_VERSION = "2.2.0";
 const DEVICE_ID_KEY = "KBD_DEVICE_ID";
 const SESSION_ID_KEY = "KBD_SESSION_ID";
 const EVENT_QUEUE_KEY = "KBD_EVENT_QUEUE";
 const PROGRESS_SECTOR_KEY = "KBD_PROGRESS_SECTOR";
+const AUTH_TOKEN_KEY = "KBD_AUTH_TOKEN";
+const AUTH_ROLE_KEY = "KBD_AUTH_ROLE";
 const PROGRESS_STORAGE_KEYS = ["QUIZZES_COMPLETED", "QUIZ_RESULTS", "VIDEO_PROGRESS", "BRANDS_SENT_TO_SHEETS", "CHECKLIST_STATE"];
 
 function createUuid() {
@@ -297,7 +299,15 @@ let videoTrackingState = null;
 let videoTrackingTimer = null;
 
 function getSetor() { return (localStorage.getItem("SETOR") || "").trim(); }
-function ensureSetor() { if (!getSetor()) window.location.href = "index.html"; }
+function ensureSetor() {
+  const role = sessionStorage.getItem(AUTH_ROLE_KEY);
+  const token = sessionStorage.getItem(AUTH_TOKEN_KEY);
+  if (!getSetor() || !role || !token) {
+    window.location.replace("index.html");
+    return false;
+  }
+  return true;
+}
 function qs() { return new URLSearchParams(window.location.search); }
 function readJsonStorage(key, fallback = {}) { try { const parsed = JSON.parse(localStorage.getItem(key) || "null"); return parsed && typeof parsed === "object" ? parsed : fallback; } catch { return fallback; } }
 function getCompletedData() { return readJsonStorage("QUIZZES_COMPLETED"); }
@@ -653,6 +663,7 @@ function ativarZoomImagem(stage, img) {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") fecharImagemExpandida();
+  if (event.key === "Enter" && event.target?.matches?.("#setor, #senha")) entrar();
 });
 
 function applyTopbar(config) {
@@ -766,6 +777,8 @@ function confirmarSaida() {
 function sairConfirmado() {
   if (getSetor()) localStorage.setItem(PROGRESS_SECTOR_KEY, getSetor());
   localStorage.removeItem("SETOR");
+  sessionStorage.removeItem(AUTH_TOKEN_KEY);
+  sessionStorage.removeItem(AUTH_ROLE_KEY);
   fecharModal();
   window.location.href = "index.html";
 }
@@ -784,14 +797,21 @@ function trocarSetor() {
 
 async function entrar() {
   const raw = document.getElementById("setor")?.value || "";
-  const normalized = normalizeSector(raw);
+  const password = document.getElementById("senha")?.value || "";
+  const isAdminLogin = String(raw).trim().toLowerCase() === "admin";
+  const normalized = isAdminLogin ? "ADMIN" : normalizeSector(raw);
 
   if (!normalized) {
     alert("Insira seu setor para entrar.");
     return;
   }
 
-  if (!ALLOWED_SECTORS_NORMALIZED.has(normalized)) {
+  if (!password) {
+    alert("Insira sua senha para entrar.");
+    return;
+  }
+
+  if (!isAdminLogin && !ALLOWED_SECTORS_NORMALIZED.has(normalized)) {
     alert("Setor inválido. Verifique o código digitado.");
     return;
   }
@@ -799,24 +819,49 @@ async function entrar() {
   const button = document.getElementById("loginButton");
   if (button) {
     button.disabled = true;
-    button.textContent = "Sincronizando...";
+    button.textContent = "Validando...";
   }
 
-  prepareProgressStorageForSector(normalized);
-  localStorage.setItem("SETOR", normalized);
-  await syncProgressFromServer(normalized);
+  let auth;
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "login", username: normalized, password }),
+    });
+    auth = await response.json();
+    if (!response.ok || !auth.ok) throw new Error(auth.error || "Credenciais inválidas.");
+  } catch (error) {
+    alert(error?.message || "Não foi possível validar o acesso.");
+    if (button) { button.disabled = false; button.textContent = "Entrar"; }
+    return;
+  }
+
+  const role = auth.role;
+  const user = auth.user || normalized;
+  const isManager = role === "admin" || role === "manager";
+  prepareProgressStorageForSector(user);
+  localStorage.setItem("SETOR", user);
+  sessionStorage.setItem(AUTH_TOKEN_KEY, auth.token);
+  sessionStorage.setItem(AUTH_ROLE_KEY, role);
+  if (role === "promoter") await syncProgressFromServer(user);
   const sessionEvent = prepareEventPayload({
     eventType: "session_start",
     timestamp: new Date().toISOString(),
-    setor: normalized,
+    setor: user,
+    role,
   });
   queueEvent(sessionEvent);
   enviarPerguntaParaSheets(sessionEvent);
-  window.location.href = "home.html";
+  window.location.href = isManager ? "admin.html" : "home.html";
 }
 
 function renderHome() {
-  ensureSetor();
+  if (!ensureSetor()) return;
+  if (["admin", "manager"].includes(sessionStorage.getItem(AUTH_ROLE_KEY))) {
+    window.location.replace("admin.html");
+    return;
+  }
   applyTopbar({ eyebrow: "", title: "", subtitle: "", showBack: false, minimal: true, hideMenu: true, hideLogout: true });
   setBottomNav("home");
 
@@ -874,7 +919,7 @@ function renderHome() {
 }
 
 function renderMarca() {
-  ensureSetor();
+  if (!ensureSetor()) return;
   const marcaId = qs().get("marca");
   const marca = getMarcaById(marcaId);
   if (!marca) return voltarHome();
@@ -944,7 +989,7 @@ function renderMarca() {
 }
 
 function renderKbd() {
-  ensureSetor();
+  if (!ensureSetor()) return;
   const marcaId = qs().get("marca");
   const kbdId = qs().get("kbd");
   const marca = getMarcaById(marcaId);
@@ -1113,7 +1158,7 @@ function renderKbd() {
 }
 
 function renderNovidades() {
-  ensureSetor();
+  if (!ensureSetor()) return;
   applyTopbar({
     logo: "assets/icon-192.png",
     eyebrow: "Missão KBD",
@@ -1264,7 +1309,7 @@ function confirmarResetChecklist() {
 }
 
 function renderChecklist() {
-  ensureSetor();
+  if (!ensureSetor()) return;
   applyTopbar({
     logo: "assets/icon-192.png",
     eyebrow: "Missão KBD",
@@ -1325,7 +1370,7 @@ function renderChecklist() {
 }
 
 function renderQuiz() {
-  ensureSetor();
+  if (!ensureSetor()) return;
   const marcaId = qs().get("marca");
   const kbdId = qs().get("kbd");
 

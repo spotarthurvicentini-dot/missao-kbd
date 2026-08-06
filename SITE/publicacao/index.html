@@ -6,12 +6,12 @@
   <title>Missão KBD • Login</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#05070f">
-  <meta name="app-build" content="20260806-1">
+  <meta name="app-build" content="20260806-2">
   <link rel="apple-touch-icon" href="assets/icon-180.png">
   <link rel="icon" href="assets/favicon-32.png">
   <link rel="preload" href="assets/login-hero-final.webp?v=2" as="image" fetchpriority="high">
   <link rel="stylesheet" href="style.css?v=20260805-1">
-<script defer src="app.js?v=20260806-1"></script>
+<script defer src="app.js?v=20260806-3"></script>
 </head>
 <body>
   <div class="bg-grid"></div>
@@ -23,11 +23,11 @@
 
       <div class="login-head">
         <h1 class="login-title">Missão KBD</h1>
-        <p class="login-subtitle">Insira seu código de setor para acessar os treinamentos.</p>
+        <p class="login-subtitle">Informe suas credenciais para acessar a plataforma.</p>
       </div>
 
       <div class="form-stack">
-        <label class="field-label" for="setor">Código do setor</label>
+        <label class="field-label" for="setor">Usuário ou setor</label>
         <input
           id="setor"
           class="input"
@@ -37,6 +37,17 @@
           maxlength="24"
           spellcheck="false"
           autocapitalize="characters"
+        >
+      </div>
+
+      <div class="form-stack">
+        <label class="field-label" for="senha">Senha</label>
+        <input
+          id="senha"
+          class="input"
+          type="password"
+          placeholder="Digite sua senha"
+          autocomplete="current-password"
         >
       </div>
 

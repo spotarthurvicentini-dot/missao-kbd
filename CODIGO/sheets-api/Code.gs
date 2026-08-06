@@ -1,4 +1,4 @@
-const API_VERSION = "2.1.0";
+const API_VERSION = "2.2.0";
 const REPORT_CONFIG = {
   timeZone: "America/Sao_Paulo",
   hour: 8,
@@ -37,6 +37,10 @@ const TABLES = {
     name: "_EstadoSetor",
     headers: ["Setor", "Atualizado em", "Quizzes concluídos", "Resultados", "Vídeos"]
   },
+  teams: {
+    name: "Equipes",
+    headers: ["Coordenador", "Promotor", "Nome", "Regional"]
+  },
   control: {
     name: "_Controle",
     headers: ["Event ID", "Recebido em"]
@@ -63,6 +67,13 @@ function setup() {
 }
 
 function doGet(e) {
+  if (e && e.parameter && text_(e.parameter.action) === "dashboard") {
+    try {
+      return json_({ ok: false, error: "Use uma sessão autenticada para acessar o painel.", version: API_VERSION });
+    } catch (error) {
+      return json_({ ok: false, error: error && error.message ? error.message : String(error), version: API_VERSION });
+    }
+  }
   if (e && e.parameter && text_(e.parameter.action) === "progress") {
     try {
       return json_(getSectorProgress_(text_(e.parameter.setor)));
@@ -78,13 +89,78 @@ function doGet(e) {
   });
 }
 
+/**
+ * Retorna o consolidado usado pela central de gestão.
+ * O acesso é restrito aos identificadores gerenciais já adotados pelo app.
+ */
+function getDashboardReport_(managerSector, requestedDays, token) {
+  const session = getAuthSession_(token);
+  const manager = normalizeSector_(managerSector);
+  if (!session || session.user !== manager || (session.role !== "admin" && session.role !== "manager")) {
+    throw new Error("Sessão gerencial inválida ou expirada.");
+  }
+
+  const days = Math.max(1, Math.min(180, Math.round(number_(requestedDays) || 30)));
+  const end = new Date();
+  const start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
+  const report = buildInteractionReport_(start, end);
+  const allowedSectors = session.role === "admin" ? [] : getManagedSectors_(manager);
+  const canSee_ = function (sector) {
+    return session.role === "admin" || allowedSectors.indexOf(normalizeSector_(sector)) >= 0;
+  };
+  const visibleSectors = report.sectors.filter(function (row) { return canSee_(row.setor); });
+  const visibleAnswers = report.answers.filter(function (row) { return canSee_(row[2]); });
+  const visibleVideos = report.videos.filter(function (video) { return canSee_(video.setor); });
+  const visibleDevices = visibleSectors.reduce(function (sum, row) { return sum + number_(row.devices); }, 0);
+  const visibleCorrect = visibleAnswers.filter(function (row) { return isTrue_(row[8]); }).length;
+  const visibleTotals = session.role === "admin" ? report.totals : {
+    accesses: visibleSectors.reduce(function (sum, row) { return sum + number_(row.accesses); }, 0),
+    sectors: visibleSectors.length,
+    devices: visibleDevices,
+    answers: visibleAnswers.length,
+    correct: visibleCorrect,
+    accuracy: visibleAnswers.length ? Math.round(visibleCorrect * 100 / visibleAnswers.length) : 0,
+    videos: visibleVideos.length,
+    videoPercent: visibleVideos.length ? Math.round(visibleVideos.reduce(function (sum, row) { return sum + number_(row.percent); }, 0) / visibleVideos.length) : 0,
+    completedVideos: visibleVideos.filter(function (row) { return row.completed; }).length
+  };
+
+  // O frontend precisa do consolidado, não dos identificadores de dispositivo/sessão.
+  return {
+    ok: true,
+    manager: manager,
+    role: session.role,
+    allowedSectors: allowedSectors,
+    period: { start: start.toISOString(), end: end.toISOString(), days: days },
+    report: {
+      totals: visibleTotals,
+      sectors: visibleSectors,
+      recentAnswers: visibleAnswers.slice(-30).reverse().map(function (row) {
+        return {
+          receivedAt: row[0], setor: text_(row[2]), marca: text_(row[3]),
+          kbd: text_(row[4]), correct: isTrue_(row[8]), score: number_(row[9])
+        };
+      }),
+      videos: visibleVideos.slice(0, 50).map(function (video) {
+        return { setor: video.setor, marca: video.marca, kbd: video.kbd, percent: video.percent, completed: video.completed };
+      })
+    },
+    updatedAt: end.toISOString(),
+    version: API_VERSION
+  };
+}
+
 function doPost(e) {
   const receivedAt = new Date();
   const lock = LockService.getScriptLock();
 
   try {
-    lock.waitLock(15000);
     const payload = parsePayload_(e);
+    if (text_(payload.action) === "login") return json_(authenticate_(payload));
+    if (text_(payload.action) === "dashboard") {
+      return json_(getDashboardReport_(text_(payload.setor), number_(payload.days) || 30, text_(payload.token)));
+    }
+    lock.waitLock(15000);
     validatePayload_(payload);
 
     const book = getBook_();
@@ -156,6 +232,60 @@ function doPost(e) {
   } finally {
     if (lock.hasLock()) lock.releaseLock();
   }
+}
+
+function authenticate_(payload) {
+  const user = normalizeSector_(payload.username);
+  const passwordHash = sha256Hex_(text_(payload.password));
+  const adminHash = "7c2b1b3006acaae9796c43587668c0f0a8105c2275b7349385eef9d612610ba1";
+  const standardHash = "1785521e024adec9c80aa5c8cb3c0e209928256bbbc14dadc2c46e6031c5d188";
+  let role = "";
+
+  if (user === "ADMIN" && secureEquals_(passwordHash, adminHash)) {
+    role = "admin";
+  } else if (user !== "ADMIN" && secureEquals_(passwordHash, standardHash)) {
+    role = /(COORD|EXECUTIVO)/.test(user) ? "manager" : "promoter";
+  }
+
+  if (!role) return { ok: false, error: "Usuário, setor ou senha inválidos.", version: API_VERSION };
+
+  const token = Utilities.getUuid() + Utilities.getUuid();
+  const session = { user: user, role: role, createdAt: new Date().toISOString() };
+  CacheService.getScriptCache().put("auth:" + token, JSON.stringify(session), 21600);
+  return { ok: true, user: user, role: role, token: token, expiresIn: 21600, version: API_VERSION };
+}
+
+function getAuthSession_(token) {
+  const value = CacheService.getScriptCache().get("auth:" + text_(token));
+  if (!value) return null;
+  try { return JSON.parse(value); } catch (error) { return null; }
+}
+
+function getManagedSectors_(manager) {
+  const book = getBook_();
+  const sheet = ensureSheet_(book, TABLES.teams);
+  const allowed = [normalizeSector_(manager)];
+  if (sheet.getLastRow() < 2) return allowed;
+  sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues().forEach(function (row) {
+    if (normalizeSector_(row[0]) === manager) {
+      const promoter = normalizeSector_(row[1]);
+      if (promoter && allowed.indexOf(promoter) < 0) allowed.push(promoter);
+    }
+  });
+  return allowed;
+}
+
+function sha256Hex_(value) {
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, text_(value), Utilities.Charset.UTF_8)
+    .map(function (byte) { return (byte < 0 ? byte + 256 : byte).toString(16).padStart(2, "0"); })
+    .join("");
+}
+
+function secureEquals_(left, right) {
+  if (left.length !== right.length) return false;
+  let difference = 0;
+  for (let i = 0; i < left.length; i += 1) difference |= left.charCodeAt(i) ^ right.charCodeAt(i);
+  return difference === 0;
 }
 
 function emptySectorProgress_() {
