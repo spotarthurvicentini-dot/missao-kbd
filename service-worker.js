@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-sync-zoom-2026-08-05";
+const CACHE_NAME = "missao-kbd-v2-sync-zoom-final-2026-08-06";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -8,7 +8,7 @@ const CORE_ASSETS = [
   "./novidades.html",
   "./checklist.html",
   "./style.css?v=20260805-1",
-  "./app.js?v=20260805-3",
+  "./app.js?v=20260806-1",
   "./quizzes.js?v=20260804-2",
   "./manifest.json",
   "./assets/mission-hero-v2.webp",
