@@ -1,4 +1,4 @@
-const API_VERSION = "2.0.0";
+const API_VERSION = "2.1.0";
 const REPORT_CONFIG = {
   timeZone: "America/Sao_Paulo",
   hour: 8,
@@ -29,6 +29,14 @@ const TABLES = {
     name: "Conclusoes",
     headers: ["Recebido em", "Event ID", "Setor", "Marca", "KBDs concluídos", "KBDs totais", "Acertos", "Perguntas", "Percentual", "Resultados", "Sessão", "Dispositivo"]
   },
+  quizProgress: {
+    name: "Progresso Quiz",
+    headers: ["Recebido em", "Event ID", "Setor", "Marca ID", "Marca", "KBD ID", "KBD", "Acertos", "Total", "Percentual", "Concluído em", "Sessão", "Dispositivo"]
+  },
+  state: {
+    name: "_EstadoSetor",
+    headers: ["Setor", "Atualizado em", "Quizzes concluídos", "Resultados", "Vídeos"]
+  },
   control: {
     name: "_Controle",
     headers: ["Event ID", "Recebido em"]
@@ -49,10 +57,19 @@ function setup() {
   });
   const control = book.getSheetByName(TABLES.control.name);
   if (control && !control.isSheetHidden()) control.hideSheet();
+  const state = book.getSheetByName(TABLES.state.name);
+  if (state && !state.isSheetHidden()) state.hideSheet();
   return "API Missão KBD configurada.";
 }
 
-function doGet() {
+function doGet(e) {
+  if (e && e.parameter && text_(e.parameter.action) === "progress") {
+    try {
+      return json_(getSectorProgress_(text_(e.parameter.setor)));
+    } catch (error) {
+      return json_({ ok: false, error: error && error.message ? error.message : String(error), version: API_VERSION });
+    }
+  }
   return json_({
     ok: true,
     service: "Missão KBD Sheets API",
@@ -112,7 +129,12 @@ function doPost(e) {
     } else if (eventType === "brand_completion") {
       destination = TABLES.completions.name;
       append_(sheets.completions, [receivedAt, eventId, text_(payload.setor), text_(payload.marca), number_(payload.kbdsConcluidos), number_(payload.kbdsTotal), number_(payload.acertosMarca), number_(payload.perguntasMarca), number_(payload.percentualMarca), text_(payload.resultados), text_(payload.sessionId), text_(payload.deviceId)]);
+    } else if (eventType === "quiz_completion") {
+      destination = TABLES.quizProgress.name;
+      append_(sheets.quizProgress, [receivedAt, eventId, text_(payload.setor), text_(payload.marcaId), text_(payload.marca), text_(payload.kbdId), text_(payload.kbd), number_(payload.acertos), number_(payload.total), number_(payload.percentual), text_(payload.completedAt || payload.timestamp), text_(payload.sessionId), text_(payload.deviceId)]);
     }
+
+    updateSectorState_(sheets.state, payload, receivedAt);
 
     append_(sheets.control, [eventId, receivedAt]);
     SpreadsheetApp.flush();
@@ -134,6 +156,103 @@ function doPost(e) {
   } finally {
     if (lock.hasLock()) lock.releaseLock();
   }
+}
+
+function emptySectorProgress_() {
+  return { completed: {}, results: {}, videos: {} };
+}
+
+function parseJsonObject_(value, fallback) {
+  try {
+    const parsed = JSON.parse(text_(value) || "{}");
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : fallback;
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function normalizeSector_(value) {
+  return text_(value).trim().toUpperCase().replace(/\s+/g, "");
+}
+
+function findSectorStateRow_(sheet, setor) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return 0;
+  const match = sheet.getRange(2, 1, lastRow - 1, 1).createTextFinder(setor).matchEntireCell(true).findNext();
+  return match ? match.getRow() : 0;
+}
+
+function updateSectorState_(sheet, payload, receivedAt) {
+  const eventType = text_(payload.eventType);
+  if (eventType !== "quiz_completion" && eventType !== "video_progress") return;
+
+  const setor = normalizeSector_(payload.setor);
+  const marcaId = text_(payload.marcaId);
+  const kbdId = text_(payload.kbdId);
+  if (!setor || !marcaId || !kbdId) return;
+
+  const row = findSectorStateRow_(sheet, setor);
+  const current = row ? sheet.getRange(row, 1, 1, 5).getValues()[0] : [setor, "", "{}", "{}", "{}"];
+  const completed = parseJsonObject_(current[2], {});
+  const results = parseJsonObject_(current[3], {});
+  const videos = parseJsonObject_(current[4], {});
+
+  if (eventType === "quiz_completion") {
+    if (!completed[marcaId]) completed[marcaId] = {};
+    if (!results[marcaId]) results[marcaId] = {};
+    completed[marcaId][kbdId] = true;
+    results[marcaId][kbdId] = {
+      marcaId: marcaId,
+      marca: text_(payload.marca),
+      kbdId: kbdId,
+      kbd: text_(payload.kbd),
+      acertos: number_(payload.acertos),
+      total: number_(payload.total),
+      percentual: number_(payload.percentual),
+      medalha: text_(payload.medalha),
+      setor: setor,
+      completedAt: text_(payload.completedAt || payload.timestamp || receivedAt.toISOString())
+    };
+  }
+
+  if (eventType === "video_progress") {
+    if (!videos[marcaId]) videos[marcaId] = {};
+    const previous = videos[marcaId][kbdId] || {};
+    videos[marcaId][kbdId] = {
+      videoId: text_(payload.videoId),
+      watchedSeconds: Math.max(number_(previous.watchedSeconds), number_(payload.watchedSeconds)),
+      duration: Math.max(number_(previous.duration), number_(payload.durationSeconds)),
+      percentage: Math.max(number_(previous.percentage), number_(payload.percentage)),
+      completed: Boolean(previous.completed || text_(payload.completed).toUpperCase() === "SIM"),
+      updatedAt: receivedAt.toISOString()
+    };
+  }
+
+  const values = [setor, receivedAt, JSON.stringify(completed), JSON.stringify(results), JSON.stringify(videos)];
+  if (row) sheet.getRange(row, 1, 1, values.length).setValues([values]);
+  else append_(sheet, values);
+}
+
+function getSectorProgress_(setorValue) {
+  const setor = normalizeSector_(setorValue);
+  if (!setor) throw new Error("setor é obrigatório.");
+  const book = getBook_();
+  const sheet = ensureSheet_(book, TABLES.state);
+  if (!sheet.isSheetHidden()) sheet.hideSheet();
+  const row = findSectorStateRow_(sheet, setor);
+  if (!row) return { ok: true, setor: setor, progress: emptySectorProgress_(), updatedAt: null, version: API_VERSION };
+  const values = sheet.getRange(row, 1, 1, 5).getValues()[0];
+  return {
+    ok: true,
+    setor: setor,
+    progress: {
+      completed: parseJsonObject_(values[2], {}),
+      results: parseJsonObject_(values[3], {}),
+      videos: parseJsonObject_(values[4], {})
+    },
+    updatedAt: values[1] instanceof Date ? values[1].toISOString() : text_(values[1]),
+    version: API_VERSION
+  };
 }
 
 function getBook_() {
