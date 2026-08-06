@@ -1,5 +1,5 @@
 name: Publicar site no GitHub Pages
-# Publicação do painel gerencial com hierarquia 2.3
+# Publicação do painel gerencial com hierarquia 2.3 — equipe sincronizada
 
 on:
   push:
