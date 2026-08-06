@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-auth-compat-2026-08-06";
+const CACHE_NAME = "missao-kbd-v2-team-hierarchy-2026-08-06";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -8,11 +8,12 @@ const CORE_ASSETS = [
   "./novidades.html",
   "./checklist.html",
   "./admin.html",
-  "./admin.css?v=20260806-1",
-  "./admin-mobile.css?v=20260806-1",
-  "./admin.js?v=20260806-2",
+  "./admin.css?v=20260806-2",
+  "./admin-mobile.css?v=20260806-2",
+  "./admin-overrides.css?v=20260806-1",
+  "./admin.js?v=20260806-3",
   "./style.css?v=20260805-1",
-  "./app.js?v=20260806-4",
+  "./app.js?v=20260806-5",
   "./quizzes.js?v=20260804-2",
   "./manifest.json",
   "./assets/mission-hero-v2.webp",

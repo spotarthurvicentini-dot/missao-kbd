@@ -1,0 +1,38 @@
+.avatar {
+  width: auto;
+  min-width: 34px;
+  max-width: 132px;
+  height: 34px;
+  padding: 0 9px;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  border: 0;
+  background: rgba(2, 5, 12, .64);
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 760px) {
+  body.menu-open {
+    overflow: hidden;
+  }
+
+  body.menu-open .sidebar-backdrop {
+    display: block;
+  }
+
+  .sidebar {
+    z-index: 50;
+  }
+
+  .admin-user strong,
+  .admin-user small {
+    display: none;
+  }
+}

@@ -7,10 +7,11 @@
   <meta name="theme-color" content="#080b16">
   <link rel="icon" href="assets/favicon-32.png">
   <style>svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}@media(max-width:760px){.admin-topbar{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}.global-search{order:3;flex:1 0 100%!important;width:100%!important}}</style>
-  <link rel="stylesheet" href="admin.css?v=20260806-1">
-  <link rel="stylesheet" href="admin-mobile.css?v=20260806-1">
-  <script defer src="app.js?v=20260806-4"></script>
-  <script defer src="admin.js?v=20260806-2"></script>
+  <link rel="stylesheet" href="admin.css?v=20260806-2">
+  <link rel="stylesheet" href="admin-mobile.css?v=20260806-2">
+  <link rel="stylesheet" href="admin-overrides.css?v=20260806-1">
+  <script defer src="app.js?v=20260806-5"></script>
+  <script defer src="admin.js?v=20260806-3"></script>
 </head>
 <body onload="initAdmin()">
   <div class="admin-shell">
@@ -28,7 +29,6 @@
         <button class="nav-item" data-view="team"><span data-icon="users"></span>Equipe</button>
         <button class="nav-item" data-view="content"><span data-icon="book"></span>Conteúdos e KBDs</button>
         <button class="nav-item" data-view="analytics"><span data-icon="chart"></span>Analytics</button>
-        <button class="nav-item" data-view="reports"><span data-icon="file"></span>Relatórios</button>
       </nav>
 
       <div class="sidebar-foot">
@@ -36,6 +36,7 @@
         <button class="nav-item" onclick="sairConfirmado()"><span data-icon="logout"></span>Sair</button>
       </div>
     </aside>
+    <button class="sidebar-backdrop" id="sidebarBackdrop" type="button" aria-label="Fechar menu"></button>
 
     <main class="workspace">
       <header class="admin-topbar">
@@ -47,8 +48,7 @@
           <div class="search-results" id="searchResults"></div>
         </div>
         <div class="top-actions">
-          <button class="icon-btn notification" aria-label="Notificações"><span data-icon="bell"></span><i></i></button>
-          <div class="admin-user"><span class="avatar">AV</span><div><strong>Gestor SPOT</strong><small>Administrador</small></div><span data-icon="chevron"></span></div>
+          <div class="admin-user"><span class="avatar" id="managerSectorAvatar">SPOT</span><div><strong>Gestor SPOT</strong><small id="managerSectorLabel">Gestão</small></div></div>
         </div>
       </header>
 
@@ -56,7 +56,7 @@
         <section class="view active" data-page="overview">
           <div class="page-head">
             <div><span class="eyebrow">CENTRAL DE INTELIGÊNCIA</span><h1>Visão geral da operação</h1><p>Acompanhe engajamento, conhecimento e evolução da equipe em um só lugar.</p></div>
-            <div class="head-actions"><button class="btn secondary"><span data-icon="calendar"></span>Últimos 30 dias</button><button class="btn primary" data-open-view="reports"><span data-icon="download"></span>Exportar relatório</button></div>
+            <div class="head-actions"><button class="btn secondary"><span data-icon="calendar"></span>Últimos 30 dias</button></div>
           </div>
 
           <div class="scope-bar">
@@ -91,7 +91,6 @@
         <section class="view" data-page="team"><div class="page-head"><div><span class="eyebrow">GESTÃO DE PESSOAS</span><h1>Coordenadores e promotores</h1><p>Localize pessoas, compare resultados e identifique quem precisa de apoio.</p></div><button class="btn secondary"><span data-icon="filter"></span>Filtros</button></div><div id="teamContent"></div></section>
         <section class="view" data-page="content"><div class="page-head"><div><span class="eyebrow">CONTEÚDO</span><h1>KBDs e treinamentos</h1><p>Visibilidade completa da adesão e da performance por conteúdo.</p></div></div><div id="contentView"></div></section>
         <section class="view" data-page="analytics"><div class="page-head"><div><span class="eyebrow">ANALYTICS</span><h1>Análises avançadas</h1><p>Cruze região, perfil e conteúdo para encontrar oportunidades.</p></div></div><div id="analyticsView"></div></section>
-        <section class="view" data-page="reports"><div class="page-head"><div><span class="eyebrow">RELATÓRIOS</span><h1>Central de relatórios</h1><p>Gere arquivos gerenciais prontos para análise e compartilhamento.</p></div></div><div id="reportsView"></div></section>
       </div>
     </main>
   </div>

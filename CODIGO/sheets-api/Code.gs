@@ -1,4 +1,4 @@
-const API_VERSION = "2.2.0";
+const API_VERSION = "2.3.0";
 const REPORT_CONFIG = {
   timeZone: "America/Sao_Paulo",
   hour: 8,
@@ -39,7 +39,7 @@ const TABLES = {
   },
   teams: {
     name: "Equipes",
-    headers: ["Coordenador", "Promotor", "Nome", "Regional"]
+    headers: ["Coordenador", "Promotor", "Regional", "Nome Coordenador"]
   },
   control: {
     name: "_Controle",
@@ -104,7 +104,8 @@ function getDashboardReport_(managerSector, requestedDays, token) {
   const end = new Date();
   const start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
   const report = buildInteractionReport_(start, end);
-  const allowedSectors = session.role === "admin" ? [] : getManagedSectors_(manager);
+  const team = getManagedTeam_(manager, session.role);
+  const allowedSectors = team.map(function (row) { return row.promoter; });
   const canSee_ = function (sector) {
     return session.role === "admin" || allowedSectors.indexOf(normalizeSector_(sector)) >= 0;
   };
@@ -131,6 +132,7 @@ function getDashboardReport_(managerSector, requestedDays, token) {
     manager: manager,
     role: session.role,
     allowedSectors: allowedSectors,
+    team: team,
     period: { start: start.toISOString(), end: end.toISOString(), days: days },
     report: {
       totals: visibleTotals,
@@ -162,6 +164,9 @@ function doPost(e) {
     }
     if (text_(payload.action) === "setup") {
       return json_(runAuthenticatedSetup_(text_(payload.token)));
+    }
+    if (text_(payload.action) === "syncTeams") {
+      return json_(syncTeams_(text_(payload.token), payload.rows, text_(payload.mode)));
     }
     lock.waitLock(15000);
     validatePayload_(payload);
@@ -270,18 +275,53 @@ function getAuthSession_(token) {
   try { return JSON.parse(value); } catch (error) { return null; }
 }
 
-function getManagedSectors_(manager) {
+function getManagedTeam_(manager, role) {
   const book = getBook_();
   const sheet = ensureSheet_(book, TABLES.teams);
-  const allowed = [normalizeSector_(manager)];
-  if (sheet.getLastRow() < 2) return allowed;
-  sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues().forEach(function (row) {
-    if (normalizeSector_(row[0]) === manager) {
-      const promoter = normalizeSector_(row[1]);
-      if (promoter && allowed.indexOf(promoter) < 0) allowed.push(promoter);
-    }
+  if (sheet.getLastRow() < 2) return [];
+  const team = [];
+  sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues().forEach(function (row) {
+    const coordinator = normalizeSector_(row[0]);
+    const promoter = normalizeSector_(row[1]);
+    if (!promoter || (role !== "admin" && coordinator !== manager)) return;
+    team.push({
+      coordinator: coordinator,
+      promoter: promoter,
+      regional: text_(row[2]).trim().toUpperCase(),
+      coordinatorName: text_(row[3]).trim()
+    });
   });
-  return allowed;
+  return team;
+}
+
+function syncTeams_(token, rows, mode) {
+  const session = getAuthSession_(token);
+  if (!session || session.role !== "admin") throw new Error("Sessão administrativa inválida ou expirada.");
+  if (!Array.isArray(rows) || !rows.length || rows.length > 400) throw new Error("Envie entre 1 e 400 vínculos por lote.");
+
+  const book = getBook_();
+  const sheet = ensureSheet_(book, TABLES.teams);
+  if (mode === "replace") {
+    sheet.clearContents();
+    sheet.getRange(1, 1, 1, TABLES.teams.headers.length).setValues([TABLES.teams.headers]);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, 1, TABLES.teams.headers.length)
+      .setFontWeight("bold")
+      .setBackground("#11162F")
+      .setFontColor("#FFFFFF");
+  } else if (mode !== "append") {
+    throw new Error("Modo de sincronização inválido.");
+  }
+
+  const values = rows.map(function (row) {
+    const coordinator = normalizeSector_(row.coordinator);
+    const promoter = normalizeSector_(row.promoter);
+    if (!coordinator || !promoter) throw new Error("Vínculo sem coordenador ou promotor.");
+    return [coordinator, promoter, text_(row.state).trim().toUpperCase(), text_(row.coordinatorName).trim()];
+  });
+  sheet.getRange(sheet.getLastRow() + 1, 1, values.length, 4).setValues(values);
+  SpreadsheetApp.flush();
+  return { ok: true, imported: values.length, total: Math.max(0, sheet.getLastRow() - 1), version: API_VERSION };
 }
 
 function sha256Hex_(value) {

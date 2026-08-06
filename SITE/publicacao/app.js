@@ -1,5 +1,5 @@
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWAAaDDwVQjwh2qddHr55-hlOU64SboDwdYx4KihXGnYAAnyGncz9yRghsjuzysO4W/exec";
-const APP_VERSION = "2.2.0";
+const APP_VERSION = "2.3.0";
 const DEVICE_ID_KEY = "KBD_DEVICE_ID";
 const SESSION_ID_KEY = "KBD_SESSION_ID";
 const EVENT_QUEUE_KEY = "KBD_EVENT_QUEUE";
@@ -1907,5 +1907,8 @@ if ("serviceWorker" in navigator) {
 
 window.addEventListener("online", flushEventQueue);
 window.addEventListener("load", () => {
+  if (/\/(?:index\.html)?$/.test(window.location.pathname)) {
+    fetch(`${GOOGLE_SCRIPT_URL}?warmup=${Date.now()}`, { method: "GET", cache: "no-store" }).catch(() => {});
+  }
   setTimeout(flushEventQueue, 800);
 });
