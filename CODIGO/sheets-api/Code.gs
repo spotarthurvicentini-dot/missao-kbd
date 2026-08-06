@@ -160,6 +160,9 @@ function doPost(e) {
     if (text_(payload.action) === "dashboard") {
       return json_(getDashboardReport_(text_(payload.setor), number_(payload.days) || 30, text_(payload.token)));
     }
+    if (text_(payload.action) === "setup") {
+      return json_(runAuthenticatedSetup_(text_(payload.token)));
+    }
     lock.waitLock(15000);
     validatePayload_(payload);
 
@@ -232,6 +235,12 @@ function doPost(e) {
   } finally {
     if (lock.hasLock()) lock.releaseLock();
   }
+}
+
+function runAuthenticatedSetup_(token) {
+  const session = getAuthSession_(token);
+  if (!session || session.role !== "admin") throw new Error("Sessão administrativa inválida ou expirada.");
+  return { ok: true, message: setup(), version: API_VERSION };
 }
 
 function authenticate_(payload) {
