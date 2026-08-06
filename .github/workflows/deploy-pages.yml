@@ -1,4 +1,4 @@
-name: Atualizar GitHub Pages
+name: Publicar site no GitHub Pages
 
 on:
   push:
@@ -8,17 +8,38 @@ on:
 permissions:
   contents: read
   pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
 
 jobs:
-  atualizar-pages:
+  publicar:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacao.outputs.page_url }}
     steps:
-      - name: Solicitar nova compilacao do Pages
-        uses: actions/github-script@v7
+      - name: Baixar o projeto
+        uses: actions/checkout@v4
+
+      - name: Preparar o conteúdo público
+        shell: bash
+        run: |
+          mkdir -p _site/APP/distribuicao
+          cp -R SITE/publicacao/. _site/
+          cp APP/distribuicao/Missao_KBD.apk _site/APP/distribuicao/Missao_KBD.apk
+          cp APP/distribuicao/Missao_KBD.sha256.txt _site/APP/distribuicao/Missao_KBD.sha256.txt
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Montar artefato do site
+        uses: actions/upload-pages-artifact@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            await github.rest.repos.requestPagesBuild({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
+          path: _site
+
+      - name: Publicar no GitHub Pages
+        id: publicacao
+        uses: actions/deploy-pages@v4

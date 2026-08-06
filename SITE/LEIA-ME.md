@@ -1,5 +1,7 @@
 # SITE
 
-O site publicado está na raiz deste projeto por compatibilidade com o GitHub Pages.
+O frontend completo está em `publicacao/`.
 
-Arquivos principais: `index.html`, `home.html`, `marca.html`, `kbd.html`, `quiz.html`, `novidades.html`, `checklist.html`, `app.js`, `quizzes.js`, `style.css`, `manifest.json` e `service-worker.js`.
+Dentro dela ficam os HTMLs, JavaScript, CSS, manifesto, service worker, imagens, logos e referências dos KBDs. Nenhum arquivo do frontend deve ficar solto na raiz do projeto.
+
+O workflow `.github/workflows/deploy-pages.yml` publica o conteúdo desta pasta como a raiz do GitHub Pages e inclui o APK oficial durante a montagem do artefato.

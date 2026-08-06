@@ -19,7 +19,7 @@ Conteúdos antigos fora desse recorte não devem aparecer no aplicativo.
 - Quizzes: 21 perguntas validadas, três por marca, com justificativa após a confirmação.
 - Confirmação e sincronização: cada resposta confirmada é enviada pela integração já configurada.
 
-O arquivo `quizzes.js` contém somente as perguntas e os gabaritos recebidos para este ciclo.
+O arquivo `SITE/publicacao/quizzes.js` contém somente as perguntas e os gabaritos recebidos para este ciclo.
 
 ## Estrutura operacional
 
@@ -27,17 +27,16 @@ O arquivo `quizzes.js` contém somente as perguntas e os gabaritos recebidos par
 APP/                código Android, assinatura privada e APK oficial
 BASES/              PDFs originais de treinamento, fora da publicação
 CODIGO/             API do Google Sheets e integrações de apoio
-SCRIPTS/            utilitários e arquivos temporários
-SITE/               documentação da publicação web
-raiz do projeto/    frontend publicado pelo GitHub Pages
-assets/             identidade e ícones
-logos/              logos das marcas
-kbds/               imagens usadas pelo aplicativo
+SCRIPTS/            utilitários e configurações técnicas
+SITE/publicacao/    frontend completo publicado pelo GitHub Pages
+.github/workflows/  automações de publicação e validação
 ```
+
+A raiz do projeto contém somente as pastas operacionais, `.gitignore` e este arquivo de orientação.
 
 ## Publicação
 
-O projeto está conectado ao repositório `SPOTPROMO-PG/missao-kbd`. Os PDFs-base devem ser excluídos do artefato publicado.
+O projeto está conectado ao repositório `SPOTPROMO-PG/missao-kbd`. A publicação monta um artefato usando `SITE/publicacao/` e acrescenta somente o APK oficial de `APP/distribuicao/`. PDFs, fontes, segredos e builds locais não entram no site.
 
 ## Gerar o APK oficial
 
