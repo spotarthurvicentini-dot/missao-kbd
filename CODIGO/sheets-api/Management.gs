@@ -23,7 +23,11 @@ function buildManagementReport_(teamRows, start, end) {
   const cycleStart = new Date(MANAGEMENT_CYCLE.startAt);
   const cycleEndLimit = new Date(MANAGEMENT_CYCLE.endAt);
   const cycleEnd = end < cycleEndLimit ? end : cycleEndLimit;
-  const sessions = rowsInPeriod_(book.getSheetByName(TABLES.sessions.name), start, end);
+  const sessionHistory = rowsInPeriod_(book.getSheetByName(TABLES.sessions.name), new Date(0), end);
+  const sessions = sessionHistory.filter(function (row) {
+    const date = managementDate_(row[0]);
+    return date && date >= start && date <= end;
+  });
   const quizzes = rowsInPeriod_(book.getSheetByName(TABLES.quizProgress.name), cycleStart, cycleEnd);
   const videos = rowsInPeriod_(book.getSheetByName(TABLES.videos.name), cycleStart, cycleEnd);
   const operationalQuizzes = quizzes.filter(function (row) {
@@ -58,6 +62,14 @@ function buildManagementReport_(teamRows, start, end) {
     };
   });
 
+  sessionHistory.forEach(function (row) {
+    const sector = normalizeSector_(row[2]);
+    const person = peopleBySector[sector];
+    if (!person) return;
+    const receivedAt = managementDate_(row[0]);
+    if (receivedAt && (!person.lastAccessAt || receivedAt > person.lastAccessAt)) person.lastAccessAt = receivedAt;
+  });
+
   sessions.forEach(function (row) {
     const sector = normalizeSector_(row[2]);
     const person = peopleBySector[sector];
@@ -67,22 +79,20 @@ function buildManagementReport_(teamRows, start, end) {
     if (receivedAt) {
       const day = Utilities.formatDate(receivedAt, REPORT_CONFIG.timeZone, "yyyy-MM-dd");
       person.activeDaysMap[day] = true;
-      if (!person.lastAccessAt || receivedAt > person.lastAccessAt) person.lastAccessAt = receivedAt;
     }
   });
 
-  quizzes.forEach(function (row) {
+  quizzes.forEach(function (row, rowIndex) {
     const sector = normalizeSector_(row[2]);
     const kbdId = text_(row[5]).trim();
     const person = peopleBySector[sector];
     if (!person || !activeKbdById[kbdId]) return;
     const receivedAt = managementDate_(row[0]);
     const previous = person.latestQuizzes[kbdId];
-    const completedAt = managementDate_(row[10]) || receivedAt;
-    if (!previous || (completedAt && completedAt >= previous.completedAt)) {
+    if (!previous || (receivedAt && receivedAt > previous.receivedAt) || (receivedAt && previous.receivedAt && receivedAt.getTime() === previous.receivedAt.getTime() && rowIndex > previous.rowIndex)) {
       person.latestQuizzes[kbdId] = {
         receivedAt: receivedAt || start,
-        completedAt: completedAt || receivedAt || start,
+        rowIndex: rowIndex,
         correct: Math.max(0, number_(row[7])),
         total: Math.max(0, number_(row[8])),
         percent: clampPercent_(row[9])
@@ -94,7 +104,7 @@ function buildManagementReport_(teamRows, start, end) {
     const sector = normalizeSector_(row[2]);
     const person = peopleBySector[sector];
     if (!person) return;
-    const kbdMeta = activeKbdByName[normalizeManagementText_(row[4])];
+    const kbdMeta = activeKbdById[text_(row[14]).trim()] || activeKbdByName[normalizeManagementText_(row[4])];
     if (!kbdMeta) return;
     const percent = clampPercent_(row[9]);
     person.videoByKbd[kbdMeta.kbdId] = Math.max(number_(person.videoByKbd[kbdMeta.kbdId]), percent);
@@ -120,6 +130,7 @@ function buildManagementReport_(teamRows, start, end) {
       correct: correct,
       questions: questions,
       accuracy: questions ? managementPercent_(correct, questions) : null,
+      videoProgressTotal: videoPercentTotal,
       videoAveragePercent: Math.round(videoPercentTotal / ACTIVE_KBDS.length)
     };
   }).sort(function (a, b) { return a.sector.localeCompare(b.sector); });
@@ -129,11 +140,15 @@ function buildManagementReport_(teamRows, start, end) {
   const totalCorrect = people.reduce(function (sum, person) { return sum + person.correct; }, 0);
   const totalQuestions = people.reduce(function (sum, person) { return sum + person.questions; }, 0);
   const activePromoters = people.filter(function (person) { return person.accesses > 0; }).length;
+  const promoterDays = people.reduce(function (sum, person) { return sum + person.activeDays; }, 0);
+  const attentionPeopleCount = people.filter(isManagementAttentionPerson_).length;
 
   return {
     definitions: {
       accesses: "Quantidade de logins (session_start) recebidos no período.",
+      accessEvents: "Quantidade bruta de eventos session_start recebidos no período.",
       activePromoters: "Promotores vinculados com ao menos um login no período.",
+      promoterDays: "Combinações distintas de promotor e dia com ao menos um login no período.",
       completion: "Quiz mais recente de cada promotor por KBD no ciclo, dividido pelos 9 KBDs publicados.",
       accuracy: "Acertos divididos pelas perguntas do quiz mais recente por promotor e KBD no ciclo.",
       video: "Maior percentual assistido por promotor e KBD no ciclo; KBD sem evento vale zero."
@@ -142,13 +157,15 @@ function buildManagementReport_(teamRows, start, end) {
       linkedPromoters: people.length,
       activePromoters: activePromoters,
       accesses: people.reduce(function (sum, person) { return sum + person.accesses; }, 0),
+      promoterDays: promoterDays,
+      attentionPeopleCount: attentionPeopleCount,
       completedKbdCount: totalCompleted,
       eligibleKbdCount: totalEligible,
       completionRate: managementPercent_(totalCompleted, totalEligible),
       correct: totalCorrect,
       questions: totalQuestions,
       accuracy: totalQuestions ? managementPercent_(totalCorrect, totalQuestions) : null,
-      videoAveragePercent: people.length ? Math.round(people.reduce(function (sum, person) { return sum + person.videoAveragePercent; }, 0) / people.length) : 0
+      videoAveragePercent: totalEligible ? Math.round(people.reduce(function (sum, person) { return sum + person.videoProgressTotal; }, 0) / totalEligible) : 0
     },
     people: people,
     weeklyTrend: buildManagementTrend_(sessions, operationalQuizzes, teamBySector, activeKbdById, start, end),
@@ -278,13 +295,20 @@ function buildManagementAttention_(people) {
   const inactive = people.filter(function (person) { return person.accesses === 0; }).length;
   const notStarted = people.filter(function (person) { return person.completedKbdCount === 0; }).length;
   const lowCompletion = people.filter(function (person) { return person.completedKbdCount > 0 && person.completionRate < 50; }).length;
-  const lowAccuracy = people.filter(function (person) { return person.questions > 0 && person.accuracy < 70; }).length;
+  const lowAccuracy = people.filter(function (person) { return person.questions > 0 && person.correct / person.questions < 0.7; }).length;
   return [
     { id: "inactive", severity: "high", label: "Sem login no período", count: inactive },
     { id: "not-started", severity: "high", label: "Nenhum KBD concluído", count: notStarted },
     { id: "low-completion", severity: "medium", label: "Andamento abaixo de 50%", count: lowCompletion },
     { id: "low-accuracy", severity: "medium", label: "Acerto abaixo de 70%", count: lowAccuracy }
   ].filter(function (item) { return item.count > 0; });
+}
+
+function isManagementAttentionPerson_(person) {
+  return person.accesses === 0 ||
+    person.completedKbdCount === 0 ||
+    (person.completedKbdCount > 0 && person.completionRate < 50) ||
+    (person.questions > 0 && person.correct / person.questions < 0.7);
 }
 
 function managementPercent_(numerator, denominator) {

@@ -29,7 +29,7 @@ function managerDate(value){ if(!value)return 'Sem login';const date=new Date(va
 function managerRegion(value){ return REGION_NAMES[value] || value || 'Sem regional'; }
 
 function renderManagerLoading(){
-  document.getElementById('kpiGrid').innerHTML=['Equipe vinculada','Promotores ativos','Andamento','Índice de acerto'].map(label=>`<article class="kpi-card"><div class="kpi-top"><span>${label}</span></div><div class="kpi-value">—</div><div class="kpi-foot">Carregando dados reais…</div></article>`).join('');
+  document.getElementById('kpiGrid').innerHTML=['Equipe vinculada','Acessos únicos','Andamento','Índice de acerto'].map(label=>`<article class="kpi-card"><div class="kpi-top"><span>${label}</span></div><div class="kpi-value">—</div><div class="kpi-foot">Carregando dados reais…</div></article>`).join('');
   document.getElementById('engagementChart').innerHTML='<div class="empty-search">Carregando evolução do período…</div>';
   document.getElementById('healthBars').innerHTML='<div class="empty-search">Carregando indicadores…</div>';
   document.getElementById('regionTable').innerHTML='<div class="empty-search">Carregando regionais…</div>';
@@ -64,19 +64,19 @@ function renderManagerKpis(){
   const totals=managementReport.totals;
   const cards=[
     ['users','Equipe vinculada',totals.linkedPromoters,`${totals.linkedPromoters} promotores no catálogo`],
-    ['pulse','Promotores ativos',totals.activePromoters,`${totals.accesses} logins no período`],
+    ['pulse','Acessos únicos',totals.activePromoters,`${totals.activePromoters} promotores • ${totals.accesses} eventos de login`],
     ['target','Andamento dos quizzes',`${totals.completionRate}%`,`${totals.completedKbdCount}/${totals.eligibleKbdCount} quizzes dos 9 KBDs publicados`],
     ['check','Índice de acerto',managerPercent(totals.accuracy),totals.questions?`${totals.correct}/${totals.questions} respostas do quiz mais recente`:'Sem quiz concluído no ciclo']
   ];
-  document.getElementById('kpiGrid').innerHTML=cards.map(([icon,label,value,detail])=>`<article class="kpi-card" title="${managerEscape(managementReport.definitions[label==='Andamento dos quizzes'?'completion':label==='Índice de acerto'?'accuracy':label==='Promotores ativos'?'activePromoters':'accesses']||'')}"><div class="kpi-top"><span>${managerEscape(label)}</span><span class="kpi-icon">${managerIcon(icon)}</span></div><div class="kpi-value">${managerEscape(value)}</div><div class="kpi-foot">${managerEscape(detail)}</div></article>`).join('');
+  document.getElementById('kpiGrid').innerHTML=cards.map(([icon,label,value,detail])=>`<article class="kpi-card" title="${managerEscape(managementReport.definitions[label==='Andamento dos quizzes'?'completion':label==='Índice de acerto'?'accuracy':label==='Acessos únicos'?'activePromoters':'accesses']||'')}"><div class="kpi-top"><span>${managerEscape(label)}</span><span class="kpi-icon">${managerIcon(icon)}</span></div><div class="kpi-value">${managerEscape(value)}</div><div class="kpi-foot">${managerEscape(detail)}</div></article>`).join('');
 }
 
 function renderManagerTrend(){
   const rows=managementReport.weeklyTrend||[];
   if(!rows.length){document.getElementById('engagementChart').innerHTML='<div class="empty-search">Sem dados no período.</div>';return;}
-  const maxValue=Math.max(1,...rows.flatMap(row=>[row.accesses,row.quizAttempts]));
+  const maxValue=Math.max(1,...rows.flatMap(row=>[row.activePromoters,row.quizAttempts]));
   const points=(key)=>rows.map((row,index)=>`${rows.length===1?50:index*100/(rows.length-1)},${110-(Number(row[key]||0)*90/maxValue)}`).join(' ');
-  document.getElementById('engagementChart').innerHTML=`<svg viewBox="0 0 100 120" preserveAspectRatio="none"><path class="chart-grid" d="M0 20H100M0 50H100M0 80H100M0 110H100"/><polyline points="${points('accesses')}" fill="none" stroke="#38d4e8" stroke-width="1.8" vector-effect="non-scaling-stroke"/><polyline points="${points('quizAttempts')}" fill="none" stroke="#9b7bff" stroke-width="1.8" vector-effect="non-scaling-stroke"/></svg><div class="chart-labels">${rows.map(row=>`<span title="${row.accesses} acessos • ${row.quizAttempts} tentativas">${managerEscape(row.label)}</span>`).join('')}</div>`;
+  document.getElementById('engagementChart').innerHTML=`<svg viewBox="0 0 100 120" preserveAspectRatio="none"><path class="chart-grid" d="M0 20H100M0 50H100M0 80H100M0 110H100"/><polyline points="${points('activePromoters')}" fill="none" stroke="#38d4e8" stroke-width="1.8" vector-effect="non-scaling-stroke"/><polyline points="${points('quizAttempts')}" fill="none" stroke="#9b7bff" stroke-width="1.8" vector-effect="non-scaling-stroke"/></svg><div class="chart-labels">${rows.map(row=>`<span title="${row.activePromoters} acessos únicos • ${row.accesses} eventos • ${row.quizAttempts} tentativas">${managerEscape(row.label)}</span>`).join('')}</div>`;
 }
 
 function renderManagerIndicators(){
@@ -93,9 +93,9 @@ function renderManagerRegions(){
 
 function renderManagerAttention(){
   const rows=managementReport.attention||[];
-  const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
+  const total=Number(managementReport.totals.attentionPeopleCount||0);
   document.querySelector('.count-badge').textContent=String(total);
-  document.querySelector('.count-badge').title=`${total} ocorrências de alerta`;
+  document.querySelector('.count-badge').title=`${total} promotores distintos com alerta`;
   document.getElementById('attentionList').innerHTML=rows.length?rows.map(row=>`<div class="attention-item"><span class="attention-icon ${row.severity==='high'?'red':'amber'}">${managerIcon('warning')}</span><div><strong>${managerEscape(row.label)}</strong><p>Regra calculada com atividade recente e avanço do ciclo.</p></div><span>${row.count}</span></div>`).join(''):'<div class="empty-search">Nenhum alerta calculado.</div>';
 }
 
@@ -103,8 +103,8 @@ function renderManagerOperation(){
   const totals=managementReport.totals;
   const modules=[
     ['users','Promotores vinculados',totals.linkedPromoters,'Catálogo vigente'],
-    ['pulse','Logins',totals.accesses,'Eventos session_start'],
-    ['users','Promotores ativos',totals.activePromoters,'Ao menos um login no período'],
+    ['pulse','Acessos únicos',totals.activePromoters,'Promotores distintos com login'],
+    ['users','Promotor-dias',totals.promoterDays,'Promotor + dia distintos no período'],
     ['check','Quizzes concluídos',totals.completedKbdCount,`De ${totals.eligibleKbdCount} quizzes dos 9 KBDs publicados`],
     ['play','Vídeo assistido',`${totals.videoAveragePercent}%`,'Maior progresso por promotor e KBD'],
     ['target','Acerto',managerPercent(totals.accuracy),totals.questions?'Quiz mais recente do ciclo':'Sem base no ciclo']

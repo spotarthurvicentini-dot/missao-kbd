@@ -1,4 +1,4 @@
-const API_VERSION = "2.4.0";
+const API_VERSION = "2.4.1";
 const REPORT_CONFIG = {
   timeZone: "America/Sao_Paulo",
   hour: 8,
@@ -23,7 +23,7 @@ const TABLES = {
   },
   videos: {
     name: "Videos",
-    headers: ["Recebido em", "Event ID", "Setor", "Marca", "KBD", "Video ID", "Evento do vídeo", "Segundos assistidos", "Duração", "Percentual", "Concluído", "Sessão", "Dispositivo"]
+    headers: ["Recebido em", "Event ID", "Setor", "Marca", "KBD", "Video ID", "Evento do vídeo", "Segundos assistidos", "Duração", "Percentual", "Concluído", "Sessão", "Dispositivo", "Marca ID", "KBD ID"]
   },
   completions: {
     name: "Conclusoes",
@@ -181,7 +181,7 @@ function doPost(e) {
       append_(sheets.answers, [receivedAt, eventId, text_(payload.setor), text_(payload.marca), text_(payload.kbd), text_(payload.pergunta), text_(payload.respostaEnviada), text_(payload.respostaCorreta), text_(payload.acertou), number_(payload.score), text_(payload.sessionId), text_(payload.deviceId)]);
     } else if (eventType === "video_progress") {
       destination = TABLES.videos.name;
-      append_(sheets.videos, [receivedAt, eventId, text_(payload.setor), text_(payload.marca), text_(payload.kbd), text_(payload.videoId), text_(payload.videoEvent), number_(payload.watchedSeconds), number_(payload.durationSeconds), number_(payload.percentage), text_(payload.completed), text_(payload.sessionId), text_(payload.deviceId)]);
+      append_(sheets.videos, [receivedAt, eventId, text_(payload.setor), text_(payload.marca), text_(payload.kbd), text_(payload.videoId), text_(payload.videoEvent), number_(payload.watchedSeconds), number_(payload.durationSeconds), number_(payload.percentage), text_(payload.completed), text_(payload.sessionId), text_(payload.deviceId), text_(payload.marcaId), text_(payload.kbdId)]);
     } else if (eventType === "brand_completion") {
       destination = TABLES.completions.name;
       append_(sheets.completions, [receivedAt, eventId, text_(payload.setor), text_(payload.marca), number_(payload.kbdsConcluidos), number_(payload.kbdsTotal), number_(payload.acertosMarca), number_(payload.perguntasMarca), number_(payload.percentualMarca), text_(payload.resultados), text_(payload.sessionId), text_(payload.deviceId)]);
@@ -529,6 +529,8 @@ function ensureSheet_(book, table) {
       .setBackground("#11162F")
       .setFontColor("#FFFFFF");
     sheet.autoResizeColumns(1, table.headers.length);
+  } else if (sheet.getLastColumn() < table.headers.length) {
+    sheet.getRange(1, 1, 1, table.headers.length).setValues([table.headers]);
   }
   return sheet;
 }
