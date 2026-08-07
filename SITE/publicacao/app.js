@@ -1,5 +1,5 @@
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWAAaDDwVQjwh2qddHr55-hlOU64SboDwdYx4KihXGnYAAnyGncz9yRghsjuzysO4W/exec";
-const APP_VERSION = "2.3.0";
+const APP_VERSION = "2.4.0";
 const DEVICE_ID_KEY = "KBD_DEVICE_ID";
 const SESSION_ID_KEY = "KBD_SESSION_ID";
 const EVENT_QUEUE_KEY = "KBD_EVENT_QUEUE";
@@ -125,8 +125,13 @@ async function syncProgressFromServer(setor) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
   try {
-    const url = `${GOOGLE_SCRIPT_URL}?action=progress&setor=${encodeURIComponent(normalized)}&_=${Date.now()}`;
-    const response = await fetch(url, { method: "GET", cache: "no-store", signal: controller.signal });
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action: "progress", setor: normalized, token: sessionStorage.getItem(AUTH_TOKEN_KEY) || "" }),
+      cache: "no-store",
+      signal: controller.signal,
+    });
     const result = await response.json();
     if (!response.ok || !result.ok || !result.progress) throw new Error(result.error || `HTTP ${response.status}`);
 
@@ -811,11 +816,6 @@ async function entrar() {
     return;
   }
 
-  if (!isAdminLogin && !ALLOWED_SECTORS_NORMALIZED.has(normalized)) {
-    alert("Setor inválido. Verifique o código digitado.");
-    return;
-  }
-
   const button = document.getElementById("loginButton");
   if (button) {
     button.disabled = true;
@@ -832,21 +832,9 @@ async function entrar() {
     auth = await response.json();
     if (!response.ok || !auth.ok) throw new Error(auth.error || "Credenciais inválidas.");
   } catch (error) {
-    const legacyApi = auth?.version === "2.1.0";
-    if (!isAdminLogin && legacyApi && password === "Spot@2023") {
-      auth = {
-        ok: true,
-        user: normalized,
-        role: /COORD|EXECUTIVO/i.test(normalized) ? "manager" : "promoter",
-        token: `legacy-${createUuid()}`,
-      };
-    } else {
-      alert(isAdminLogin && legacyApi
-        ? "O acesso de gestão global aguarda a atualização segura da API."
-        : (error?.message || "Não foi possível validar o acesso."));
-      if (button) { button.disabled = false; button.textContent = "Entrar"; }
-      return;
-    }
+    alert(error?.message || "Não foi possível validar o acesso.");
+    if (button) { button.disabled = false; button.textContent = "Entrar"; }
+    return;
   }
 
   const role = auth.role;
@@ -1615,11 +1603,12 @@ function getFallbackBulletText() {
 
 async function enviarPerguntaParaSheets(payload, options = {}) {
   const prepared = prepareEventPayload(payload);
+  const payloadToSend = { ...prepared, authToken: sessionStorage.getItem(AUTH_TOKEN_KEY) || "" };
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(prepared),
+      body: JSON.stringify(payloadToSend),
       keepalive: true,
     });
 

@@ -8,6 +8,7 @@ APP/android-app/.gradle/
 APP/android-app/build/
 APP/android-app/app/build/
 APP/distribuicao/anteriores/
+APP/distribuicao/Missao_KBD-v*.apk
 SCRIPTS/temporarios/
 .android-tools/
 

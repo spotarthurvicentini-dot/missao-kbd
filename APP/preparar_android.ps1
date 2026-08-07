@@ -133,7 +133,7 @@ try {
 $apkOrigem = Join-Path $projetoAndroid "app\build\outputs\apk\release\app-release.apk"
 $pastaDistribuicao = Join-Path $pastaApp "distribuicao"
 $apkOficial = Join-Path $pastaDistribuicao "Missao_KBD.apk"
-$apkVersionado = Join-Path $pastaDistribuicao "Missao_KBD-v2.1.0.apk"
+$apkVersionado = Join-Path $pastaDistribuicao "Missao_KBD-v2.4.0.apk"
 New-Item -ItemType Directory -Force -Path $pastaDistribuicao | Out-Null
 Copy-Item -LiteralPath $apkOrigem -Destination $apkOficial -Force
 Copy-Item -LiteralPath $apkOrigem -Destination $apkVersionado -Force
@@ -143,6 +143,6 @@ $apksigner = Join-Path $sdk "build-tools\35.0.0\apksigner.bat"
 if ($LASTEXITCODE -ne 0) { throw "A assinatura do APK nao foi validada." }
 
 $hash = (Get-FileHash -LiteralPath $apkOficial -Algorithm SHA256).Hash
-"$hash  Missao_KBD.apk" | Set-Content -LiteralPath (Join-Path $pastaDistribuicao "Missao_KBD.sha256.txt") -Encoding ASCII
+"$hash Missao_KBD.apk" | Set-Content -LiteralPath (Join-Path $pastaDistribuicao "Missao_KBD.sha256.txt") -Encoding ASCII
 Write-Host "APK oficial criado em: $apkOficial"
 Write-Host "SHA-256: $hash"

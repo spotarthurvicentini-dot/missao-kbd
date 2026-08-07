@@ -1,4 +1,4 @@
-const API_VERSION = "2.3.0";
+const API_VERSION = "2.4.0";
 const REPORT_CONFIG = {
   timeZone: "America/Sao_Paulo",
   hour: 8,
@@ -75,11 +75,7 @@ function doGet(e) {
     }
   }
   if (e && e.parameter && text_(e.parameter.action) === "progress") {
-    try {
-      return json_(getSectorProgress_(text_(e.parameter.setor)));
-    } catch (error) {
-      return json_({ ok: false, error: error && error.message ? error.message : String(error), version: API_VERSION });
-    }
+    return json_({ ok: false, error: "Use uma sessão autenticada para consultar o progresso.", version: API_VERSION });
   }
   return json_({
     ok: true,
@@ -103,28 +99,9 @@ function getDashboardReport_(managerSector, requestedDays, token) {
   const days = Math.max(1, Math.min(180, Math.round(number_(requestedDays) || 30)));
   const end = new Date();
   const start = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
-  const report = buildInteractionReport_(start, end);
   const team = getManagedTeam_(manager, session.role);
   const allowedSectors = team.map(function (row) { return row.promoter; });
-  const canSee_ = function (sector) {
-    return session.role === "admin" || allowedSectors.indexOf(normalizeSector_(sector)) >= 0;
-  };
-  const visibleSectors = report.sectors.filter(function (row) { return canSee_(row.setor); });
-  const visibleAnswers = report.answers.filter(function (row) { return canSee_(row[2]); });
-  const visibleVideos = report.videos.filter(function (video) { return canSee_(video.setor); });
-  const visibleDevices = visibleSectors.reduce(function (sum, row) { return sum + number_(row.devices); }, 0);
-  const visibleCorrect = visibleAnswers.filter(function (row) { return isTrue_(row[8]); }).length;
-  const visibleTotals = session.role === "admin" ? report.totals : {
-    accesses: visibleSectors.reduce(function (sum, row) { return sum + number_(row.accesses); }, 0),
-    sectors: visibleSectors.length,
-    devices: visibleDevices,
-    answers: visibleAnswers.length,
-    correct: visibleCorrect,
-    accuracy: visibleAnswers.length ? Math.round(visibleCorrect * 100 / visibleAnswers.length) : 0,
-    videos: visibleVideos.length,
-    videoPercent: visibleVideos.length ? Math.round(visibleVideos.reduce(function (sum, row) { return sum + number_(row.percent); }, 0) / visibleVideos.length) : 0,
-    completedVideos: visibleVideos.filter(function (row) { return row.completed; }).length
-  };
+  const report = buildManagementReport_(team, start, end);
 
   // O frontend precisa do consolidado, não dos identificadores de dispositivo/sessão.
   return {
@@ -133,20 +110,9 @@ function getDashboardReport_(managerSector, requestedDays, token) {
     role: session.role,
     allowedSectors: allowedSectors,
     team: team,
+    cycle: MANAGEMENT_CYCLE,
     period: { start: start.toISOString(), end: end.toISOString(), days: days },
-    report: {
-      totals: visibleTotals,
-      sectors: visibleSectors,
-      recentAnswers: visibleAnswers.slice(-30).reverse().map(function (row) {
-        return {
-          receivedAt: row[0], setor: text_(row[2]), marca: text_(row[3]),
-          kbd: text_(row[4]), correct: isTrue_(row[8]), score: number_(row[9])
-        };
-      }),
-      videos: visibleVideos.slice(0, 50).map(function (video) {
-        return { setor: video.setor, marca: video.marca, kbd: video.kbd, percent: video.percent, completed: video.completed };
-      })
-    },
+    report: report,
     updatedAt: end.toISOString(),
     version: API_VERSION
   };
@@ -162,14 +128,20 @@ function doPost(e) {
     if (text_(payload.action) === "dashboard") {
       return json_(getDashboardReport_(text_(payload.setor), number_(payload.days) || 30, text_(payload.token)));
     }
+    if (text_(payload.action) === "progress") {
+      return json_(getSectorProgressAuthenticated_(text_(payload.setor), text_(payload.token)));
+    }
     if (text_(payload.action) === "setup") {
       return json_(runAuthenticatedSetup_(text_(payload.token)));
     }
     if (text_(payload.action) === "syncTeams") {
+      lock.waitLock(15000);
       return json_(syncTeams_(text_(payload.token), payload.rows, text_(payload.mode)));
     }
+    validateEventSession_(payload);
     lock.waitLock(15000);
     validatePayload_(payload);
+    validateEventBusiness_(payload);
 
     const book = getBook_();
     const sheets = {};
@@ -197,7 +169,7 @@ function doPost(e) {
       text_(payload.deviceId),
       text_(payload.source),
       text_(payload.userAgent),
-      safeJson_(payload)
+      safeJson_(eventPayloadForStorage_(payload))
     ]);
 
     let destination = TABLES.events.name;
@@ -248,6 +220,56 @@ function runAuthenticatedSetup_(token) {
   return { ok: true, message: setup(), version: API_VERSION };
 }
 
+function getSectorProgressAuthenticated_(sectorValue, token) {
+  const sector = normalizeSector_(sectorValue);
+  const session = getAuthSession_(token);
+  if (!session) throw new Error("Sessão inválida ou expirada.");
+  const ownProgress = session.role === "promoter" && session.user === sector;
+  const managerAccess = session.role === "manager" && getManagedTeam_(session.user, session.role).some(function (row) {
+    return row.promoter === sector;
+  });
+  if (!ownProgress && !managerAccess && session.role !== "admin") throw new Error("Acesso negado ao progresso solicitado.");
+  return getSectorProgress_(sector);
+}
+
+function validateEventSession_(payload) {
+  const session = getAuthSession_(text_(payload.authToken));
+  const sector = normalizeSector_(payload.setor);
+  const allowedEvents = ["session_start", "question_detail", "video_progress", "brand_completion", "quiz_completion"];
+  if (!session || session.user !== sector) throw new Error("Sessão inválida para registrar atividade.");
+  if (allowedEvents.indexOf(text_(payload.eventType)) < 0) throw new Error("Tipo de evento não permitido.");
+}
+
+function validateEventBusiness_(payload) {
+  const eventType = text_(payload.eventType);
+  const kbdId = text_(payload.kbdId).trim();
+  const contentEvents = ["question_detail", "video_progress", "quiz_completion"];
+  if (contentEvents.indexOf(eventType) >= 0 && !isActiveKbd_(kbdId)) throw new Error("KBD inválido ou fora do catálogo ativo.");
+  if (eventType === "quiz_completion") {
+    const total = number_(payload.total);
+    const correct = number_(payload.acertos);
+    const percent = number_(payload.percentual);
+    if (total <= 0 || correct < 0 || correct > total) throw new Error("Resultado de quiz inválido.");
+    if (percent < 0 || percent > 100 || Math.abs(percent - (correct * 100 / total)) > 1) throw new Error("Percentual de quiz inconsistente.");
+  }
+  if (eventType === "video_progress") {
+    const percent = number_(payload.percentage);
+    if (percent < 0 || percent > 100) throw new Error("Percentual de vídeo inválido.");
+  }
+}
+
+function isActiveKbd_(kbdId) {
+  return ACTIVE_KBDS.some(function (item) { return item.kbdId === kbdId; });
+}
+
+function eventPayloadForStorage_(payload) {
+  const copy = {};
+  Object.keys(payload).forEach(function (key) {
+    if (key !== "authToken" && key !== "token" && key !== "password") copy[key] = payload[key];
+  });
+  return copy;
+}
+
 function authenticate_(payload) {
   const user = normalizeSector_(payload.username);
   const passwordHash = sha256Hex_(text_(payload.password));
@@ -258,7 +280,7 @@ function authenticate_(payload) {
   if (user === "ADMIN" && secureEquals_(passwordHash, adminHash)) {
     role = "admin";
   } else if (user !== "ADMIN" && secureEquals_(passwordHash, standardHash)) {
-    role = /(COORD|EXECUTIVO)/.test(user) ? "manager" : "promoter";
+    role = getCatalogRole_(user);
   }
 
   if (!role) return { ok: false, error: "Usuário, setor ou senha inválidos.", version: API_VERSION };
@@ -267,6 +289,22 @@ function authenticate_(payload) {
   const session = { user: user, role: role, createdAt: new Date().toISOString() };
   CacheService.getScriptCache().put("auth:" + token, JSON.stringify(session), 21600);
   return { ok: true, user: user, role: role, token: token, expiresIn: 21600, version: API_VERSION };
+}
+
+function getCatalogRole_(user) {
+  const book = getBook_();
+  const sheet = ensureSheet_(book, TABLES.teams);
+  if (sheet.getLastRow() < 2) return "";
+  const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
+  let promoterFound = false;
+  for (let index = 0; index < values.length; index += 1) {
+    const coordinator = normalizeSector_(values[index][0]);
+    const promoter = normalizeSector_(values[index][1]);
+    if (!coordinator || !promoter) continue;
+    if (coordinator === user) return "manager";
+    if (promoter === user) promoterFound = true;
+  }
+  return promoterFound ? "promoter" : "";
 }
 
 function getAuthSession_(token) {
@@ -280,10 +318,12 @@ function getManagedTeam_(manager, role) {
   const sheet = ensureSheet_(book, TABLES.teams);
   if (sheet.getLastRow() < 2) return [];
   const team = [];
+  const seenPromoters = {};
   sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues().forEach(function (row) {
     const coordinator = normalizeSector_(row[0]);
     const promoter = normalizeSector_(row[1]);
-    if (!promoter || (role !== "admin" && coordinator !== manager)) return;
+    if (!promoter || seenPromoters[promoter] || (role !== "admin" && coordinator !== manager)) return;
+    seenPromoters[promoter] = true;
     team.push({
       coordinator: coordinator,
       promoter: promoter,
@@ -299,8 +339,33 @@ function syncTeams_(token, rows, mode) {
   if (!session || session.role !== "admin") throw new Error("Sessão administrativa inválida ou expirada.");
   if (!Array.isArray(rows) || !rows.length || rows.length > 400) throw new Error("Envie entre 1 e 400 vínculos por lote.");
 
+  if (mode !== "replace" && mode !== "append") throw new Error("Modo de sincronização inválido.");
+
   const book = getBook_();
   const sheet = ensureSheet_(book, TABLES.teams);
+  const promoterOwners = {};
+  if (mode === "append" && sheet.getLastRow() >= 2) {
+    sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues().forEach(function (row) {
+      const existingCoordinator = normalizeSector_(row[0]);
+      const existingPromoter = normalizeSector_(row[1]);
+      if (existingCoordinator && existingPromoter) promoterOwners[existingPromoter] = existingCoordinator;
+    });
+  }
+
+  const values = [];
+  rows.forEach(function (row) {
+    const coordinator = normalizeSector_(row.coordinator);
+    const promoter = normalizeSector_(row.promoter);
+    if (!coordinator || !promoter) throw new Error("Vínculo sem coordenador ou promotor.");
+    if (promoterOwners[promoter] && promoterOwners[promoter] !== coordinator) {
+      throw new Error("Promotor " + promoter + " possui mais de um coordenador.");
+    }
+    if (promoterOwners[promoter] === coordinator) return;
+    promoterOwners[promoter] = coordinator;
+    values.push([coordinator, promoter, text_(row.regional || row.state).trim().toUpperCase(), text_(row.coordinatorName).trim()]);
+  });
+  if (!values.length) return { ok: true, imported: 0, total: Math.max(0, sheet.getLastRow() - 1), version: API_VERSION };
+
   if (mode === "replace") {
     sheet.clearContents();
     sheet.getRange(1, 1, 1, TABLES.teams.headers.length).setValues([TABLES.teams.headers]);
@@ -309,16 +374,7 @@ function syncTeams_(token, rows, mode) {
       .setFontWeight("bold")
       .setBackground("#11162F")
       .setFontColor("#FFFFFF");
-  } else if (mode !== "append") {
-    throw new Error("Modo de sincronização inválido.");
   }
-
-  const values = rows.map(function (row) {
-    const coordinator = normalizeSector_(row.coordinator);
-    const promoter = normalizeSector_(row.promoter);
-    if (!coordinator || !promoter) throw new Error("Vínculo sem coordenador ou promotor.");
-    return [coordinator, promoter, text_(row.state).trim().toUpperCase(), text_(row.coordinatorName).trim()];
-  });
   sheet.getRange(sheet.getLastRow() + 1, 1, values.length, 4).setValues(values);
   SpreadsheetApp.flush();
   return { ok: true, imported: values.length, total: Math.max(0, sheet.getLastRow() - 1), version: API_VERSION };

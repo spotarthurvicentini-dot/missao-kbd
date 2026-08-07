@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-team-hierarchy-2026-08-06";
+const CACHE_NAME = "missao-kbd-v2-real-manager-2026-08-06";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -10,10 +10,10 @@ const CORE_ASSETS = [
   "./admin.html",
   "./admin.css?v=20260806-2",
   "./admin-mobile.css?v=20260806-2",
-  "./admin-overrides.css?v=20260806-1",
-  "./admin.js?v=20260806-4",
+  "./admin-overrides.css?v=20260806-2",
+  "./admin-real.js?v=20260806-1",
   "./style.css?v=20260805-1",
-  "./app.js?v=20260806-5",
+  "./app.js?v=20260806-6",
   "./quizzes.js?v=20260804-2",
   "./manifest.json",
   "./assets/mission-hero-v2.webp",
@@ -55,7 +55,6 @@ self.addEventListener("fetch", (event) => {
   if (new URL(req.url).origin !== self.location.origin) return;
   if (req.method !== "GET") return;
 
-  const cachedResponse = caches.match(req);
   const update = fetch(req).then((res) => {
     if (res && res.status === 200) {
       const clone = res.clone();
@@ -64,6 +63,13 @@ self.addEventListener("fetch", (event) => {
     return res;
   });
 
+  // HTML/navigation must prefer the network so a previous APK cannot pin an old panel.
+  if (req.mode === "navigate" || req.destination === "document") {
+    event.respondWith(update.catch(() => caches.match(req).then((cached) => cached || caches.match("./index.html"))));
+    return;
+  }
+
+  const cachedResponse = caches.match(req);
   event.waitUntil(update.catch(() => {}));
   event.respondWith(cachedResponse.then((cached) => cached || update));
 });

@@ -18,6 +18,53 @@
   backdrop-filter: blur(2px);
 }
 
+.period-label {
+  cursor: default;
+  user-select: none;
+}
+
+.team-toolbar,
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.team-toolbar {
+  margin-bottom: 14px;
+}
+
+.team-toolbar input {
+  width: min(520px, 100%);
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .04);
+  color: inherit;
+  padding: 0 14px;
+}
+
+.team-count,
+.pagination span {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.team-row {
+  grid-template-columns: 1.35fr 1fr .7fr .7fr .7fr 1fr;
+}
+
+.pagination {
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.pagination .btn:disabled {
+  opacity: .42;
+  cursor: not-allowed;
+}
+
 @media (max-width: 760px) {
   body.menu-open {
     overflow: hidden;
@@ -34,5 +81,14 @@
   .admin-user strong,
   .admin-user small {
     display: none;
+  }
+
+  .team-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pagination {
+    justify-content: space-between;
   }
 }
