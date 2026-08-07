@@ -188,8 +188,8 @@ img { max-width: 100%; display: block; }
 
 .status-badge { background: var(--blue-dim); color: var(--cyan); }
 .status-badge.status-novo    { background: rgba(34,211,238,0.16); color: var(--cyan); }
-.status-badge.status-mudou   { background: rgba(255,138,46,0.16); color: var(--orange); }
 .status-badge.status-transformacional { background: var(--green-dim); color: var(--green); }
+.status-badge.status-kbd { background: var(--fill-3); color: var(--label-2); }
 
 .progress-pill.pending, .kbd-pill.pending, .summary-chip.pending {
   background: var(--amber-dim);
@@ -203,7 +203,7 @@ img { max-width: 100%; display: block; }
 /* ─── Active states ──────────────────────────────────────── */
 .brand-card:active, .kbd-card:active,
 .primary-button:active, .secondary-button:active,
-.option-button:active, .checklist-item:active { transform: scale(0.97); }
+.option-button:active, .consulta-card:active { transform: scale(0.97); }
 
 /* ─── Main content ───────────────────────────────────────── */
 .main-content {
@@ -418,8 +418,8 @@ img { max-width: 100%; display: block; }
 }
 .home-category .kbd-list { margin: 0; }
 .home-category-novo { --category-accent: var(--cyan); }
-.home-category-alterado { --category-accent: var(--orange); }
 .home-category-transformacional { --category-accent: var(--green); }
+.home-category-kbd { --category-accent: var(--label-4); }
 .home-category .kbd-card { border-left: 3px solid var(--category-accent); }
 
 .kbd-list {
@@ -475,7 +475,6 @@ img { max-width: 100%; display: block; }
   width: 7px; height: 7px; border-radius: 50%; display: inline-block;
 }
 .mini-status-dot.status-novo { background: var(--cyan); }
-.mini-status-dot.status-mudou { background: var(--orange); }
 
 .kbd-card {
   background: var(--bg-secondary);
@@ -745,7 +744,7 @@ img { max-width: 100%; display: block; }
   display: flex; flex-direction: column; gap: 14px;
 }
 .pilula-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-.pilula-canais { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--label-3); font-weight: 600; }
+.pilula-canais { display: flex; align-items: center; gap: 8px; font-size: 15.5px; line-height: 1.35; color: #fff; font-weight: 800; }
 .pilula-resumo { font-size: 14.5px; line-height: 1.55; color: var(--label-1); }
 
 .pilula-block { display: flex; flex-direction: column; gap: 8px; }
@@ -789,7 +788,8 @@ img { max-width: 100%; display: block; }
   margin-top: 12px;
 }
 .question-title { margin: 0; font-size: 18px; font-weight: 700; line-height: 1.4; letter-spacing: -0.02em; }
-.question-helper { font-size: 12px; color: var(--label-3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.question-helper { font-size: 15px; color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.035em; line-height: 1.4; }
+.question-helper span { display: block; margin-top: 7px; color: #fff; font-size: 14px; text-transform: none; letter-spacing: 0; }
 .option-list { gap: 8px; display: flex; flex-direction: column; }
 
 .option-button {
@@ -940,62 +940,86 @@ img { max-width: 100%; display: block; }
   font-size: 13px; font-weight: 600; color: var(--label-2);
 }
 
-/* ─── Checklist page ─────────────────────────────────────── */
-.checklist-item {
-  display: flex; align-items: flex-start; gap: 12px;
-  background: var(--bg-secondary);
-  border: 0.5px solid var(--sep-op);
-  border-radius: var(--r-md);
+/* ─── Consulta de KBDs ───────────────────────────────────── */
+.consulta-intro { margin: 16px 16px 20px; }
+.consulta-section { display: flex; flex-direction: column; gap: 10px; margin: 0 16px 22px; }
+.consulta-section-novo { --consulta-accent: var(--cyan); }
+.consulta-section-transformacional { --consulta-accent: var(--green); }
+.consulta-section-kbd { --consulta-accent: var(--label-4); }
+.consulta-list { display: flex; flex-direction: column; gap: 9px; }
+.consulta-card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 22px;
+  gap: 12px;
+  align-items: center;
   padding: 13px 14px;
+  border: 0.5px solid var(--sep-op);
+  border-left: 3px solid var(--consulta-accent);
+  border-radius: var(--r-lg);
+  background: var(--bg-secondary);
+  color: var(--label-1);
+  text-align: left;
   cursor: pointer;
-  transition: background 0.12s, border-color 0.12s;
-  width: 100%; text-align: left;
+  transition: transform 0.12s, border-color 0.12s, background 0.12s;
 }
-.checklist-item.checked { border-color: var(--green-border); background: var(--green-dim); }
-.checklist-checkbox {
-  width: 22px; height: 22px; border-radius: 7px; flex-shrink: 0; margin-top: 1px;
-  border: 1.5px solid var(--sep);
-  display: flex; align-items: center; justify-content: center;
-  color: transparent;
-  transition: background 0.12s, border-color 0.12s, color 0.12s;
-}
-.checklist-item.checked .checklist-checkbox { background: var(--green); border-color: var(--green); color: #05070f; }
-.checklist-checkbox svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.checklist-copy { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.checklist-marca { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--label-3); }
-.checklist-texto { font-size: 13.5px; line-height: 1.4; color: var(--label-1); }
-.checklist-item.checked .checklist-texto { color: var(--label-2); text-decoration: line-through; text-decoration-color: var(--label-4); }
+.consulta-card:hover { background: var(--bg-tertiary); }
+.consulta-card .brand-logo-wrap { width: 48px; height: 48px; }
+.consulta-card-copy { min-width: 0; display: flex; align-items: flex-start; flex-direction: column; gap: 4px; }
+.consulta-card-copy strong { font-size: 14px; line-height: 1.35; }
+.consulta-card-copy small { color: var(--label-3); font-size: 11px; }
+.consulta-card-copy .status-badge { margin-bottom: 2px; }
 
-.checklist-pill-overlay {
+.consulta-overlay {
   position: fixed;
   inset: 0;
   z-index: 2100;
   background: #05070f;
   display: flex;
   flex-direction: column;
-  padding: max(12px, env(safe-area-inset-top, 0px)) 12px max(12px, env(safe-area-inset-bottom, 0px));
   animation: fadeIn 0.18s ease;
 }
-.checklist-pill-stage {
+.consulta-overlay-head {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 16px 13px;
+  border-bottom: 0.5px solid var(--sep-op);
+  background: rgba(5,7,15,0.96);
+}
+.consulta-overlay-head span { display: block; color: var(--cyan); font-size: 10px; font-weight: 800; letter-spacing: 0.08em; }
+.consulta-overlay-head h2 { margin: 3px 0 0; font-size: 17px; line-height: 1.3; }
+.consulta-overlay-stage {
   flex: 1;
   min-height: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
+  overflow-y: auto;
+  padding: 12px;
 }
-.checklist-pill-stage img {
+.consulta-overlay-stage img {
   display: block;
-  max-width: 100%;
-  max-height: calc(100vh - 104px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  width: 100%;
+  max-width: 980px;
+  height: auto;
   border-radius: var(--r-xl);
-  object-fit: contain;
   cursor: zoom-in;
 }
-.checklist-pill-action {
+.consulta-overlay-action {
   flex-shrink: 0;
-  padding-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  padding: 12px 16px max(12px, env(safe-area-inset-bottom, 0px));
+  border-top: 0.5px solid var(--sep-op);
+  background: rgba(5,7,15,0.96);
 }
-.checklist-pill-action .primary-button { width: 100%; }
+.consulta-overlay-action .primary-button,
+.consulta-overlay-action .secondary-button { width: 100%; }
 
 /* ─── Quiz hub by brand ──────────────────────────────────── */
 .quiz-brand-head { padding: 6px 0 0; }

@@ -160,7 +160,7 @@ const ALLOWED_SECTORS_NORMALIZED = new Set(ALLOWED_SECTORS.map((sector) => norma
 
 const CICLO_INFO = {
   titulo: "Julho–Dezembro 2026",
-  foco: "Entender o que é novo, o que mudou e como executar corretamente na loja.",
+  foco: "Aprender os KBDs do ciclo, consultar a execução e validar o conhecimento no quiz.",
 };
 
 const CONTENT = {
@@ -203,7 +203,7 @@ const CONTENT = {
         videoId: "VzUKIRxz1J0", videoUrl: "", imagens: ["kbds/referencias-2026/pampers-vale-night-ponto-extra.webp"] },
     ] },
     { id: "secret", nome: "SECRET", logo: "logos/secret.png", kbds: [
-      { id: "frentes-bandejas", nome: "Frentes ou Bandejas por Canal", status: "alterado", canais: "Todos os canais elegíveis",
+      { id: "frentes-bandejas", nome: "Frentes ou Bandejas por Canal", status: "kbd", canais: "Todos os canais elegíveis",
         resumo: "Secret passa a considerar frentes na gôndola ou bandejas, com metas diferentes por canal.",
         comoConta: ["DPP e HFS: 10 frentes visíveis OU 2 bandejas", "C&C, NMR/GMR, CLUB, LASA e Perfumaria: 15 frentes visíveis OU 3 bandejas"],
         erroComum: ["Contar produto fora da gôndola", "Bandeja vazia ou mal posicionada", "Misturar bandejas e frentes sem respeitar a regra do canal"],
@@ -219,7 +219,7 @@ const CONTENT = {
         videoId: "wtCHpp6o1RM", videoUrl: "", imagens: ["kbds/referencias-2026/oral-b-branqueamento-60.webp"] },
     ] },
     { id: "gillette", nome: "GILLETTE", logo: "logos/gillette.png", kbds: [
-      { id: "mach3-presto3", nome: "Pontos de Contato — Mach3 e Presto3", status: "alterado", canais: "C&C, NMR/GMR, LASA, HFS, Perfumaria e DPP",
+      { id: "mach3-presto3", nome: "Pontos de Contato — Mach3 e Presto3", status: "kbd", canais: "C&C, NMR/GMR, LASA, HFS, Perfumaria e DPP",
         resumo: "Agora C&C, NMR/GMR, LASA, HFS e PERFUMARIA exigem 3 pontos de contato; em DPP continuam 2 pontos.",
         comoConta: ["Itens Mach3 Sensitive / Presto3 Sensitive com 4 unidades ou mais", "3 pontos de contato em C&C, NMR/GMR, LASA, HFS e PERFUMARIA", "2 pontos de contato em DPP", "Sempre fora do ponto natural"],
         erroComum: ["Produto no checkout", "Produto no ponto natural", "Contar o mesmo ponto duas vezes", "Usar item fora do foco (menos de 4 unidades)"],
@@ -242,10 +242,6 @@ const NOVIDADES = {
     { marca: "Tampax", texto: "Bandeja no ponto natural em DPP" },
     { marca: "Pantene", texto: "8 frentes de finalizadores em DPP ou 6 nos demais canais elegíveis" },
   ],
-  alterados: [
-    { marca: "Secret", texto: "Agora pode bater o KBD por frentes ou bandejas" },
-    { marca: "Gillette", texto: "Mach3 / Presto3: 3 pontos na maioria dos canais e 2 em DPP" },
-  ],
   transformacionais: [
     { marca: "Pantene", texto: "20% de Bond Repair, excluindo packs" },
     { marca: "Venus", texto: "3 pontos de contato nos canais elegíveis" },
@@ -255,16 +251,31 @@ const NOVIDADES = {
   ],
 };
 
-const CHECKLIST_ITEMS = [
-  { id: "chk01", marca: "tampax", kbdId: "ponto-natural", marcaNome: "Tampax • Novo", texto: "Existe bandeja de Tampax abastecida no ponto natural em DPP?" },
-  { id: "chk02", marca: "pantene", kbdId: "finalizadores", marcaNome: "Pantene • Novo", texto: "Há 8 frentes de finalizadores em DPP ou 6 nos demais canais elegíveis?" },
-  { id: "chk03", marca: "secret", kbdId: "frentes-bandejas", marcaNome: "Secret • Alterado", texto: "A execução atingiu a meta de frentes ou bandejas correspondente ao canal?" },
-  { id: "chk04", marca: "gillette", kbdId: "mach3-presto3", marcaNome: "Gillette • Alterado", texto: "Mach3 e Presto3 possuem 3 pontos de contato ou 2 em DPP?" },
-  { id: "chk05", marca: "pantene", kbdId: "bond-repair", marcaNome: "Pantene • Transformacional", texto: "Bond Repair possui pelo menos 20% do espaço, excluindo packs?" },
-  { id: "chk06", marca: "venus", kbdId: "tres-pontos", marcaNome: "Venus • Transformacional", texto: "Existem 3 pontos de contato válidos nos canais elegíveis?" },
-  { id: "chk07", marca: "oral-b", kbdId: "branqueamento", marcaNome: "Oral-B • Transformacional", texto: "Pastas de branqueamento ocupam pelo menos 60% do espaço?" },
-  { id: "chk08", marca: "pampers", kbdId: "vale-night", marcaNome: "Pampers • Transformacional", texto: "A gôndola tem faixa Vale Night e materiais com ícone de mamadeira?" },
-  { id: "chk09", marca: "pampers", kbdId: "vale-night-ponto-extra", marcaNome: "Pampers • Transformacional", texto: "Em DPP, há ponto extra Vale Night com materiais e ícone de mamadeira?" },
+const LEGACY_KBDS = [
+  { id: "always-suave", marca: "always", marcaNome: "ALWAYS", nome: "70% de versões Suave", imagem: "kbds/consulta/always.jpg" },
+  { id: "downy-bloco-azul", marca: "downy", marcaNome: "DOWNY", nome: "Bloco Azul", imagem: "kbds/consulta/downy-bloco-azul.jpg" },
+  { id: "downy-bloco-colorido", marca: "downy", marcaNome: "DOWNY", nome: "Bloco Colorido", imagem: "kbds/consulta/downy-bloco-colorido.jpg" },
+  { id: "downy-ponto-extra", marca: "downy", marcaNome: "DOWNY", nome: "Ponto Extra", imagem: "kbds/consulta/downy-ponto-extra.jpg" },
+  { id: "pantene-bond-repair-consulta", marca: "pantene", marcaNome: "PANTENE", nome: "Bond Repair", imagem: "kbds/consulta/pantene-bond-repair.jpg" },
+  { id: "pantene-oleo", marca: "pantene", marcaNome: "PANTENE", nome: "Óleo", imagem: "kbds/consulta/pantene-oleo.jpg" },
+  { id: "pantene-rio-cachoeira", marca: "pantene", marcaNome: "PANTENE", nome: "Rio/Cachoeira Dourada", imagem: "kbds/consulta/pantene-rio-cachoeira-dourada.jpg" },
+  { id: "pantene-top-versoes", marca: "pantene", marcaNome: "PANTENE", nome: "Top Versões (40%)", imagem: "kbds/consulta/pantene-top-versoes.jpg" },
+  { id: "pampers-pants-premium-sul", marca: "pampers", marcaNome: "PAMPERS", nome: "Pants + Premium Care Sul", imagem: "kbds/consulta/pampers-pants-premium-sul.jpg" },
+  { id: "pampers-pants-sp", marca: "pampers", marcaNome: "PAMPERS", nome: "Pants SP", imagem: "kbds/consulta/pampers-pants-sp.jpg" },
+  { id: "pampers-ponto-extra", marca: "pampers", marcaNome: "PAMPERS", nome: "Ponto Extra", imagem: "kbds/consulta/pampers-ponto-extra.jpg" },
+  { id: "pampers-vale-night-ponto-extra-consulta", marca: "pampers", marcaNome: "PAMPERS", nome: "Vale Night — Ponto Extra", imagem: "kbds/consulta/pampers-vale-night-ponto-extra.jpg" },
+  { id: "pampers-vale-night-sos", marca: "pampers", marcaNome: "PAMPERS", nome: "Vale Night SOS", imagem: "kbds/consulta/pampers-vale-night-sos.jpg" },
+  { id: "secret-15-frentes", marca: "secret", marcaNome: "SECRET", nome: "15 Frentes", imagem: "kbds/consulta/secret-15-frentes.jpg" },
+  { id: "secret-2-bandejas", marca: "secret", marcaNome: "SECRET", nome: "2 Bandejas", imagem: "kbds/consulta/secret-2-bandejas.jpg" },
+  { id: "oral-b-2-pontos", marca: "oral-b", marcaNome: "ORAL-B", nome: "2 Pontos de Contato", imagem: "kbds/consulta/oral-b-2-pontos-contato.jpg" },
+  { id: "oral-b-branqueamento-consulta", marca: "oral-b", marcaNome: "ORAL-B", nome: "Branqueamento", imagem: "kbds/consulta/oral-b-branqueamento.jpg" },
+  { id: "oral-b-layout-bipe", marca: "oral-b", marcaNome: "ORAL-B", nome: "Layout BIPE", imagem: "kbds/consulta/oral-b-layout-bipe.jpg" },
+  { id: "gillette-ganchos-c8", marca: "gillette", marcaNome: "GILLETTE", nome: "Ganchos C8", imagem: "kbds/consulta/gillette-ganchos-c8.jpg" },
+  { id: "gillette-2-pontos", marca: "gillette", marcaNome: "GILLETTE", nome: "2 Pontos de Contato", imagem: "kbds/consulta/gillette-2-pontos-contato.jpg" },
+  { id: "gillette-carga-mach3-c8", marca: "gillette", marcaNome: "GILLETTE", nome: "Carga Mach3 C8 — 2 Ganchos", imagem: "kbds/consulta/gillette-carga-mach3-c8.jpg" },
+  { id: "venus-2-pontos", marca: "venus", marcaNome: "VENUS", nome: "2 Pontos de Contato", imagem: "kbds/consulta/venus-2-pontos-contato.jpg" },
+  { id: "venus-checkout-pele-sensivel", marca: "venus", marcaNome: "VENUS", nome: "Checkout — Pele Sensível", imagem: "kbds/consulta/venus-checkout-pele-sensivel.jpg" },
+  { id: "venus-sistemas-ganchos", marca: "venus", marcaNome: "VENUS", nome: "Sistemas — 20% dos Ganchos", imagem: "kbds/consulta/venus-sistemas-20-ganchos.jpg" },
 ];
 
 const ICONS = {
@@ -290,12 +301,12 @@ const ICONS = {
 };
 
 const STATUS_META = {
-  novo: { label: "Novo", plural: "Novos", className: "status-novo", description: "KBDs que entram neste ciclo" },
-  alterado: { label: "Alterado", plural: "Alterados", className: "status-mudou", description: "KBDs com regra atualizada" },
-  transformacional: { label: "Transformacional", plural: "Transformacionais", className: "status-transformacional", description: "KPIs identificados pelo selo transformacional" },
+  novo: { label: "Novo", plural: "Novos", className: "status-novo", description: "KBDs que entram neste ciclo", emphasis: true },
+  transformacional: { label: "Transformacional", plural: "Transformacionais", className: "status-transformacional", description: "KBDs transformacionais do ciclo", emphasis: true },
+  kbd: { label: "KBD", plural: "KBDs", className: "status-kbd", description: "Conteúdos para aprender e consultar", emphasis: false },
 };
 
-function getStatusMeta(status) { return STATUS_META[status] || STATUS_META.transformacional; }
+function getStatusMeta(status) { return STATUS_META[status] || STATUS_META.kbd; }
 
 let quizState = { marcaAtual: null, kbdAtual: null, perguntaIndex: 0, acertos: 0, total: 0, perguntas: [], selectedOption: null, answeredCurrent: false, respostasDetalhadas: [] };
 let youtubeApiPromise = null;
@@ -719,8 +730,8 @@ function setBottomNav(page) {
 
   const tabs = [
     { id: "home", label: "Home", icon: "home", href: "home.html" },
-    { id: "novidades", label: "Novidades", icon: "sparkles", href: "novidades.html" },
-    { id: "checklist", label: "Checklist", icon: "list", href: "checklist.html" },
+    { id: "novidades", label: "Aprender", icon: "sparkles", href: "novidades.html" },
+    { id: "consulta", label: "Consulta", icon: "list", href: "checklist.html" },
     { id: "quiz", label: "Quiz", icon: "quiz", href: "quiz.html" },
   ];
 
@@ -868,7 +879,7 @@ function renderHome() {
   const total = getAllKbdsTotal();
   document.getElementById("heroStats").textContent = `${total} KBDs do ciclo`;
   document.getElementById("heroTrack").style.width = "100%";
-  document.getElementById("heroSummary").textContent = "2 novos • 2 alterados • 5 transformacionais";
+  document.getElementById("heroSummary").textContent = "2 novos • 5 transformacionais • 2 KBDs";
 
   const cicloEl = document.getElementById("heroCiclo");
   if (cicloEl) cicloEl.textContent = `Ciclo ${CICLO_INFO.titulo}`;
@@ -876,7 +887,7 @@ function renderHome() {
   const list = document.getElementById("listaMarcas");
   list.innerHTML = "";
 
-  ["novo", "alterado", "transformacional"].forEach((status) => {
+  ["novo", "transformacional", "kbd"].forEach((status) => {
     const meta = getStatusMeta(status);
     const items = getAllKbds().filter(({ kbd }) => kbd.status === status);
     const section = document.createElement("section");
@@ -901,7 +912,7 @@ function renderHome() {
         <div class="kbd-main">
           <div class="brand-logo-wrap compact"><img class="brand-logo" src="${marca.logo}" alt="${escapeHtml(marca.nome)}"></div>
           <div class="kbd-info">
-            <div class="kbd-badges"><span class="status-badge ${meta.className}">${meta.label}</span></div>
+            ${meta.emphasis ? `<div class="kbd-badges"><span class="status-badge ${meta.className}">${meta.label}</span></div>` : ""}
             <div class="kbd-name">${escapeHtml(kbd.nome)}</div>
             <div class="kbd-meta">${escapeHtml(marca.nome)} • ${hasQuiz(marca.id, kbd.id) ? "quiz disponível" : "quiz em preparação"}</div>
           </div>
@@ -969,9 +980,7 @@ function renderMarca() {
       <div class="kbd-main">
         <div class="summary-card-icon">${renderIcon(done ? "check" : "quiz")}</div>
         <div class="kbd-info">
-          <div class="kbd-badges">
-            <span class="status-badge ${statusMeta.className}">${statusMeta.label}</span>
-          </div>
+          ${statusMeta.emphasis ? `<div class="kbd-badges"><span class="status-badge ${statusMeta.className}">${statusMeta.label}</span></div>` : ""}
           <div class="kbd-name">${index + 1}. ${escapeHtml(kbd.nome)}</div>
           <div class="kbd-meta">${quizAvailable ? `${quizCount} perguntas • ${done ? "quiz concluído" : "pendente"}` : "Quiz em preparação"}</div>
         </div>
@@ -1020,8 +1029,8 @@ function renderKbd() {
 
   const statusBadgeEl = document.getElementById("kbdStatusPill");
   if (statusBadgeEl) {
-    statusBadgeEl.textContent = statusMeta.label;
-    statusBadgeEl.className = `status-badge ${statusMeta.className}`;
+    statusBadgeEl.textContent = statusMeta.emphasis ? statusMeta.label : "";
+    statusBadgeEl.className = statusMeta.emphasis ? `status-badge ${statusMeta.className}` : "status-badge hidden";
   }
 
   document.getElementById("kbdTitle").textContent = `${marca.nome} • ${kbd.nome}`;
@@ -1162,7 +1171,7 @@ function renderNovidades() {
   applyTopbar({
     logo: "assets/icon-192.png",
     eyebrow: "Missão KBD",
-    title: "Novidades do ciclo",
+    title: "Aprendizado do ciclo",
     subtitle: CICLO_INFO.titulo,
     showBack: true,
     onBack: voltarHome,
@@ -1200,22 +1209,6 @@ function renderNovidades() {
     </div>
 
     <div class="novidades-section">
-      <div class="novidades-section-title tone-orange">${renderIcon("swap")} Alterados • 2</div>
-      <div class="novidades-card-list">
-        ${NOVIDADES.alterados
-          .map(
-            (item) => `
-          <div class="novidades-card">
-            <div class="novidades-card-marca">${escapeHtml(item.marca)}</div>
-            <div class="novidades-card-texto">${escapeHtml(item.texto)}</div>
-          </div>
-        `
-          )
-          .join("")}
-      </div>
-    </div>
-
-    <div class="novidades-section">
       <div class="novidades-section-title tone-green">${renderIcon("target")} Transformacionais • 5</div>
       <div class="novidades-card-list">
         ${NOVIDADES.transformacionais
@@ -1232,140 +1225,117 @@ function renderNovidades() {
     </div>
 
     <div class="action-stack">
-      <a class="primary-button" href="checklist.html">Ver checklist completo</a>
+      <a class="primary-button" href="checklist.html">Abrir Consulta</a>
+      <a class="secondary-button" href="quiz.html">Responder aos quizzes</a>
     </div>
   `;
 }
 
-function getChecklistState() { return readJsonStorage("CHECKLIST_STATE"); }
-function saveChecklistState(data) { localStorage.setItem("CHECKLIST_STATE", JSON.stringify(data)); }
-function isChecklistItemChecked(id) { return !!getChecklistState()[id]; }
+const CONSULTA_BRAND_LOGOS = {
+  always: "logos/always.jpg",
+  downy: "logos/downy.png",
+};
 
-function toggleChecklistItem(id) {
-  const state = getChecklistState();
-  state[id] = !state[id];
-  saveChecklistState(state);
-  renderChecklist();
+function getConsultaItems() {
+  const current = getAllKbds().map(({ marca, kbd }) => ({
+    id: `ciclo-${marca.id}-${kbd.id}`,
+    marca: marca.id,
+    marcaNome: marca.nome,
+    nome: kbd.nome,
+    status: kbd.status,
+    imagens: (kbd.imagens || []).map(resolveKbdAsset),
+    logo: marca.logo,
+    href: `kbd.html?marca=${encodeURIComponent(marca.id)}&kbd=${encodeURIComponent(kbd.id)}`,
+    current: true,
+  }));
+  const legacy = LEGACY_KBDS.map((item) => ({
+    ...item,
+    status: "kbd",
+    imagens: [item.imagem],
+    logo: CONSULTA_BRAND_LOGOS[item.marca] || `logos/${item.marca}.png`,
+    href: "",
+    current: false,
+  }));
+  return current.concat(legacy);
 }
 
-function fecharPilulaChecklist() {
-  const overlay = document.getElementById("checklistPillOverlay");
+function fecharConsulta() {
+  const overlay = document.getElementById("consultaOverlay");
   if (overlay) overlay.remove();
   document.body.style.overflow = "";
 }
 
-function abrirPilulaChecklist(id) {
-  const item = CHECKLIST_ITEMS.find((entry) => entry.id === id);
-  const kbd = item ? getKbdById(item.marca, item.kbdId) : null;
-  const imagem = kbd && kbd.imagens && kbd.imagens.length ? resolveKbdAsset(kbd.imagens[0]) : "";
-  if (!item || !imagem) return;
+function abrirConsulta(id) {
+  const item = getConsultaItems().find((entry) => entry.id === id);
+  if (!item || !item.imagens.length) return;
 
-  fecharPilulaChecklist();
+  fecharConsulta();
   const overlay = document.createElement("div");
-  overlay.id = "checklistPillOverlay";
-  overlay.className = "checklist-pill-overlay";
+  overlay.id = "consultaOverlay";
+  overlay.className = "consulta-overlay";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
   overlay.innerHTML = `
-    <div class="checklist-pill-stage">
-      <img src="${assetPath(imagem)}" alt="${escapeHtml(item.marcaNome)} — pílula de execução" role="button" tabindex="0" aria-label="Ampliar imagem de ${escapeHtml(item.marcaNome)}">
+    <header class="consulta-overlay-head">
+      <div><span>${escapeHtml(item.marcaNome)}</span><h2>${escapeHtml(item.nome)}</h2></div>
+      <button class="icon-button" type="button" onclick="fecharConsulta()" aria-label="Fechar consulta">${renderIcon("x")}</button>
+    </header>
+    <div class="consulta-overlay-stage">
+      ${item.imagens.map((imagem, index) => `<img src="${assetPath(imagem)}" alt="${escapeHtml(item.marcaNome)} — ${escapeHtml(item.nome)}${item.imagens.length > 1 ? ` — referência ${index + 1}` : ""}" role="button" tabindex="0">`).join("")}
     </div>
-    <div class="checklist-pill-action">
-      <button class="primary-button" type="button" onclick="confirmarPilulaChecklist('${item.id}')">${isChecklistItemChecked(item.id) ? "Voltar ao checklist" : "Conferido — voltar ao checklist"}</button>
+    <div class="consulta-overlay-action">
+      ${item.current ? `<a class="primary-button" href="${item.href}">Estudar este KBD</a>` : ""}
+      <button class="secondary-button" type="button" onclick="fecharConsulta()">Voltar à consulta</button>
     </div>
   `;
-  const checklistImage = overlay.querySelector(".checklist-pill-stage img");
-  if (checklistImage) {
-    const expand = () => abrirImagemExpandida(checklistImage.src, checklistImage.alt);
-    checklistImage.onclick = expand;
-    checklistImage.onkeydown = (event) => { if (event.key === "Enter" || event.key === " ") expand(); };
-  }
+  overlay.querySelectorAll(".consulta-overlay-stage img").forEach((image) => {
+    const expand = () => abrirImagemExpandida(image.src, image.alt);
+    image.onclick = expand;
+    image.onkeydown = (event) => { if (event.key === "Enter" || event.key === " ") expand(); };
+  });
+  overlay.addEventListener("click", (event) => { if (event.target === overlay) fecharConsulta(); });
   document.body.appendChild(overlay);
   document.body.style.overflow = "hidden";
 }
 
-function confirmarPilulaChecklist(id) {
-  const state = getChecklistState();
-  state[id] = true;
-  saveChecklistState(state);
-  fecharPilulaChecklist();
-  renderChecklist();
-}
-
-function resetChecklist() {
-  criarModal({
-    icon: "refresh",
-    title: "Reiniciar checklist?",
-    text: "Todos os itens marcados nesta visita serão desmarcados.",
-    buttons: [
-      { label: "Cancelar", action: "fecharModal()" },
-      { label: "Reiniciar", primary: true, action: "confirmarResetChecklist()" }
-    ]
-  });
-}
-
-function confirmarResetChecklist() {
-  saveChecklistState({});
-  fecharModal();
-  renderChecklist();
-}
-
-function renderChecklist() {
+function renderConsulta() {
   if (!ensureSetor()) return;
+  const items = getConsultaItems();
   applyTopbar({
     logo: "assets/icon-192.png",
     eyebrow: "Missão KBD",
-    title: "Checklist de visita",
-    subtitle: `${CHECKLIST_ITEMS.length} itens • ${CICLO_INFO.titulo}`,
+    title: "Consulta de KBDs",
+    subtitle: `${items.length} resumos visuais disponíveis`,
     showBack: true,
     onBack: voltarHome,
     minimal: true,
     hideMenu: true,
     hideLogout: true
   });
-  setBottomNav("checklist");
+  setBottomNav("consulta");
 
-  const area = document.getElementById("checklistArea");
+  const area = document.getElementById("consultaArea");
   if (!area) return;
 
-  const state = getChecklistState();
-  const doneCount = CHECKLIST_ITEMS.filter((item) => state[item.id]).length;
-  const pct = Math.round((doneCount / CHECKLIST_ITEMS.length) * 100);
-
   area.innerHTML = `
-    <div class="summary-card" style="margin:16px 16px 0;">
+    <div class="summary-card consulta-intro">
       <div class="summary-card-top">
         <div>
-          <div class="summary-card-label">Progresso da visita</div>
-          <div class="summary-card-value">${doneCount}/${CHECKLIST_ITEMS.length}</div>
+          <div class="summary-card-label">Biblioteca de execução</div>
+          <div class="summary-card-value">${items.length} KBDs</div>
         </div>
         <div class="summary-card-icon">${renderIcon("list")}</div>
       </div>
-      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <p class="helper-text">Salve este checklist no celular e use como consulta rápida durante a visita.</p>
+      <p class="helper-text">Toque em um KBD para abrir o resumo visual. Os materiais desta biblioteca não adicionam novos quizzes.</p>
     </div>
-
-    <div class="section-head">
-      <h2 class="section-title">Confira os KBDs</h2>
-      <p class="section-subtitle">Toque em um KBD, confira a pílula visual e confirme a execução.</p>
-    </div>
-
-    <div class="kbd-list" style="gap:8px;">
-      ${CHECKLIST_ITEMS.map((item) => {
-        const checked = !!state[item.id];
-        return `
-          <button type="button" class="checklist-item ${checked ? "checked" : ""}" onclick="abrirPilulaChecklist('${item.id}')">
-            <span class="checklist-checkbox">${renderIcon("check")}</span>
-            <span class="checklist-copy">
-              <span class="checklist-marca">${escapeHtml(item.marcaNome)}</span>
-              <span class="checklist-texto">${escapeHtml(item.texto)}</span>
-            </span>
-          </button>
-        `;
-      }).join("")}
-    </div>
-
-    <div class="action-stack">
-      <button class="secondary-button" type="button" onclick="resetChecklist()">${renderIcon("refresh")} Reiniciar checklist</button>
-    </div>
+    ${["novo", "transformacional", "kbd"].map((status) => {
+      const meta = getStatusMeta(status);
+      const group = items.filter((item) => item.status === status);
+      return `<section class="consulta-section consulta-section-${status}">
+        <div class="home-category-head"><div><h2 class="section-title">${meta.plural}</h2><p class="section-subtitle">${meta.description}</p></div><span class="status-badge ${meta.className}">${group.length}</span></div>
+        <div class="consulta-list">${group.map((item) => `<button class="consulta-card ${getBrandThemeClass(item.marca)}" type="button" onclick="abrirConsulta('${item.id}')"><span class="brand-logo-wrap compact"><img class="brand-logo" src="${item.logo}" alt="${escapeHtml(item.marcaNome)}"></span><span class="consulta-card-copy">${meta.emphasis ? `<span class="status-badge ${meta.className}">${meta.label}</span>` : ""}<strong>${escapeHtml(item.nome)}</strong><small>${escapeHtml(item.marcaNome)} • ${item.current ? "conteúdo do ciclo" : "resumo visual"}</small></span><span class="card-arrow">${renderIcon("arrowRight")}</span></button>`).join("")}</div>
+      </section>`;
+    }).join("")}
   `;
 }
 
@@ -1459,7 +1429,7 @@ function renderQuizHub() {
         </div>
         <div class="action-stack">
           <a class="primary-button" href="home.html">Estudar os KBDs</a>
-          <a class="secondary-button" href="checklist.html">Abrir checklist</a>
+          <a class="secondary-button" href="checklist.html">Abrir Consulta</a>
         </div>
       </div>
     `;
@@ -1535,7 +1505,7 @@ function mostrarPergunta() {
       </div>
 
       <div class="question-card">
-        <div class="question-helper">${escapeHtml(quizState.marcaAtual.nome)} • ${escapeHtml(quizState.kbdAtual.nome)}</div>
+        <div class="question-helper">${escapeHtml(quizState.marcaAtual.nome)} • ${escapeHtml(quizState.kbdAtual.nome)}<span>Canais: ${escapeHtml(quizState.kbdAtual.canais || "Consulte o material")}</span></div>
         <h2 class="question-title">${escapeHtml(perguntaAtual.pergunta)}</h2>
 
         <div class="option-list">

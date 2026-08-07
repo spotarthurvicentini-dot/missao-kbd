@@ -52,8 +52,10 @@
 }
 
 .team-row {
-  grid-template-columns: 1.35fr 1fr .7fr .7fr .7fr 1fr;
+  grid-template-columns: minmax(180px, 1fr) 120px 120px;
 }
+
+.team-metric { font-size: 14px; font-weight: 800; color: var(--text); }
 
 .team-row-clickable {
   width: 100%;
@@ -212,6 +214,8 @@
   .pagination {
     justify-content: space-between;
   }
+
+  .team-row { min-width: 0; grid-template-columns: minmax(140px, 1fr) 72px 82px; padding-left: 12px; padding-right: 12px; }
 
   .promoter-drawer-head,
   .promoter-drawer-content { padding-left: 18px; padding-right: 18px; }
