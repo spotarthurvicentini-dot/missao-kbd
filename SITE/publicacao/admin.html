@@ -9,9 +9,9 @@
   <style>svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}@media(max-width:760px){.admin-topbar{flex-wrap:wrap;padding-top:8px;padding-bottom:8px}.global-search{order:3;flex:1 0 100%!important;width:100%!important}}</style>
   <link rel="stylesheet" href="admin.css?v=20260806-2">
   <link rel="stylesheet" href="admin-mobile.css?v=20260806-2">
-  <link rel="stylesheet" href="admin-overrides.css?v=20260806-2">
+  <link rel="stylesheet" href="admin-overrides.css?v=20260807-1">
   <script defer src="app.js?v=20260806-6"></script>
-  <script defer src="admin-real.js?v=20260807-2"></script>
+  <script defer src="admin-real.js?v=20260807-3"></script>
 </head>
 <body onload="initAdmin()">
   <div class="admin-shell">
@@ -26,8 +26,7 @@
         <button class="nav-item active" data-view="overview"><span data-icon="grid"></span>Dashboard</button>
         <button class="nav-item" data-view="operation"><span data-icon="pulse"></span>Operação 360°</button>
         <span class="nav-label">Gestão</span>
-        <button class="nav-item" data-view="team"><span data-icon="users"></span>Equipe</button>
-        <button class="nav-item" data-view="content"><span data-icon="book"></span>Conteúdos e KBDs</button>
+        <button class="nav-item" data-view="team"><span data-icon="users"></span>Equipe e KBDs</button>
       </nav>
 
       <div class="sidebar-foot">
@@ -86,10 +85,15 @@
         </section>
 
         <section class="view" data-page="operation"><div class="page-head"><div><span class="eyebrow">OPERAÇÃO 360°</span><h1>Pulso da operação</h1><p>Indicadores com telemetria disponível: acesso, vídeo e quiz.</p></div></div><div id="operationContent"></div></section>
-        <section class="view" data-page="team"><div class="page-head"><div><span class="eyebrow">GESTÃO DE PESSOAS</span><h1>Coordenadores e promotores</h1><p>Localize pessoas, compare resultados e identifique quem precisa de apoio.</p></div></div><div id="teamContent"></div></section>
-        <section class="view" data-page="content"><div class="page-head"><div><span class="eyebrow">CONTEÚDO</span><h1>KBDs e treinamentos</h1><p>Conclusão de quizzes, vídeo e acerto por conteúdo no ciclo.</p></div></div><div id="contentView"></div></section>
+        <section class="view" data-page="team"><div class="page-head"><div><span class="eyebrow">EQUIPE E KBDS</span><h1>Equipe e desempenho por KBD</h1><p>Localize um promotor e clique na linha para abrir o resultado individual por marca e KBD.</p></div></div><div id="teamContent"></div></section>
       </div>
     </main>
+  </div>
+  <div class="promoter-drawer-backdrop" id="promoterDrawerBackdrop" aria-hidden="true">
+    <aside class="promoter-drawer" id="promoterDrawer" role="dialog" aria-modal="true" aria-labelledby="promoterDrawerTitle">
+      <header class="promoter-drawer-head"><div><span class="eyebrow">DESEMPENHO INDIVIDUAL</span><h2 id="promoterDrawerTitle">Promotor</h2><p id="promoterDrawerSubtitle">Carregando dados do ciclo…</p></div><button class="icon-btn" id="closePromoterDrawer" type="button" aria-label="Fechar desempenho">×</button></header>
+      <div class="promoter-drawer-content" id="promoterDrawerContent"></div>
+    </aside>
   </div>
   <div class="toast" id="toast"></div>
 </body>

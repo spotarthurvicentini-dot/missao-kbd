@@ -17,6 +17,7 @@ const context = {
   Map,
   Set,
   isNaN,
+  MANAGEMENT_CYCLE: { id: '2026-08', name: 'Agosto 2026' },
   ACTIVE_KBDS: [
     { kbdId: 'bond-repair' },
     { kbdId: 'branqueamento' },
@@ -53,5 +54,17 @@ assert.throws(() => context.validateEventBusiness_({
 assert.throws(() => context.validateEventBusiness_({
   eventType: 'video_progress', kbdId: 'bond-repair', percentage: 120,
 }), /Percentual de vídeo inválido/);
+
+context.getAuthSession_ = () => ({ user: 'RSCOORD02', role: 'manager' });
+context.normalizeSector_ = (value) => String(value || '').trim().toUpperCase();
+context.getManagedTeam_ = () => [{ promoter: 'RS03', coordinator: 'RSCOORD02', regional: 'RS' }];
+context.buildManagementReport_ = () => ({
+  people: [{ sector: 'RS03', completedKbdCount: 1, eligibleKbdCount: 9 }],
+  contentPerformance: [{ brand: 'PAMPERS', kbd: 'Pampers Premium Care', completedPromoters: 1 }],
+});
+assert.throws(() => context.getPromoterDetail_('RSCOORD02', 'SPI145', 'valid-token'), /fora da equipe autorizada/);
+const detail = context.getPromoterDetail_('RSCOORD02', 'RS03', 'valid-token');
+assert.equal(detail.promoter, 'RS03');
+assert.equal(detail.kbds[0].brand, 'PAMPERS');
 
 console.log('api_security_contract: OK');

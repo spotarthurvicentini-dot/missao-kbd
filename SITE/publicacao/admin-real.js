@@ -36,7 +36,6 @@ function renderManagerLoading(){
   document.getElementById('attentionList').innerHTML='<div class="empty-search">Carregando alertas…</div>';
   document.getElementById('operationContent').innerHTML='<div class="empty-search">Carregando operação…</div>';
   document.getElementById('teamContent').innerHTML='<div class="empty-search">Carregando equipe…</div>';
-  document.getElementById('contentView').innerHTML='<div class="empty-search">Carregando conteúdos…</div>';
 }
 
 async function loadManagementData(){
@@ -123,18 +122,51 @@ function renderManagerTeam(){
   teamPage=Math.min(teamPage,pages);
   const start=(teamPage-1)*TEAM_PAGE_SIZE;
   const people=all.slice(start,start+TEAM_PAGE_SIZE);
-  document.getElementById('teamContent').innerHTML=`<div class="team-toolbar"><input id="teamSearch" value="${managerEscape(teamSearchTerm)}" placeholder="Buscar por promotor, coordenador ou regional"><span class="team-count">${all.length} promotores</span></div><div class="team-table"><div class="team-row header"><span>Promotor</span><span>Coordenador</span><span>Regional</span><span>Andamento</span><span>Acerto</span><span>Último login</span></div>${people.map(person=>`<div class="team-row"><span class="person"><i class="mini-avatar">${managerEscape(person.sector.slice(0,2))}</i><span><strong>${managerEscape(person.sector)}</strong><small>${person.completedKbdCount}/${person.eligibleKbdCount} quizzes</small></span></span><span>${managerEscape(person.coordinator)}</span><span>${managerEscape(managerRegion(person.regional))}</span><span>${person.completionRate}%</span><span class="score-chip ${person.accuracy!==null&&person.accuracy<70?'warn':''}">${managerPercent(person.accuracy)}</span><span>${managerEscape(managerDate(person.lastAccessAt))}</span></div>`).join('')||'<div class="empty-search">Nenhum promotor encontrado.</div>'}</div><div class="pagination"><button class="btn secondary" id="prevTeam" ${teamPage<=1?'disabled':''}>Anterior</button><span>Página ${teamPage} de ${pages}</span><button class="btn secondary" id="nextTeam" ${teamPage>=pages?'disabled':''}>Próxima</button></div>`;
+  document.getElementById('teamContent').innerHTML=`<div class="team-toolbar"><input id="teamSearch" value="${managerEscape(teamSearchTerm)}" placeholder="Buscar por promotor, coordenador ou regional"><span class="team-count">${all.length} promotores</span></div><div class="team-table"><div class="team-row header"><span>Promotor</span><span>Coordenador</span><span>Regional</span><span>Andamento</span><span>Acerto</span><span>Último login</span></div>${people.map(person=>`<button type="button" class="team-row team-row-clickable" data-promoter="${managerEscape(person.sector)}" aria-label="Abrir desempenho de ${managerEscape(person.sector)}"><span class="person"><i class="mini-avatar">${managerEscape(person.sector.slice(0,2))}</i><span><strong>${managerEscape(person.sector)}</strong><small>${person.completedKbdCount}/${person.eligibleKbdCount} quizzes • ver KBDs</small></span></span><span>${managerEscape(person.coordinator)}</span><span>${managerEscape(managerRegion(person.regional))}</span><span>${person.completionRate}%</span><span class="score-chip ${person.accuracy!==null&&person.accuracy<70?'warn':''}">${managerPercent(person.accuracy)}</span><span>${managerEscape(managerDate(person.lastAccessAt))}</span></button>`).join('')||'<div class="empty-search">Nenhum promotor encontrado.</div>'}</div><div class="pagination"><button class="btn secondary" id="prevTeam" ${teamPage<=1?'disabled':''}>Anterior</button><span>Página ${teamPage} de ${pages}</span><button class="btn secondary" id="nextTeam" ${teamPage>=pages?'disabled':''}>Próxima</button></div>`;
   document.getElementById('teamSearch').addEventListener('input',event=>{teamSearchTerm=event.target.value;teamPage=1;renderManagerTeam();});
   document.getElementById('prevTeam').onclick=()=>{if(teamPage>1){teamPage-=1;renderManagerTeam();}};
   document.getElementById('nextTeam').onclick=()=>{if(teamPage<pages){teamPage+=1;renderManagerTeam();}};
+  document.querySelectorAll('[data-promoter]').forEach(button=>button.onclick=()=>openPromoterDetail(button.dataset.promoter));
 }
 
-function renderManagerContent(){
-  const rows=managementReport.contentPerformance||[];
-  document.getElementById('contentView').innerHTML='<div class="team-table"><div class="team-row header"><span>Conteúdo</span><span>Quiz concluído</span><span>Conclusão</span><span>Vídeo</span><span>Acerto</span><span></span></div>'+rows.map(row=>`<div class="team-row"><span class="person"><i class="region-avatar">${managerEscape(row.brand.slice(0,2))}</i><span><strong>${managerEscape(row.kbd)}</strong><small>${managerEscape(row.brand)}</small></span></span><span>${row.completedPromoters}/${row.eligiblePromoters}</span><span>${row.completionRate}%</span><span>${row.videoAveragePercent}%</span><span class="score-chip ${row.accuracy!==null&&row.accuracy<70?'warn':''}">${managerPercent(row.accuracy)}</span><span></span></div>`).join('')+'</div>';
+function closePromoterDetail(){
+  const backdrop=document.getElementById('promoterDrawerBackdrop');
+  backdrop?.classList.remove('open');
+  backdrop?.setAttribute('aria-hidden','true');
+  document.body.classList.remove('drawer-open');
 }
 
-function renderManagementAll(){renderManagerKpis();renderManagerTrend();renderManagerIndicators();renderManagerRegions();renderManagerAttention();renderManagerOperation();renderManagerTeam();renderManagerContent();}
+function renderPromoterDetail(data){
+  const person=data.person;
+  const groups=(data.kbds||[]).reduce((all,row)=>{const brand=row.brand||'Outros';(all[brand]||(all[brand]=[])).push(row);return all;},{});
+  const completed=Number(person.completedKbdCount||0);
+  const eligible=Number(person.eligibleKbdCount||9);
+  document.getElementById('promoterDrawerSubtitle').textContent=`${person.coordinator} • ${managerRegion(person.regional)} • ciclo ${data.cycle?.name||'vigente'}`;
+  document.getElementById('promoterDrawerContent').innerHTML=`<div class="promoter-summary"><article><small>Quizzes concluídos</small><strong>${completed}/${eligible}</strong></article><article><small>Acerto no ciclo</small><strong>${managerPercent(person.accuracy)}</strong></article><article><small>Dias com acesso</small><strong>${Number(person.activeDays||0)} dias</strong></article><article><small>Último login</small><strong>${managerEscape(managerDate(person.lastAccessAt))}</strong></article></div><div class="brand-groups">${Object.entries(groups).map(([brand,rows])=>`<section class="brand-group"><header><span class="brand-avatar">${managerEscape(brand.slice(0,2))}</span><div><h3>${managerEscape(brand)}</h3><p>${rows.filter(row=>row.completedPromoters>0).length}/${rows.length} KBDs concluídos</p></div></header><div class="kbd-detail-head"><span>KBD</span><span>Status</span><span>Resultado</span><span>Vídeo</span></div>${rows.map(row=>`<div class="kbd-detail-row"><strong>${managerEscape(row.kbd)}</strong><span class="kbd-status ${row.completedPromoters>0?'done':'pending'}">${row.completedPromoters>0?'Quiz concluído':'Não concluído'}</span><span><b>${row.questions?`${row.correct}/${row.questions}`:'—'}</b><small>${managerPercent(row.accuracy)} de acerto</small></span><span><b>${Number(row.videoAveragePercent||0)}%</b><small>assistido</small></span></div>`).join('')}</section>`).join('')}</div>`;
+}
+
+async function openPromoterDetail(promoter){
+  const backdrop=document.getElementById('promoterDrawerBackdrop');
+  document.getElementById('promoterDrawerTitle').textContent=promoter;
+  document.getElementById('promoterDrawerSubtitle').textContent='Carregando dados reais do ciclo…';
+  document.getElementById('promoterDrawerContent').innerHTML='<div class="empty-search">Consultando quizzes e progresso dos 9 KBDs…</div>';
+  backdrop.classList.add('open');
+  backdrop.setAttribute('aria-hidden','false');
+  document.body.classList.add('drawer-open');
+  try{
+    const token=sessionStorage.getItem('KBD_AUTH_TOKEN')||'';
+    const response=await fetch(GOOGLE_SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'promoterDetail',setor:currentManagerUser,promoter,token}),cache:'no-store'});
+    const data=await response.json();
+    if(!response.ok||!data.ok||!data.person||!Array.isArray(data.kbds))throw new Error(data.error||'Não foi possível carregar o promotor.');
+    if(document.getElementById('promoterDrawerTitle').textContent!==promoter)return;
+    renderPromoterDetail(data);
+  }catch(error){
+    document.getElementById('promoterDrawerSubtitle').textContent='Dados indisponíveis';
+    document.getElementById('promoterDrawerContent').innerHTML=`<div class="empty-search">${managerEscape(error?.message||'Não foi possível carregar o desempenho.')}</div>`;
+  }
+}
+
+function renderManagementAll(){renderManagerKpis();renderManagerTrend();renderManagerIndicators();renderManagerRegions();renderManagerAttention();renderManagerOperation();renderManagerTeam();}
 function closeManagerSidebar(){document.getElementById('sidebar')?.classList.remove('open');document.body.classList.remove('menu-open');}
 function showManagerView(name){document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active',view.dataset.page===name));document.querySelectorAll('.nav-item[data-view]').forEach(button=>button.classList.toggle('active',button.dataset.view===name));closeManagerSidebar();window.scrollTo(0,0);}
 
@@ -145,7 +177,7 @@ function updateManagerGlobalSearch(value){
   const term=value.trim().toLowerCase();
   if(!managementReport||term.length<2){box.classList.remove('open');box.innerHTML='';return;}
   const people=(managementReport.people||[]).filter(person=>`${person.sector} ${person.coordinator} ${person.regional}`.toLowerCase().includes(term)).slice(0,8);
-  box.innerHTML=people.length?people.map(person=>`<button class="search-result" data-search-sector="${managerEscape(person.sector)}"><i class="mini-avatar">${managerEscape(person.sector.slice(0,2))}</i><span><strong>${managerEscape(person.sector)}</strong><small>Coordenador ${managerEscape(person.coordinator)} • ${managerEscape(managerRegion(person.regional))}</small></span><span>Ver equipe</span></button>`).join(''):'<div class="empty-search">Nenhum setor encontrado.</div>';
+  box.innerHTML=people.length?people.map(person=>`<button class="search-result" data-search-sector="${managerEscape(person.sector)}"><i class="mini-avatar">${managerEscape(person.sector.slice(0,2))}</i><span><strong>${managerEscape(person.sector)}</strong><small>Coordenador ${managerEscape(person.coordinator)} • ${managerEscape(managerRegion(person.regional))}</small></span><span>Abrir equipe</span></button>`).join(''):'<div class="empty-search">Nenhum setor encontrado.</div>';
   box.classList.add('open');
   box.querySelectorAll('[data-search-sector]').forEach(button=>button.onclick=()=>{document.getElementById('globalSearch').value=button.dataset.searchSector;box.classList.remove('open');searchManagement(button.dataset.searchSector);});
 }
@@ -161,7 +193,7 @@ function initAdmin(){
   document.querySelector('.scope-tabs').innerHTML=`<button class="active">${currentManagerRole==='admin'?'Todas as equipes':'Minha equipe'}</button>`;
   if(currentManagerRole==='manager'){
     document.querySelector('[data-page="overview"] .page-head p').textContent='Acompanhe somente os promotores vinculados ao seu setor.';
-    document.querySelector('[data-page="team"] h1').textContent='Andamento da minha equipe';
+    document.querySelector('[data-page="team"] h1').textContent='Minha equipe e KBDs';
   }
   renderManagerLoading();
   document.querySelectorAll('[data-view]').forEach(button=>button.onclick=()=>showManagerView(button.dataset.view));
@@ -172,6 +204,9 @@ function initAdmin(){
   document.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();search.focus();}});
   document.getElementById('menuButton').onclick=()=>{const open=document.getElementById('sidebar').classList.toggle('open');document.body.classList.toggle('menu-open',open);};
   document.getElementById('sidebarBackdrop').onclick=closeManagerSidebar;
+  document.getElementById('closePromoterDrawer').onclick=closePromoterDetail;
+  document.getElementById('promoterDrawerBackdrop').addEventListener('click',event=>{if(event.target.id==='promoterDrawerBackdrop')closePromoterDetail();});
   document.addEventListener('click',event=>{if(window.matchMedia('(max-width: 760px)').matches&&document.getElementById('sidebar').classList.contains('open')&&!event.target.closest('#sidebar')&&!event.target.closest('#menuButton'))closeManagerSidebar();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')closePromoterDetail();});
   loadManagementData();
 }

@@ -1,4 +1,4 @@
-const API_VERSION = "2.4.1";
+const API_VERSION = "2.5.0";
 const REPORT_CONFIG = {
   timeZone: "America/Sao_Paulo",
   hour: 8,
@@ -118,6 +118,32 @@ function getDashboardReport_(managerSector, requestedDays, token) {
   };
 }
 
+function getPromoterDetail_(managerSector, promoterSector, token) {
+  const session = getAuthSession_(token);
+  const manager = normalizeSector_(managerSector);
+  const promoter = normalizeSector_(promoterSector);
+  if (!session || session.user !== manager || (session.role !== "admin" && session.role !== "manager")) {
+    throw new Error("Sessão gerencial inválida ou expirada.");
+  }
+  const team = getManagedTeam_(manager, session.role);
+  const teamRow = team.find(function (row) { return row.promoter === promoter; });
+  if (!teamRow) throw new Error("Promotor fora da equipe autorizada.");
+
+  const end = new Date();
+  const start = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const report = buildManagementReport_([teamRow], start, end);
+  return {
+    ok: true,
+    manager: manager,
+    promoter: promoter,
+    cycle: MANAGEMENT_CYCLE,
+    person: report.people[0],
+    kbds: report.contentPerformance,
+    updatedAt: end.toISOString(),
+    version: API_VERSION
+  };
+}
+
 function doPost(e) {
   const receivedAt = new Date();
   const lock = LockService.getScriptLock();
@@ -127,6 +153,9 @@ function doPost(e) {
     if (text_(payload.action) === "login") return json_(authenticate_(payload));
     if (text_(payload.action) === "dashboard") {
       return json_(getDashboardReport_(text_(payload.setor), number_(payload.days) || 30, text_(payload.token)));
+    }
+    if (text_(payload.action) === "promoterDetail") {
+      return json_(getPromoterDetail_(text_(payload.setor), text_(payload.promoter), text_(payload.token)));
     }
     if (text_(payload.action) === "progress") {
       return json_(getSectorProgressAuthenticated_(text_(payload.setor), text_(payload.token)));

@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-distinct-access-2026-08-07";
+const CACHE_NAME = "missao-kbd-v2-promoter-detail-2026-08-07";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -10,8 +10,8 @@ const CORE_ASSETS = [
   "./admin.html",
   "./admin.css?v=20260806-2",
   "./admin-mobile.css?v=20260806-2",
-  "./admin-overrides.css?v=20260806-2",
-  "./admin-real.js?v=20260807-2",
+  "./admin-overrides.css?v=20260807-1",
+  "./admin-real.js?v=20260807-3",
   "./style.css?v=20260805-1",
   "./app.js?v=20260806-6",
   "./quizzes.js?v=20260804-2",
