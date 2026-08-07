@@ -11,10 +11,10 @@ const appJs = read('app.js');
 const worker = read('service-worker.js');
 const management = fs.readFileSync(path.join(root, 'CODIGO', 'sheets-api', 'Management.gs'), 'utf8');
 
-assert.match(adminHtml, /admin-real\.js\?v=20260806-1/);
+assert.match(adminHtml, /admin-real\.js\?v=20260806-2/);
 assert.doesNotMatch(adminHtml, /admin\.js|analytics|healthValue|score-ring/);
 assert.doesNotMatch(adminJs, /Math\.random|hashNumber|Operação saudável|84|86|74|61/);
-assert.match(worker, /admin-real\.js\?v=20260806-1/);
+assert.match(worker, /admin-real\.js\?v=20260806-2/);
 assert.doesNotMatch(worker, /admin\.js/);
 assert.match(worker, /req\.mode === "navigate"/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('async function entrar()'), appJs.indexOf('function renderHome()')), /ALLOWED_SECTORS_NORMALIZED/);
