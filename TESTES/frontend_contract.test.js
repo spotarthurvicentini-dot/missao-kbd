@@ -11,14 +11,14 @@ const appJs = read('app.js');
 const worker = read('service-worker.js');
 const management = fs.readFileSync(path.join(root, 'CODIGO', 'sheets-api', 'Management.gs'), 'utf8');
 
-assert.match(adminHtml, /admin-real\.js\?v=20260807-3/);
+assert.match(adminHtml, /admin-real\.js\?v=20260807-4/);
 assert.match(adminHtml, /admin-overrides\.css\?v=20260807-1/);
 assert.match(adminHtml, /id="promoterDrawer"/);
 assert.match(adminHtml, /data-view="team"[^>]*>.*Equipe e KBDs/);
 assert.doesNotMatch(adminHtml, /data-view="content"|data-page="content"/);
 assert.doesNotMatch(adminHtml, /admin\.js|analytics|healthValue|score-ring/);
 assert.doesNotMatch(adminJs, /Math\.random|hashNumber|Operação saudável|84|86|74|61/);
-assert.match(worker, /admin-real\.js\?v=20260807-3/);
+assert.match(worker, /admin-real\.js\?v=20260807-4/);
 assert.match(worker, /admin-overrides\.css\?v=20260807-1/);
 assert.match(adminJs, /action:'promoterDetail'/);
 assert.match(adminJs, /data-promoter=/);
