@@ -63,12 +63,12 @@ async function loadManagementData(){
 function renderManagerKpis(){
   const totals=managementReport.totals;
   const cards=[
-    ['users','Equipe vinculada',totals.linkedPromoters,`${totals.linkedPromoters} promotores no catálogo`],
-    ['pulse','Acessos únicos',totals.activePromoters,`${totals.activePromoters} promotores • ${totals.accesses} eventos de login`],
-    ['target','Andamento dos quizzes',`${totals.completionRate}%`,`${totals.completedKbdCount}/${totals.eligibleKbdCount} quizzes dos 9 KBDs publicados`],
-    ['check','Índice de acerto',managerPercent(totals.accuracy),totals.questions?`${totals.correct}/${totals.questions} respostas do quiz mais recente`:'Sem quiz concluído no ciclo']
+    ['users','Equipe vinculada',totals.linkedPromoters,`${totals.linkedPromoters} promotores no catálogo`,'Promotores distintos vinculados no catálogo vigente.'],
+    ['pulse','Acessos únicos',totals.activePromoters,`${totals.activePromoters} promotores • ${totals.accesses} eventos de login`,managementReport.definitions.activePromoters],
+    ['target','Andamento dos quizzes',`${totals.completionRate}%`,`${totals.completedKbdCount}/${totals.eligibleKbdCount} quizzes dos 9 KBDs publicados`,managementReport.definitions.completion],
+    ['check','Índice de acerto',managerPercent(totals.accuracy),totals.questions?`${totals.correct}/${totals.questions} respostas do quiz mais recente`:'Sem quiz concluído no ciclo',managementReport.definitions.accuracy]
   ];
-  document.getElementById('kpiGrid').innerHTML=cards.map(([icon,label,value,detail])=>`<article class="kpi-card" title="${managerEscape(managementReport.definitions[label==='Andamento dos quizzes'?'completion':label==='Índice de acerto'?'accuracy':label==='Acessos únicos'?'activePromoters':'accesses']||'')}"><div class="kpi-top"><span>${managerEscape(label)}</span><span class="kpi-icon">${managerIcon(icon)}</span></div><div class="kpi-value">${managerEscape(value)}</div><div class="kpi-foot">${managerEscape(detail)}</div></article>`).join('');
+  document.getElementById('kpiGrid').innerHTML=cards.map(([icon,label,value,detail,definition])=>`<article class="kpi-card" title="${managerEscape(definition||'')}"><div class="kpi-top"><span>${managerEscape(label)}</span><span class="kpi-icon">${managerIcon(icon)}</span></div><div class="kpi-value">${managerEscape(value)}</div><div class="kpi-foot">${managerEscape(detail)}</div></article>`).join('');
 }
 
 function renderManagerTrend(){
