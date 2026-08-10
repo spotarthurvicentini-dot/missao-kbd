@@ -6,8 +6,7 @@ Aplicação mobile-first de treinamento SPOT × P&G, publicada como PWA e empaco
 
 O treinamento e os quizzes do V2 contêm 9 KBDs, separados de forma explícita:
 
-- **Novos (2):** Pantene Finalizadores e Tampax no ponto natural.
-- **Alterados (2):** Gillette Mach3/Presto3 e Secret por frentes ou bandejas.
+- **Novos (4):** Pantene Finalizadores, Tampax no ponto natural, Gillette Mach3/Presto3 e Secret por frentes ou bandejas.
 - **Transformacionais (5):** Pantene Bond Repair, Venus 3 pontos, Oral-B 60%, Pampers Vale Night na gôndola e Pampers Vale Night no ponto extra.
 
 A área **Consulta** segue o `Guia de KBD - Versão Campo (Julho a Dezembro de 2026)` e contém os 25 KBDs de execução do guia, cada um com sua página visual oficial. Materiais retirados ou ausentes no guia não entram no pacote publicado.
