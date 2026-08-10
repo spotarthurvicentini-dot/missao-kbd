@@ -33,13 +33,13 @@ assert.doesNotMatch(adminJs, /points\('accesses'\)/);
 assert.match(adminJs, /attentionPeopleCount/);
 assert.doesNotMatch(worker, /admin\.js/);
 assert.match(worker, /req\.mode === "navigate"/);
-assert.match(worker, /app\.js\?v=20260807-7/);
+assert.match(worker, /app\.js\?v=20260810-8/);
 assert.match(worker, /style\.css\?v=20260807-2/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('async function entrar()'), appJs.indexOf('function renderHome()')), /ALLOWED_SECTORS_NORMALIZED/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('function prepareEventPayload'), appJs.indexOf('function readEventQueue')), /authToken/);
 
 for (const file of ['index.html', 'home.html', 'marca.html', 'kbd.html', 'quiz.html', 'novidades.html', 'checklist.html', 'admin.html']) {
-  assert.match(read(file), /app\.js\?v=20260807-7/, `${file} precisa carregar a versão atual do app`);
+  assert.match(read(file), /app\.js\?v=20260810-8/, `${file} precisa carregar a versão atual do app`);
 }
 
 const activeBlock = management.match(/const ACTIVE_KBDS = \[([\s\S]*?)\n\];/)[1];
@@ -56,7 +56,21 @@ vm.runInNewContext(`${quizzesJs}\n;globalThis.__QUIZZES__ = QUIZZES;`, quizConte
 const quizIds = Object.values(quizContext.__QUIZZES__).flatMap((brand) => Object.keys(brand)).sort();
 assert.equal(quizIds.length, 9, 'somente os 9 KBDs atuais podem ter quiz');
 assert.deepEqual(quizIds, activeIds.slice().sort(), 'os quizzes precisam corresponder exatamente aos 9 KBDs ativos');
-assert.equal((appJs.match(/imagem: "kbds\/consulta\//g) || []).length, 24, 'a Consulta precisa ter os 24 resumos visuais recuperados');
+const guiaBlock = appJs.match(/const GUIA_KBDS = \[([\s\S]*?)\n\];/)[1];
+const guiaIds = [...guiaBlock.matchAll(/id:\s*"([^"]+)"/g)].map((match) => match[1]);
+const guiaImages = [...guiaBlock.matchAll(/imagem:\s*"([^"]+)"/g)].map((match) => match[1]);
+assert.equal(guiaIds.length, 25, 'a Consulta precisa corresponder aos 25 KBDs do guia de campo');
+assert.equal(new Set(guiaIds).size, 25, 'os KBDs do guia precisam ter IDs únicos');
+assert.equal(new Set(guiaImages).size, 25, 'cada KBD do guia precisa ter sua própria imagem');
+for (const image of guiaImages) {
+  assert.ok(fs.existsSync(path.join(site, image)), `imagem do guia não encontrada: ${image}`);
+  assert.ok(worker.includes(`./${image}`), `imagem do guia ausente no cache offline: ${image}`);
+}
+for (const retired of ['pantene-top-versoes', 'pantene-rio-cachoeira', 'venus-sistemas-ganchos']) {
+  assert.ok(!guiaIds.includes(retired), `KBD retirado não pode aparecer na Consulta: ${retired}`);
+}
+assert.doesNotMatch(appJs, /const LEGACY_KBDS/);
+assert.doesNotMatch(worker, /kbds\/(consulta|referencias-2026)\//);
 assert.doesNotMatch(appJs, /status:\s*"alterado"|Alterados\s*•/);
 assert.match(appJs, /\["novo", "transformacional", "kbd"\]/);
 assert.match(appJs, /Canais: \$\{escapeHtml\(quizState\.kbdAtual\.canais/);

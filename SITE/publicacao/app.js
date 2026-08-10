@@ -172,7 +172,7 @@ const CONTENT = {
         erroComum: ["Bandeja no ponto extra (fora da categoria)", "Bandeja fora da categoria de absorventes internos", "Bandeja vazia", "Execução fora do ponto natural"],
         produtosValidos: ["Tampax Compak Super", "Tampax Compak Intenso", "Tampax Compak Muito Intenso"],
         focoPromotor: "Garantir bandeja abastecida e bem posicionada no ponto natural.",
-        videoId: "4g0UL2iqWHI", videoUrl: "", imagens: ["kbds/referencias-2026/tampax-ponto-natural.webp"] },
+        videoId: "4g0UL2iqWHI", videoUrl: "", imagens: ["kbds/guia-campo-2026/tampax-bandeja-ponto-natural.jpg"] },
     ] },
     { id: "pantene", nome: "PANTENE", logo: "logos/pantene.png", kbds: [
       { id: "bond-repair", nome: "Bond Repair — 20% do Espaço", status: "transformacional", canais: "Todos os canais",
@@ -180,13 +180,13 @@ const CONTENT = {
         comoConta: ["Medição em centímetros", "Considerar apenas Pantene Bond Repair", "Excluir packs do cálculo"],
         erroComum: ["Contar packs para completar o percentual"],
         focoPromotor: "Garantir no mínimo 20% do espaço de Pantene para Bond Repair.",
-        videoId: "Bbd5nfGj6to", videoUrl: "", imagens: ["kbds/referencias-2026/pantene-bond-repair.webp"] },
+        videoId: "Bbd5nfGj6to", videoUrl: "", imagens: ["kbds/guia-campo-2026/pantene-bond-repair-20.jpg"] },
       { id: "finalizadores", nome: "Finalizadores com Espaço Garantido", status: "novo", canais: "DPP, C&C, NMR/GMR, CLUB, LASA, HFS e Perfumaria",
         resumo: "Óleo, Sérum e Leave-in agora precisam ter quantidade mínima de frentes na gôndola: 8 em DPP, 6 nos demais canais.",
         comoConta: ["Cada produto voltado para frente = 1 frente", "Contar apenas frentes visíveis na gôndola", "Não duplicar a mesma frente", "Meta DPP: pelo menos 8 frentes", "Meta demais canais elegíveis: pelo menos 6 frentes"],
         erroComum: ["Produto fora da gôndola", "Produto em clipstrip, checkout, ilha ou display", "Contar a mesma frente duas vezes", "Somar produtos que não são finalizadores"],
         focoPromotor: "Garantir finalizadores abastecidos e com a quantidade mínima de frentes na gôndola.",
-        videoId: "XCprppsjhz8", videoUrl: "", imagens: ["kbds/referencias-2026/pantene-finalizadores-dpp-8-frentes.webp", "kbds/referencias-2026/pantene-finalizadores-alimentar-6-frentes.webp"] },
+        videoId: "XCprppsjhz8", videoUrl: "", imagens: ["kbds/guia-campo-2026/pantene-finalizadores-8-frentes.jpg", "kbds/guia-campo-2026/pantene-finalizadores-6-frentes.jpg"] },
     ] },
     { id: "pampers", nome: "PAMPERS", logo: "logos/pampers.png", kbds: [
       { id: "vale-night", nome: "Vale Night — Materiais na Gôndola", status: "transformacional", canais: "C&C, NMR/GMR, CLUB, LASA, HFS e Perfumaria",
@@ -194,13 +194,13 @@ const CONTENT = {
         comoConta: ["Executar a faixa de gôndola com comunicação Vale Night", "Combinar a faixa com materiais que apresentem o ícone de mamadeira", "Materiais apresentados: faixa, fita, precificador, wobbler e cartaz"],
         erroComum: ["Executar apenas a faixa, sem materiais com o ícone de mamadeira", "Usar materiais sem o ícone de mamadeira", "Aplicar a leitura no canal DPP"],
         focoPromotor: "Garantir a faixa Vale Night e os materiais com ícone de mamadeira na gôndola.",
-        videoId: "VzUKIRxz1J0", videoUrl: "", imagens: ["kbds/referencias-2026/pampers-vale-night-gondola.webp"] },
+        videoId: "VzUKIRxz1J0", videoUrl: "", imagens: ["kbds/guia-campo-2026/pampers-vale-night-gondola.jpg"] },
       { id: "vale-night-ponto-extra", nome: "Vale Night — Ponto Extra", status: "transformacional", canais: "DPP",
         resumo: "Em DPP, a loja deve possuir ponto extra de Pampers com comunicação Vale Night e materiais com o ícone de mamadeira.",
         comoConta: ["Executar um ponto extra de Pampers", "Usar comunicação Vale Night", "Aplicar materiais com o ícone de mamadeira", "Materiais apresentados: precificador, wobbler, cubo, cartaz e topo de ilha"],
         erroComum: ["Ponto extra sem comunicação Vale Night", "Materiais sem o ícone de mamadeira", "Avaliar este KBD fora do canal DPP"],
         focoPromotor: "Garantir o ponto extra de Pampers com comunicação Vale Night e ícone de mamadeira em DPP.",
-        videoId: "VzUKIRxz1J0", videoUrl: "", imagens: ["kbds/referencias-2026/pampers-vale-night-ponto-extra.webp"] },
+        videoId: "VzUKIRxz1J0", videoUrl: "", imagens: ["kbds/guia-campo-2026/pampers-vale-night-ponto-extra.jpg"] },
     ] },
     { id: "secret", nome: "SECRET", logo: "logos/secret.png", kbds: [
       { id: "frentes-bandejas", nome: "Frentes ou Bandejas por Canal", status: "kbd", canais: "Todos os canais elegíveis",
@@ -208,7 +208,7 @@ const CONTENT = {
         comoConta: ["DPP e HFS: 10 frentes visíveis OU 2 bandejas", "C&C, NMR/GMR, CLUB, LASA e Perfumaria: 15 frentes visíveis OU 3 bandejas"],
         erroComum: ["Contar produto fora da gôndola", "Bandeja vazia ou mal posicionada", "Misturar bandejas e frentes sem respeitar a regra do canal"],
         focoPromotor: "Entender a regra do canal e garantir a quantidade correta de frentes ou bandejas.",
-        videoId: "UTglI64T5V4", videoUrl: "", imagens: ["kbds/referencias-2026/secret-dpp-hfs-10-frentes-2-bandejas.webp", "kbds/referencias-2026/secret-alimentar-15-frentes-3-bandejas.webp"] },
+        videoId: "UTglI64T5V4", videoUrl: "", imagens: ["kbds/guia-campo-2026/secret-10-frentes-2-bandejas.jpg", "kbds/guia-campo-2026/secret-15-frentes-3-bandejas.jpg"] },
     ] },
     { id: "oral-b", nome: "ORAL-B", logo: "logos/oral-b.png", kbds: [
       { id: "branqueamento", nome: "60% de Branqueamento", status: "transformacional", canais: "Todos os canais",
@@ -216,7 +216,7 @@ const CONTENT = {
         comoConta: ["Medir a proporção de pastas de branqueamento na gôndola de pastas"],
         erroComum: ["Contar pastas fora da linha branqueamento"],
         focoPromotor: "Garantir pelo menos 60% da gôndola de pastas com branqueamento.",
-        videoId: "wtCHpp6o1RM", videoUrl: "", imagens: ["kbds/referencias-2026/oral-b-branqueamento-60.webp"] },
+        videoId: "wtCHpp6o1RM", videoUrl: "", imagens: ["kbds/guia-campo-2026/oral-b-branqueamento-60.jpg"] },
     ] },
     { id: "gillette", nome: "GILLETTE", logo: "logos/gillette.png", kbds: [
       { id: "mach3-presto3", nome: "Pontos de Contato — Mach3 e Presto3", status: "kbd", canais: "C&C, NMR/GMR, LASA, HFS, Perfumaria e DPP",
@@ -224,7 +224,7 @@ const CONTENT = {
         comoConta: ["Itens Mach3 Sensitive / Presto3 Sensitive com 4 unidades ou mais", "3 pontos de contato em C&C, NMR/GMR, LASA, HFS e PERFUMARIA", "2 pontos de contato em DPP", "Sempre fora do ponto natural"],
         erroComum: ["Produto no checkout", "Produto no ponto natural", "Contar o mesmo ponto duas vezes", "Usar item fora do foco (menos de 4 unidades)"],
         focoPromotor: "Garantir a quantidade correta de pontos de contato com Mach3 e Presto3 Sensitive.",
-        videoId: "7bSEMiq4j8o", videoUrl: "", imagens: ["kbds/referencias-2026/gillette-alimentar-3-pontos.webp", "kbds/referencias-2026/gillette-dpp-2-pontos.webp"] },
+        videoId: "7bSEMiq4j8o", videoUrl: "", imagens: ["kbds/guia-campo-2026/gillette-3-pontos-mach3-presto3.jpg", "kbds/guia-campo-2026/gillette-2-pontos-mach3-presto3.jpg"] },
     ] },
     { id: "venus", nome: "VENUS", logo: "logos/venus.png", kbds: [
       { id: "tres-pontos", nome: "3 Pontos de Contato", status: "transformacional", canais: "Todos os canais elegíveis",
@@ -232,7 +232,7 @@ const CONTENT = {
         comoConta: ["Pelo menos 3 pontos de contato, fora do ponto natural e fora do checkout", "Cada execução separada = 1 ponto", "Priorizar Venus Pele Sensível e Venus Suave"],
         erroComum: ["Produto no checkout", "Produto no ponto natural", "Contar o mesmo ponto duas vezes", "Usar item fora da linha Venus"],
         focoPromotor: "Garantir 3 pontos de contato de Venus, fora do ponto natural e fora do checkout.",
-        videoId: "4C9oEwpZOEo", videoUrl: "", imagens: ["kbds/referencias-2026/venus-3-pontos.webp"] },
+        videoId: "4C9oEwpZOEo", videoUrl: "", imagens: ["kbds/guia-campo-2026/venus-3-pontos.jpg"] },
     ] },
   ],
 };
@@ -251,31 +251,32 @@ const NOVIDADES = {
   ],
 };
 
-const LEGACY_KBDS = [
-  { id: "always-suave", marca: "always", marcaNome: "ALWAYS", nome: "70% de versões Suave", imagem: "kbds/consulta/always.jpg" },
-  { id: "downy-bloco-azul", marca: "downy", marcaNome: "DOWNY", nome: "Bloco Azul", imagem: "kbds/consulta/downy-bloco-azul.jpg" },
-  { id: "downy-bloco-colorido", marca: "downy", marcaNome: "DOWNY", nome: "Bloco Colorido", imagem: "kbds/consulta/downy-bloco-colorido.jpg" },
-  { id: "downy-ponto-extra", marca: "downy", marcaNome: "DOWNY", nome: "Ponto Extra", imagem: "kbds/consulta/downy-ponto-extra.jpg" },
-  { id: "pantene-bond-repair-consulta", marca: "pantene", marcaNome: "PANTENE", nome: "Bond Repair", imagem: "kbds/consulta/pantene-bond-repair.jpg" },
-  { id: "pantene-oleo", marca: "pantene", marcaNome: "PANTENE", nome: "Óleo", imagem: "kbds/consulta/pantene-oleo.jpg" },
-  { id: "pantene-rio-cachoeira", marca: "pantene", marcaNome: "PANTENE", nome: "Rio/Cachoeira Dourada", imagem: "kbds/consulta/pantene-rio-cachoeira-dourada.jpg" },
-  { id: "pantene-top-versoes", marca: "pantene", marcaNome: "PANTENE", nome: "Top Versões (40%)", imagem: "kbds/consulta/pantene-top-versoes.jpg" },
-  { id: "pampers-pants-premium-sul", marca: "pampers", marcaNome: "PAMPERS", nome: "Pants + Premium Care Sul", imagem: "kbds/consulta/pampers-pants-premium-sul.jpg" },
-  { id: "pampers-pants-sp", marca: "pampers", marcaNome: "PAMPERS", nome: "Pants SP", imagem: "kbds/consulta/pampers-pants-sp.jpg" },
-  { id: "pampers-ponto-extra", marca: "pampers", marcaNome: "PAMPERS", nome: "Ponto Extra", imagem: "kbds/consulta/pampers-ponto-extra.jpg" },
-  { id: "pampers-vale-night-ponto-extra-consulta", marca: "pampers", marcaNome: "PAMPERS", nome: "Vale Night — Ponto Extra", imagem: "kbds/consulta/pampers-vale-night-ponto-extra.jpg" },
-  { id: "pampers-vale-night-sos", marca: "pampers", marcaNome: "PAMPERS", nome: "Vale Night SOS", imagem: "kbds/consulta/pampers-vale-night-sos.jpg" },
-  { id: "secret-15-frentes", marca: "secret", marcaNome: "SECRET", nome: "15 Frentes", imagem: "kbds/consulta/secret-15-frentes.jpg" },
-  { id: "secret-2-bandejas", marca: "secret", marcaNome: "SECRET", nome: "2 Bandejas", imagem: "kbds/consulta/secret-2-bandejas.jpg" },
-  { id: "oral-b-2-pontos", marca: "oral-b", marcaNome: "ORAL-B", nome: "2 Pontos de Contato", imagem: "kbds/consulta/oral-b-2-pontos-contato.jpg" },
-  { id: "oral-b-branqueamento-consulta", marca: "oral-b", marcaNome: "ORAL-B", nome: "Branqueamento", imagem: "kbds/consulta/oral-b-branqueamento.jpg" },
-  { id: "oral-b-layout-bipe", marca: "oral-b", marcaNome: "ORAL-B", nome: "Layout BIPE", imagem: "kbds/consulta/oral-b-layout-bipe.jpg" },
-  { id: "gillette-ganchos-c8", marca: "gillette", marcaNome: "GILLETTE", nome: "Ganchos C8", imagem: "kbds/consulta/gillette-ganchos-c8.jpg" },
-  { id: "gillette-2-pontos", marca: "gillette", marcaNome: "GILLETTE", nome: "2 Pontos de Contato", imagem: "kbds/consulta/gillette-2-pontos-contato.jpg" },
-  { id: "gillette-carga-mach3-c8", marca: "gillette", marcaNome: "GILLETTE", nome: "Carga Mach3 C8 — 2 Ganchos", imagem: "kbds/consulta/gillette-carga-mach3-c8.jpg" },
-  { id: "venus-2-pontos", marca: "venus", marcaNome: "VENUS", nome: "2 Pontos de Contato", imagem: "kbds/consulta/venus-2-pontos-contato.jpg" },
-  { id: "venus-checkout-pele-sensivel", marca: "venus", marcaNome: "VENUS", nome: "Checkout — Pele Sensível", imagem: "kbds/consulta/venus-checkout-pele-sensivel.jpg" },
-  { id: "venus-sistemas-ganchos", marca: "venus", marcaNome: "VENUS", nome: "Sistemas — 20% dos Ganchos", imagem: "kbds/consulta/venus-sistemas-20-ganchos.jpg" },
+const GUIA_KBDS = [
+  { id: "always-70-suave", marca: "always", marcaNome: "ALWAYS", nome: "70% da gôndola com versões Suave", imagem: "kbds/guia-campo-2026/always-70-suave.jpg" },
+  { id: "tampax-bandeja-ponto-natural", marca: "tampax", marcaNome: "TAMPAX", nome: "Bandeja no ponto natural de absorventes internos", imagem: "kbds/guia-campo-2026/tampax-bandeja-ponto-natural.jpg" },
+  { id: "pantene-bond-repair-20", marca: "pantene", marcaNome: "PANTENE", nome: "20% da gôndola com Bond Repair", imagem: "kbds/guia-campo-2026/pantene-bond-repair-20.jpg" },
+  { id: "pantene-finalizadores-8-frentes", marca: "pantene", marcaNome: "PANTENE", nome: "Finalizadores com no mínimo 8 frentes", imagem: "kbds/guia-campo-2026/pantene-finalizadores-8-frentes.jpg" },
+  { id: "pantene-finalizadores-6-frentes", marca: "pantene", marcaNome: "PANTENE", nome: "Finalizadores com no mínimo 6 frentes", imagem: "kbds/guia-campo-2026/pantene-finalizadores-6-frentes.jpg" },
+  { id: "pantene-finalizadores-2-pontos", marca: "pantene", marcaNome: "PANTENE", nome: "2 pontos de contato com Finalizadores", imagem: "kbds/guia-campo-2026/pantene-finalizadores-2-pontos.jpg" },
+  { id: "pampers-pants-sp", marca: "pampers", marcaNome: "PAMPERS", nome: "% Pants na gôndola - SP", imagem: "kbds/guia-campo-2026/pampers-pants-sp.jpg" },
+  { id: "pampers-pants-premium-sul", marca: "pampers", marcaNome: "PAMPERS", nome: "% Pants + Premium na gôndola - Sul", imagem: "kbds/guia-campo-2026/pampers-pants-premium-sul.jpg" },
+  { id: "pampers-ponto-extra-tamanhos-grandes", marca: "pampers", marcaNome: "PAMPERS", nome: "Ponto Extra com 50% de tamanhos grandes", imagem: "kbds/guia-campo-2026/pampers-ponto-extra-tamanhos-grandes.jpg" },
+  { id: "pampers-vale-night-gondola", marca: "pampers", marcaNome: "PAMPERS", nome: "Vale Night na gôndola", imagem: "kbds/guia-campo-2026/pampers-vale-night-gondola.jpg" },
+  { id: "pampers-vale-night-ponto-extra", marca: "pampers", marcaNome: "PAMPERS", nome: "Vale Night no Ponto Extra", imagem: "kbds/guia-campo-2026/pampers-vale-night-ponto-extra.jpg" },
+  { id: "downy-ponto-extra-brisas-verao", marca: "downy", marcaNome: "DOWNY", nome: "Ponto Extra com Brisas/Verão Tropical", imagem: "kbds/guia-campo-2026/downy-ponto-extra-brisas-verao.jpg" },
+  { id: "downy-bloco-azul-50", marca: "downy", marcaNome: "DOWNY", nome: "50% de Bloco Azul", imagem: "kbds/guia-campo-2026/downy-bloco-azul-50.jpg" },
+  { id: "downy-bloco-colorido-40", marca: "downy", marcaNome: "DOWNY", nome: "40% de Bloco Colorido", imagem: "kbds/guia-campo-2026/downy-bloco-colorido-40.jpg" },
+  { id: "secret-10-frentes-2-bandejas", marca: "secret", marcaNome: "SECRET", nome: "10 frentes OU 2 bandejas", imagem: "kbds/guia-campo-2026/secret-10-frentes-2-bandejas.jpg" },
+  { id: "secret-15-frentes-3-bandejas", marca: "secret", marcaNome: "SECRET", nome: "15 frentes OU 3 bandejas", imagem: "kbds/guia-campo-2026/secret-15-frentes-3-bandejas.jpg" },
+  { id: "oral-b-branqueamento-60", marca: "oral-b", marcaNome: "ORAL-B", nome: "60% de cremes de Branqueamento", imagem: "kbds/guia-campo-2026/oral-b-branqueamento-60.jpg" },
+  { id: "oral-b-2-pontos-escovas", marca: "oral-b", marcaNome: "ORAL-B", nome: "2 pontos de contato de escovas", imagem: "kbds/guia-campo-2026/oral-b-2-pontos-escovas.jpg" },
+  { id: "oral-b-layout-bipe", marca: "oral-b", marcaNome: "ORAL-B", nome: "Gôndola de escovas com layout BIPE", imagem: "kbds/guia-campo-2026/oral-b-layout-bipe.jpg" },
+  { id: "gillette-sistemas-ganchos", marca: "gillette", marcaNome: "GILLETTE", nome: "% de Sistemas em ganchos", imagem: "kbds/guia-campo-2026/gillette-sistemas-ganchos.jpg" },
+  { id: "gillette-3-pontos-mach3-presto3", marca: "gillette", marcaNome: "GILLETTE", nome: "3 pontos de contato Mach3/Presto3", imagem: "kbds/guia-campo-2026/gillette-3-pontos-mach3-presto3.jpg" },
+  { id: "gillette-2-pontos-mach3-presto3", marca: "gillette", marcaNome: "GILLETTE", nome: "2 pontos de contato Mach3/Presto3", imagem: "kbds/guia-campo-2026/gillette-2-pontos-mach3-presto3.jpg" },
+  { id: "gillette-carga-mach3-c8-2-ganchos", marca: "gillette", marcaNome: "GILLETTE", nome: "Carga Mach3 c/8 com 2 ganchos", imagem: "kbds/guia-campo-2026/gillette-carga-mach3-c8-2-ganchos.jpg" },
+  { id: "venus-3-pontos", marca: "venus", marcaNome: "VENUS", nome: "3 pontos de contato", imagem: "kbds/guia-campo-2026/venus-3-pontos.jpg" },
+  { id: "venus-pele-sensivel-checkout", marca: "venus", marcaNome: "VENUS", nome: "Aparelho Pele Sensível no Checkout", imagem: "kbds/guia-campo-2026/venus-pele-sensivel-checkout.jpg" },
 ];
 
 const ICONS = {
@@ -345,18 +346,7 @@ function escapeHtml(value) { return String(value || "").replace(/&/g, "&amp;").r
 function renderIcon(name) { return ICONS[name] || ""; }
 
 const AVAILABLE_KBD_ASSETS = [
-  "kbds/referencias-2026/tampax-ponto-natural.webp",
-  "kbds/referencias-2026/pantene-bond-repair.webp",
-  "kbds/referencias-2026/pantene-finalizadores-dpp-8-frentes.webp",
-  "kbds/referencias-2026/pantene-finalizadores-alimentar-6-frentes.webp",
-  "kbds/referencias-2026/pampers-vale-night-gondola.webp",
-  "kbds/referencias-2026/pampers-vale-night-ponto-extra.webp",
-  "kbds/referencias-2026/secret-dpp-hfs-10-frentes-2-bandejas.webp",
-  "kbds/referencias-2026/secret-alimentar-15-frentes-3-bandejas.webp",
-  "kbds/referencias-2026/oral-b-branqueamento-60.webp",
-  "kbds/referencias-2026/gillette-alimentar-3-pontos.webp",
-  "kbds/referencias-2026/gillette-dpp-2-pontos.webp",
-  "kbds/referencias-2026/venus-3-pontos.webp",
+  ...GUIA_KBDS.map((item) => item.imagem),
 ];
 
 function normalizeAssetName(value) { return String(value || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/#U00f5/gi, "o").replace(/#U00cd/gi, "I").replace(/[^a-zA-Z0-9]+/g, "").toLowerCase(); }
@@ -1237,26 +1227,14 @@ const CONSULTA_BRAND_LOGOS = {
 };
 
 function getConsultaItems() {
-  const current = getAllKbds().map(({ marca, kbd }) => ({
-    id: `ciclo-${marca.id}-${kbd.id}`,
-    marca: marca.id,
-    marcaNome: marca.nome,
-    nome: kbd.nome,
-    status: kbd.status,
-    imagens: (kbd.imagens || []).map(resolveKbdAsset),
-    logo: marca.logo,
-    href: `kbd.html?marca=${encodeURIComponent(marca.id)}&kbd=${encodeURIComponent(kbd.id)}`,
-    current: true,
-  }));
-  const legacy = LEGACY_KBDS.map((item) => ({
+  return GUIA_KBDS.map((item) => ({
     ...item,
     status: "kbd",
-    imagens: [item.imagem],
+    imagens: [resolveKbdAsset(item.imagem)],
     logo: CONSULTA_BRAND_LOGOS[item.marca] || `logos/${item.marca}.png`,
     href: "",
     current: false,
   }));
-  return current.concat(legacy);
 }
 
 function fecharConsulta() {
@@ -1302,7 +1280,7 @@ function getConsultaGroups(items) {
   const transformacionais = items.filter((item) => item.status === "transformacional");
   const restantes = items.filter((item) => item.status !== "transformacional");
 
-  const ordem = CONTENT.marcas.map((marca) => marca.id);
+  const ordem = Array.from(new Set(items.map((item) => item.marca)));
   const porMarca = new Map();
   restantes.forEach((item) => {
     if (!porMarca.has(item.marca)) {
