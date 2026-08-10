@@ -33,13 +33,13 @@ assert.doesNotMatch(adminJs, /points\('accesses'\)/);
 assert.match(adminJs, /attentionPeopleCount/);
 assert.doesNotMatch(worker, /admin\.js/);
 assert.match(worker, /req\.mode === "navigate"/);
-assert.match(worker, /app\.js\?v=20260810-9/);
+assert.match(worker, /app\.js\?v=20260810-10/);
 assert.match(worker, /style\.css\?v=20260807-2/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('async function entrar()'), appJs.indexOf('function renderHome()')), /ALLOWED_SECTORS_NORMALIZED/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('function prepareEventPayload'), appJs.indexOf('function readEventQueue')), /authToken/);
 
 for (const file of ['index.html', 'home.html', 'marca.html', 'kbd.html', 'quiz.html', 'novidades.html', 'checklist.html', 'admin.html']) {
-  assert.match(read(file), /app\.js\?v=20260810-9/, `${file} precisa carregar a versão atual do app`);
+  assert.match(read(file), /app\.js\?v=20260810-10/, `${file} precisa carregar a versão atual do app`);
 }
 
 const activeBlock = management.match(/const ACTIVE_KBDS = \[([\s\S]*?)\n\];/)[1];
@@ -75,7 +75,8 @@ assert.doesNotMatch(appJs, /status:\s*"alterado"|Alterados\s*•/);
 assert.match(appJs, /id:\s*"frentes-bandejas"[^\n]*status:\s*"novo"/);
 assert.match(appJs, /id:\s*"mach3-presto3"[^\n]*status:\s*"novo"/);
 assert.match(appJs, /Novos • \$\{NOVIDADES\.novos\.length\}/);
-assert.match(appJs, /\["novo", "transformacional", "kbd"\]/);
+assert.match(appJs, /\["novo", "transformacional"\]\.forEach/);
+assert.doesNotMatch(appJs, /statusCounts\.kbd|0 KBDs/);
 assert.match(appJs, /Canais: \$\{escapeHtml\(quizState\.kbdAtual\.canais/);
 assert.match(read('checklist.html'), /Missão KBD • Consulta/);
 
