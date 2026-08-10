@@ -872,7 +872,7 @@ function renderHome() {
   document.getElementById("heroStats").textContent = `${total} KBDs do ciclo`;
   document.getElementById("heroTrack").style.width = "100%";
   const statusCounts = getAllKbds().reduce((counts, { kbd }) => ({ ...counts, [kbd.status]: (counts[kbd.status] || 0) + 1 }), {});
-  document.getElementById("heroSummary").textContent = `${statusCounts.novo || 0} novos • ${statusCounts.transformacional || 0} transformacionais • ${statusCounts.kbd || 0} KBDs`;
+  document.getElementById("heroSummary").textContent = `${statusCounts.novo || 0} novos • ${statusCounts.transformacional || 0} transformacionais`;
 
   const cicloEl = document.getElementById("heroCiclo");
   if (cicloEl) cicloEl.textContent = `Ciclo ${CICLO_INFO.titulo}`;
@@ -880,7 +880,7 @@ function renderHome() {
   const list = document.getElementById("listaMarcas");
   list.innerHTML = "";
 
-  ["novo", "transformacional", "kbd"].forEach((status) => {
+  ["novo", "transformacional"].forEach((status) => {
     const meta = getStatusMeta(status);
     const items = getAllKbds().filter(({ kbd }) => kbd.status === status);
     const section = document.createElement("section");
