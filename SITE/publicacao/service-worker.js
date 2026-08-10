@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-learning-consultation-2026-08-07";
+const CACHE_NAME = "missao-kbd-v2-learning-consultation-2026-08-10";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",

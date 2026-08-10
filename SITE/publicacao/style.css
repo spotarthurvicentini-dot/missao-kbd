@@ -946,6 +946,21 @@ img { max-width: 100%; display: block; }
 .consulta-section-novo { --consulta-accent: var(--cyan); }
 .consulta-section-transformacional { --consulta-accent: var(--green); }
 .consulta-section-kbd { --consulta-accent: var(--label-4); }
+.consulta-section-marca { --consulta-accent: var(--label-4); gap: 14px; }
+.consulta-marca-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.consulta-marca-head .brand-logo-wrap { width: 38px; height: 38px; flex: none; }
+.consulta-subgroup { display: flex; flex-direction: column; gap: 9px; }
+.consulta-subgroup-novo { --consulta-accent: var(--cyan); }
+.consulta-subgroup-kbd { --consulta-accent: var(--label-4); }
+.consulta-subgroup-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.consulta-subgroup-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--label-3);
+}
 .consulta-list { display: flex; flex-direction: column; gap: 9px; }
 .consulta-card {
   width: 100%;

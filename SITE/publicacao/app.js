@@ -1298,6 +1298,42 @@ function abrirConsulta(id) {
   document.body.style.overflow = "hidden";
 }
 
+function getConsultaGroups(items) {
+  const transformacionais = items.filter((item) => item.status === "transformacional");
+  const restantes = items.filter((item) => item.status !== "transformacional");
+
+  const ordem = CONTENT.marcas.map((marca) => marca.id);
+  const porMarca = new Map();
+  restantes.forEach((item) => {
+    if (!porMarca.has(item.marca)) {
+      porMarca.set(item.marca, { id: item.marca, nome: item.marcaNome, logo: item.logo, novos: [], regulares: [] });
+    }
+    const grupo = porMarca.get(item.marca);
+    (item.status === "novo" ? grupo.novos : grupo.regulares).push(item);
+  });
+
+  const marcas = Array.from(porMarca.values()).sort((a, b) => {
+    const posA = ordem.indexOf(a.id);
+    const posB = ordem.indexOf(b.id);
+    if (posA !== posB) return (posA === -1 ? ordem.length : posA) - (posB === -1 ? ordem.length : posB);
+    return a.nome.localeCompare(b.nome, "pt-BR");
+  });
+
+  return { transformacionais, marcas };
+}
+
+function renderConsultaCard(item, meta) {
+  return `<button class="consulta-card ${getBrandThemeClass(item.marca)}" type="button" onclick="abrirConsulta('${item.id}')"><span class="brand-logo-wrap compact"><img class="brand-logo" src="${item.logo}" alt="${escapeHtml(item.marcaNome)}"></span><span class="consulta-card-copy">${meta && meta.emphasis ? `<span class="status-badge ${meta.className}">${meta.label}</span>` : ""}<strong>${escapeHtml(item.nome)}</strong><small>${escapeHtml(item.marcaNome)} • ${item.current ? "conteúdo do ciclo" : "resumo visual"}</small></span><span class="card-arrow">${renderIcon("arrowRight")}</span></button>`;
+}
+
+function renderConsultaSubgrupo(titulo, lista, meta, variante) {
+  if (!lista.length) return "";
+  return `<div class="consulta-subgroup consulta-subgroup-${variante}">
+    <div class="consulta-subgroup-head"><h3 class="consulta-subgroup-title">${escapeHtml(titulo)}</h3><span class="status-badge ${meta.className}">${lista.length}</span></div>
+    <div class="consulta-list">${lista.map((item) => renderConsultaCard(item, null)).join("")}</div>
+  </div>`;
+}
+
 function renderConsulta() {
   if (!ensureSetor()) return;
   const items = getConsultaItems();
@@ -1317,6 +1353,11 @@ function renderConsulta() {
   const area = document.getElementById("consultaArea");
   if (!area) return;
 
+  const { transformacionais, marcas } = getConsultaGroups(items);
+  const metaTransformacional = getStatusMeta("transformacional");
+  const metaNovo = getStatusMeta("novo");
+  const metaKbd = getStatusMeta("kbd");
+
   area.innerHTML = `
     <div class="summary-card consulta-intro">
       <div class="summary-card-top">
@@ -1328,14 +1369,15 @@ function renderConsulta() {
       </div>
       <p class="helper-text">Toque em um KBD para abrir o resumo visual. Os materiais desta biblioteca não adicionam novos quizzes.</p>
     </div>
-    ${["novo", "transformacional", "kbd"].map((status) => {
-      const meta = getStatusMeta(status);
-      const group = items.filter((item) => item.status === status);
-      return `<section class="consulta-section consulta-section-${status}">
-        <div class="home-category-head"><div><h2 class="section-title">${meta.plural}</h2><p class="section-subtitle">${meta.description}</p></div><span class="status-badge ${meta.className}">${group.length}</span></div>
-        <div class="consulta-list">${group.map((item) => `<button class="consulta-card ${getBrandThemeClass(item.marca)}" type="button" onclick="abrirConsulta('${item.id}')"><span class="brand-logo-wrap compact"><img class="brand-logo" src="${item.logo}" alt="${escapeHtml(item.marcaNome)}"></span><span class="consulta-card-copy">${meta.emphasis ? `<span class="status-badge ${meta.className}">${meta.label}</span>` : ""}<strong>${escapeHtml(item.nome)}</strong><small>${escapeHtml(item.marcaNome)} • ${item.current ? "conteúdo do ciclo" : "resumo visual"}</small></span><span class="card-arrow">${renderIcon("arrowRight")}</span></button>`).join("")}</div>
-      </section>`;
-    }).join("")}
+    ${transformacionais.length ? `<section class="consulta-section consulta-section-transformacional">
+      <div class="home-category-head"><div><h2 class="section-title">${metaTransformacional.plural}</h2><p class="section-subtitle">${metaTransformacional.description}</p></div><span class="status-badge ${metaTransformacional.className}">${transformacionais.length}</span></div>
+      <div class="consulta-list">${transformacionais.map((item) => renderConsultaCard(item, metaTransformacional)).join("")}</div>
+    </section>` : ""}
+    ${marcas.map((marca) => `<section class="consulta-section consulta-section-marca">
+      <div class="home-category-head"><div class="consulta-marca-head"><span class="brand-logo-wrap compact"><img class="brand-logo" src="${marca.logo}" alt="${escapeHtml(marca.nome)}"></span><h2 class="section-title">${escapeHtml(marca.nome)}</h2></div><span class="status-badge status-kbd">${marca.novos.length + marca.regulares.length}</span></div>
+      ${renderConsultaSubgrupo(metaNovo.plural, marca.novos, metaNovo, "novo")}
+      ${renderConsultaSubgrupo("Regulares", marca.regulares, metaKbd, "kbd")}
+    </section>`).join("")}
   `;
 }
 
