@@ -203,7 +203,7 @@ const CONTENT = {
         videoId: "VzUKIRxz1J0", videoUrl: "", imagens: ["kbds/guia-campo-2026/pampers-vale-night-ponto-extra.jpg"] },
     ] },
     { id: "secret", nome: "SECRET", logo: "logos/secret.png", kbds: [
-      { id: "frentes-bandejas", nome: "Frentes ou Bandejas por Canal", status: "kbd", canais: "Todos os canais elegíveis",
+      { id: "frentes-bandejas", nome: "Frentes ou Bandejas por Canal", status: "novo", canais: "Todos os canais elegíveis",
         resumo: "Secret passa a considerar frentes na gôndola ou bandejas, com metas diferentes por canal.",
         comoConta: ["DPP e HFS: 10 frentes visíveis OU 2 bandejas", "C&C, NMR/GMR, CLUB, LASA e Perfumaria: 15 frentes visíveis OU 3 bandejas"],
         erroComum: ["Contar produto fora da gôndola", "Bandeja vazia ou mal posicionada", "Misturar bandejas e frentes sem respeitar a regra do canal"],
@@ -219,7 +219,7 @@ const CONTENT = {
         videoId: "wtCHpp6o1RM", videoUrl: "", imagens: ["kbds/guia-campo-2026/oral-b-branqueamento-60.jpg"] },
     ] },
     { id: "gillette", nome: "GILLETTE", logo: "logos/gillette.png", kbds: [
-      { id: "mach3-presto3", nome: "Pontos de Contato — Mach3 e Presto3", status: "kbd", canais: "C&C, NMR/GMR, LASA, HFS, Perfumaria e DPP",
+      { id: "mach3-presto3", nome: "Pontos de Contato — Mach3 e Presto3", status: "novo", canais: "C&C, NMR/GMR, LASA, HFS, Perfumaria e DPP",
         resumo: "Agora C&C, NMR/GMR, LASA, HFS e PERFUMARIA exigem 3 pontos de contato; em DPP continuam 2 pontos.",
         comoConta: ["Itens Mach3 Sensitive / Presto3 Sensitive com 4 unidades ou mais", "3 pontos de contato em C&C, NMR/GMR, LASA, HFS e PERFUMARIA", "2 pontos de contato em DPP", "Sempre fora do ponto natural"],
         erroComum: ["Produto no checkout", "Produto no ponto natural", "Contar o mesmo ponto duas vezes", "Usar item fora do foco (menos de 4 unidades)"],
@@ -241,6 +241,8 @@ const NOVIDADES = {
   novos: [
     { marca: "Tampax", texto: "Bandeja no ponto natural em DPP" },
     { marca: "Pantene", texto: "8 frentes de finalizadores em DPP ou 6 nos demais canais elegíveis" },
+    { marca: "Secret", texto: "Frentes ou bandejas conforme o canal" },
+    { marca: "Gillette", texto: "Pontos de contato com Mach3 e Presto3 conforme o canal" },
   ],
   transformacionais: [
     { marca: "Pantene", texto: "20% de Bond Repair, excluindo packs" },
@@ -869,7 +871,8 @@ function renderHome() {
   const total = getAllKbdsTotal();
   document.getElementById("heroStats").textContent = `${total} KBDs do ciclo`;
   document.getElementById("heroTrack").style.width = "100%";
-  document.getElementById("heroSummary").textContent = "2 novos • 5 transformacionais • 2 KBDs";
+  const statusCounts = getAllKbds().reduce((counts, { kbd }) => ({ ...counts, [kbd.status]: (counts[kbd.status] || 0) + 1 }), {});
+  document.getElementById("heroSummary").textContent = `${statusCounts.novo || 0} novos • ${statusCounts.transformacional || 0} transformacionais • ${statusCounts.kbd || 0} KBDs`;
 
   const cicloEl = document.getElementById("heroCiclo");
   if (cicloEl) cicloEl.textContent = `Ciclo ${CICLO_INFO.titulo}`;
@@ -1183,7 +1186,7 @@ function renderNovidades() {
     </div>
 
     <div class="novidades-section">
-      <div class="novidades-section-title tone-cyan">${renderIcon("sparkles")} Novos • 2</div>
+      <div class="novidades-section-title tone-cyan">${renderIcon("sparkles")} Novos • ${NOVIDADES.novos.length}</div>
       <div class="novidades-card-list">
         ${NOVIDADES.novos
           .map(
@@ -1199,7 +1202,7 @@ function renderNovidades() {
     </div>
 
     <div class="novidades-section">
-      <div class="novidades-section-title tone-green">${renderIcon("target")} Transformacionais • 5</div>
+      <div class="novidades-section-title tone-green">${renderIcon("target")} Transformacionais • ${NOVIDADES.transformacionais.length}</div>
       <div class="novidades-card-list">
         ${NOVIDADES.transformacionais
           .map(
