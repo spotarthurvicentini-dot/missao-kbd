@@ -33,14 +33,23 @@ assert.doesNotMatch(adminJs, /points\('accesses'\)/);
 assert.match(adminJs, /attentionPeopleCount/);
 assert.doesNotMatch(worker, /admin\.js/);
 assert.match(worker, /req\.mode === "navigate"/);
-assert.match(worker, /app\.js\?v=20260810-10/);
+assert.match(worker, /app\.js\?v=20260812-12/);
 assert.match(worker, /style\.css\?v=20260807-2/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('async function entrar()'), appJs.indexOf('function renderHome()')), /ALLOWED_SECTORS_NORMALIZED/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('function prepareEventPayload'), appJs.indexOf('function readEventQueue')), /authToken/);
 
 for (const file of ['index.html', 'home.html', 'marca.html', 'kbd.html', 'quiz.html', 'novidades.html', 'checklist.html', 'admin.html']) {
-  assert.match(read(file), /app\.js\?v=20260810-10/, `${file} precisa carregar a versão atual do app`);
+  assert.match(read(file), /app\.js\?v=20260812-12/, `${file} precisa carregar a versão atual do app`);
 }
+
+const loginBlock = appJs.slice(appJs.indexOf('async function entrar()'), appJs.indexOf('function renderHome()'));
+assert.match(loginBlock, /AbortController/);
+assert.match(loginBlock, /signal:\s*controller\.signal/);
+assert.match(loginBlock, /clearTimeout\(timeout\)/);
+assert.doesNotMatch(loginBlock, /await syncProgressFromServer/);
+assert.match(loginBlock, /sessionStorage\.setItem\(PROGRESS_SYNC_AFTER_LOGIN_KEY/);
+const homeBlock = appJs.slice(appJs.indexOf('function renderHome()'), appJs.indexOf('function renderMarca()'));
+assert.match(homeBlock, /syncProgressFromServer\(getSetor\(\)\)/);
 
 const activeBlock = management.match(/const ACTIVE_KBDS = \[([\s\S]*?)\n\];/)[1];
 const activeIds = [...activeBlock.matchAll(/kbdId:\s*"([^"]+)"/g)].map((match) => match[1]);

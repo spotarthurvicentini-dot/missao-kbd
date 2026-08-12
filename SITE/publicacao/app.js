@@ -6,6 +6,7 @@ const EVENT_QUEUE_KEY = "KBD_EVENT_QUEUE";
 const PROGRESS_SECTOR_KEY = "KBD_PROGRESS_SECTOR";
 const AUTH_TOKEN_KEY = "KBD_AUTH_TOKEN";
 const AUTH_ROLE_KEY = "KBD_AUTH_ROLE";
+const PROGRESS_SYNC_AFTER_LOGIN_KEY = "KBD_PROGRESS_SYNC_AFTER_LOGIN";
 const PROGRESS_STORAGE_KEYS = ["QUIZZES_COMPLETED", "QUIZ_RESULTS", "VIDEO_PROGRESS", "BRANDS_SENT_TO_SHEETS", "CHECKLIST_STATE"];
 
 function createUuid() {
@@ -825,19 +826,28 @@ async function entrar() {
     button.textContent = "Validando...";
   }
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
   let auth;
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({ action: "login", username: normalized, password }),
+      cache: "no-store",
+      signal: controller.signal,
     });
     auth = await response.json();
     if (!response.ok || !auth.ok) throw new Error(auth.error || "Credenciais inválidas.");
   } catch (error) {
-    alert(error?.message || "Não foi possível validar o acesso.");
+    const message = error?.name === "AbortError"
+      ? "O serviço de login demorou para responder. Tente novamente em alguns instantes."
+      : (error?.message || "Não foi possível validar o acesso.");
+    alert(message);
     if (button) { button.disabled = false; button.textContent = "Entrar"; }
     return;
+  } finally {
+    clearTimeout(timeout);
   }
 
   const role = auth.role;
@@ -847,7 +857,7 @@ async function entrar() {
   localStorage.setItem("SETOR", user);
   sessionStorage.setItem(AUTH_TOKEN_KEY, auth.token);
   sessionStorage.setItem(AUTH_ROLE_KEY, role);
-  if (role === "promoter") await syncProgressFromServer(user);
+  if (role === "promoter") sessionStorage.setItem(PROGRESS_SYNC_AFTER_LOGIN_KEY, "1");
   const sessionEvent = prepareEventPayload({
     eventType: "session_start",
     timestamp: new Date().toISOString(),
@@ -864,6 +874,10 @@ function renderHome() {
   if (["admin", "manager"].includes(sessionStorage.getItem(AUTH_ROLE_KEY))) {
     window.location.replace("admin.html");
     return;
+  }
+  if (sessionStorage.getItem(PROGRESS_SYNC_AFTER_LOGIN_KEY) === "1") {
+    sessionStorage.removeItem(PROGRESS_SYNC_AFTER_LOGIN_KEY);
+    syncProgressFromServer(getSetor());
   }
   applyTopbar({ eyebrow: "", title: "", subtitle: "", showBack: false, minimal: true, hideMenu: true, hideLogout: true });
   setBottomNav("home");
