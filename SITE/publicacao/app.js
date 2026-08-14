@@ -1,5 +1,6 @@
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWAAaDDwVQjwh2qddHr55-hlOU64SboDwdYx4KihXGnYAAnyGncz9yRghsjuzysO4W/exec";
-const APP_VERSION = "2.4.0";
+const APP_VERSION = "2.4.1";
+const REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ = 100;
 const DEVICE_ID_KEY = "KBD_DEVICE_ID";
 const SESSION_ID_KEY = "KBD_SESSION_ID";
 const EVENT_QUEUE_KEY = "KBD_EVENT_QUEUE";
@@ -106,13 +107,14 @@ function mergeVideoProgress(localData, remoteData) {
     if (!merged[marcaId]) merged[marcaId] = {};
     Object.entries(kbds || {}).forEach(([kbdId, remote]) => {
       const local = merged[marcaId][kbdId] || {};
+      const percentage = Math.max(Number(local.percentage || 0), Number(remote.percentage || 0));
       merged[marcaId][kbdId] = {
         ...local,
         ...remote,
         watchedSeconds: Math.max(Number(local.watchedSeconds || 0), Number(remote.watchedSeconds || 0)),
         duration: Math.max(Number(local.duration || 0), Number(remote.duration || 0)),
-        percentage: Math.max(Number(local.percentage || 0), Number(remote.percentage || 0)),
-        completed: Boolean(local.completed || remote.completed),
+        percentage,
+        completed: percentage >= REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ,
       };
     });
   });
@@ -374,6 +376,23 @@ function getSavedVideoProgress(marcaId, kbdId) {
   return (data[marcaId] && data[marcaId][kbdId]) || { watchedSeconds: 0, duration: 0, percentage: 0, completed: false };
 }
 
+function isVideoCompleteForQuiz(marcaId, kbdId) {
+  return Number(getSavedVideoProgress(marcaId, kbdId).percentage || 0) >= REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ;
+}
+
+function updateKbdQuizButtonAccess(marcaId, kbdId) {
+  const quizButton = document.getElementById("kbdQuizButton");
+  if (!quizButton) return;
+  const quizAvailable = hasQuiz(marcaId, kbdId);
+  const videoCompleted = isVideoCompleteForQuiz(marcaId, kbdId);
+  const quizCompleted = quizAvailable && isQuizCompleted(marcaId, kbdId);
+
+  quizButton.disabled = !quizAvailable || !videoCompleted;
+  if (!quizAvailable) quizButton.textContent = "Quiz em preparação";
+  else if (!videoCompleted) quizButton.textContent = "Assista 100% do vídeo para liberar o quiz";
+  else quizButton.textContent = quizCompleted ? "Refazer quiz" : "Responder o Quiz";
+}
+
 function saveCurrentVideoProgress() {
   if (!videoTrackingState) return;
   const data = getVideoProgressData();
@@ -397,10 +416,11 @@ function updateVideoProgressStatus() {
   box.innerHTML = `
     <div class="video-progress-copy">
       <strong>${videoTrackingState.completed ? "Vídeo concluído" : "Progresso do vídeo"}</strong>
-      <span>${videoTrackingState.completed ? "Reprodução mínima confirmada" : `${videoTrackingState.percentage}% assistido`}</span>
+      <span>${videoTrackingState.completed ? "100% assistido • quiz liberado" : `${videoTrackingState.percentage}% assistido • conclua o vídeo para liberar o quiz`}</span>
     </div>
     <span class="summary-chip ${videoTrackingState.completed ? "completed" : "pending"}">${videoTrackingState.completed ? renderIcon("check") : `${videoTrackingState.percentage}%`}</span>
   `;
+  updateKbdQuizButtonAccess(videoTrackingState.marcaId, videoTrackingState.kbdId);
 }
 
 function buildVideoEventPayload(eventName) {
@@ -462,7 +482,7 @@ function trackVideoTick() {
     }
   });
 
-  if (!videoTrackingState.completed && videoTrackingState.percentage >= 80) {
+  if (!videoTrackingState.completed && videoTrackingState.percentage >= REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ) {
     videoTrackingState.completed = true;
     sendVideoEvent("completed");
   }
@@ -505,7 +525,7 @@ async function iniciarYouTubePlayer(videoId, marca, kbd) {
     watchedSeconds: Number(saved.watchedSeconds || 0),
     duration: Number(saved.duration || 0),
     percentage: Number(saved.percentage || 0),
-    completed: !!saved.completed,
+    completed: Number(saved.percentage || 0) >= REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ,
     maxPosition: 0,
     lastPosition: null,
     milestones: new Set([25, 50, 75, 90].filter((value) => Number(saved.percentage || 0) >= value))
@@ -1048,9 +1068,7 @@ function renderKbd() {
   document.getElementById("kbdProgressCopy").textContent = quizAvailable
     ? `${brandProgress.done}/${brandProgress.total} KBDs da marca já respondidos`
     : "Quiz em preparação pela área de treinamento";
-  const quizButton = document.getElementById("kbdQuizButton");
-  quizButton.textContent = quizAvailable ? (done ? "Refazer quiz" : "Responder o Quiz") : "Quiz em preparação";
-  quizButton.disabled = !quizAvailable;
+  updateKbdQuizButtonAccess(marca.id, kbd.id);
 
   const pilulaBox = document.getElementById("pilulaKbd");
   if (pilulaBox) {
@@ -1417,6 +1435,27 @@ function renderQuiz() {
         </div>
         <div class="action-stack">
           <button class="primary-button" onclick="voltarKbd()">Voltar para o conteúdo</button>
+          <a class="secondary-button" href="home.html">Ir para a home</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  if (!isVideoCompleteForQuiz(marcaId, kbdId)) {
+    const videoProgress = Math.min(100, Math.max(0, Number(getSavedVideoProgress(marcaId, kbdId).percentage || 0)));
+    area.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-top">
+          <div class="empty-state-icon">${renderIcon("video")}</div>
+          <div class="empty-state-copy">
+            <h2 class="section-title">Quiz bloqueado</h2>
+            <p class="empty-state-text">Assista 100% do vídeo deste KBD para liberar o quiz. Seu progresso atual é ${videoProgress}%.</p>
+          </div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:${videoProgress}%"></div></div>
+        <div class="action-stack">
+          <button class="primary-button" onclick="voltarKbd()">Continuar assistindo</button>
           <a class="secondary-button" href="home.html">Ir para a home</a>
         </div>
       </div>
@@ -1855,8 +1894,8 @@ function mostrarResultadoFinal() {
 function voltarHome() { window.location.href = "home.html"; }
 function voltarMarca() { const marcaId = qs().get("marca"); window.location.href = marcaId ? `marca.html?marca=${encodeURIComponent(marcaId)}` : "home.html"; }
 function voltarKbd() { const marcaId = qs().get("marca"); const kbdId = qs().get("kbd"); window.location.href = marcaId && kbdId ? `kbd.html?marca=${encodeURIComponent(marcaId)}&kbd=${encodeURIComponent(kbdId)}` : "home.html"; }
-function irParaQuiz() { const marcaId = qs().get("marca"); const kbdId = qs().get("kbd"); if (!marcaId || !kbdId) return; window.location.href = `quiz.html?marca=${encodeURIComponent(marcaId)}&kbd=${encodeURIComponent(kbdId)}`; }
-function getPrimaryQuizHref(currentMarcaId, currentKbdId) { if (currentMarcaId && currentKbdId) { return `quiz.html?marca=${encodeURIComponent(currentMarcaId)}&kbd=${encodeURIComponent(currentKbdId)}`; } const next = getFirstPendingQuiz(); return next ? `quiz.html?marca=${encodeURIComponent(next.marcaId)}&kbd=${encodeURIComponent(next.kbdId)}` : "quiz.html"; }
+function irParaQuiz() { const marcaId = qs().get("marca"); const kbdId = qs().get("kbd"); if (!marcaId || !kbdId || !isVideoCompleteForQuiz(marcaId, kbdId)) return; window.location.href = `quiz.html?marca=${encodeURIComponent(marcaId)}&kbd=${encodeURIComponent(kbdId)}`; }
+function getPrimaryQuizHref(currentMarcaId, currentKbdId) { if (currentMarcaId && currentKbdId) { return isVideoCompleteForQuiz(currentMarcaId, currentKbdId) ? `quiz.html?marca=${encodeURIComponent(currentMarcaId)}&kbd=${encodeURIComponent(currentKbdId)}` : `kbd.html?marca=${encodeURIComponent(currentMarcaId)}&kbd=${encodeURIComponent(currentKbdId)}`; } const next = getFirstPendingQuiz(); return next ? (isVideoCompleteForQuiz(next.marcaId, next.kbdId) ? `quiz.html?marca=${encodeURIComponent(next.marcaId)}&kbd=${encodeURIComponent(next.kbdId)}` : `kbd.html?marca=${encodeURIComponent(next.marcaId)}&kbd=${encodeURIComponent(next.kbdId)}`) : "quiz.html"; }
 
 async function enviarConclusaoMarcaParaSheets(marcaId) {
   if (!marcaId || isBrandSentToSheets(marcaId)) return;

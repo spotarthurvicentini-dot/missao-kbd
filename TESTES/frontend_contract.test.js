@@ -33,14 +33,20 @@ assert.doesNotMatch(adminJs, /points\('accesses'\)/);
 assert.match(adminJs, /attentionPeopleCount/);
 assert.doesNotMatch(worker, /admin\.js/);
 assert.match(worker, /req\.mode === "navigate"/);
-assert.match(worker, /app\.js\?v=20260812-12/);
+assert.match(worker, /app\.js\?v=20260814-13/);
 assert.match(worker, /style\.css\?v=20260807-2/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('async function entrar()'), appJs.indexOf('function renderHome()')), /ALLOWED_SECTORS_NORMALIZED/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('function prepareEventPayload'), appJs.indexOf('function readEventQueue')), /authToken/);
 
 for (const file of ['index.html', 'home.html', 'marca.html', 'kbd.html', 'quiz.html', 'novidades.html', 'checklist.html', 'admin.html']) {
-  assert.match(read(file), /app\.js\?v=20260812-12/, `${file} precisa carregar a versão atual do app`);
+  assert.match(read(file), /app\.js\?v=20260814-13/, `${file} precisa carregar a versão atual do app`);
 }
+
+assert.match(appJs, /const REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ = 100/);
+assert.match(appJs, /percentage >= REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ/);
+assert.match(appJs, /if \(!isVideoCompleteForQuiz\(marcaId, kbdId\)\)/, 'a URL direta do quiz também precisa ser bloqueada');
+assert.match(appJs, /Assista 100% do vídeo para liberar o quiz/);
+assert.doesNotMatch(appJs, /percentage >= 80/);
 
 const loginBlock = appJs.slice(appJs.indexOf('async function entrar()'), appJs.indexOf('function renderHome()'));
 assert.match(loginBlock, /AbortController/);
