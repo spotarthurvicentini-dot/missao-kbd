@@ -1,4 +1,4 @@
-const CACHE_NAME = "missao-kbd-v2-quiz-video-100-2026-08-14";
+const CACHE_NAME = "missao-kbd-v2-hierarquia-gestor-2026-09-08";
 const CORE_ASSETS = [
   "./index.html",
   "./home.html",
@@ -10,8 +10,8 @@ const CORE_ASSETS = [
   "./admin.html",
   "./admin.css?v=20260806-2",
   "./admin-mobile.css?v=20260806-2",
-  "./admin-overrides.css?v=20260807-2",
-  "./admin-real.js?v=20260807-5",
+  "./admin-overrides.css?v=20260908-3",
+  "./admin-real.js?v=20260908-6",
   "./style.css?v=20260807-2",
   "./app.js?v=20260814-13",
   "./quizzes.js?v=20260804-2",

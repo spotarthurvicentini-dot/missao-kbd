@@ -35,6 +35,38 @@
   margin-bottom: 14px;
 }
 
+.hierarchy-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .025);
+}
+
+.hierarchy-filters label { min-width: 0; }
+.hierarchy-filters label > span {
+  display: block;
+  margin: 0 0 7px 2px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.hierarchy-filters select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #111725;
+  color: var(--text);
+  padding: 0 12px;
+}
+
 .team-toolbar input {
   width: min(520px, 100%);
   min-height: 42px;
@@ -51,9 +83,9 @@
   white-space: nowrap;
 }
 
-.team-row {
-  grid-template-columns: minmax(180px, 1fr) 120px 120px;
-}
+.team-row { grid-template-columns: minmax(125px,.75fr) minmax(135px,.8fr) minmax(180px,1fr) 90px 100px; }
+.hierarchy-name { color: var(--muted); font-size: 11px; font-weight: 700; }
+.person small { display: none; }
 
 .team-metric { font-size: 14px; font-weight: 800; color: var(--text); }
 
@@ -211,11 +243,15 @@
     flex-direction: column;
   }
 
+  .hierarchy-filters { grid-template-columns: 1fr; padding: 13px; }
+
   .pagination {
     justify-content: space-between;
   }
 
   .team-row { min-width: 0; grid-template-columns: minmax(140px, 1fr) 72px 82px; padding-left: 12px; padding-right: 12px; }
+  .team-hierarchy-column { display: none; }
+  .person small { display: block; }
 
   .promoter-drawer-head,
   .promoter-drawer-content { padding-left: 18px; padding-right: 18px; }

@@ -52,6 +52,7 @@ function buildManagementReport_(teamRows, start, end) {
     teamBySector[sector] = row;
     peopleBySector[sector] = {
       sector: sector,
+      executive: normalizeSector_(row.executive) || "SEM EXECUTIVO",
       coordinator: normalizeSector_(row.coordinator),
       regional: regional,
       accesses: 0,
@@ -119,6 +120,7 @@ function buildManagementReport_(teamRows, start, end) {
     const videoPercentTotal = ACTIVE_KBDS.reduce(function (sum, kbd) { return sum + number_(item.videoByKbd[kbd.kbdId]); }, 0);
     return {
       sector: item.sector,
+      executive: item.executive,
       coordinator: item.coordinator,
       regional: item.regional,
       accesses: item.accesses,
@@ -133,7 +135,11 @@ function buildManagementReport_(teamRows, start, end) {
       videoProgressTotal: videoPercentTotal,
       videoAveragePercent: Math.round(videoPercentTotal / ACTIVE_KBDS.length)
     };
-  }).sort(function (a, b) { return a.sector.localeCompare(b.sector); });
+  }).sort(function (a, b) {
+    return a.executive.localeCompare(b.executive) ||
+      a.coordinator.localeCompare(b.coordinator) ||
+      a.sector.localeCompare(b.sector);
+  });
 
   const totalCompleted = people.reduce(function (sum, person) { return sum + person.completedKbdCount; }, 0);
   const totalEligible = people.length * ACTIVE_KBDS.length;

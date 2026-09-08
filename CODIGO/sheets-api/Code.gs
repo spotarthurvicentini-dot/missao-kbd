@@ -1,4 +1,25 @@
-const API_VERSION = "2.5.0";
+const API_VERSION = "2.6.0";
+const GLOBAL_MANAGER_USER = "GESTOR";
+const EXECUTIVE_BY_COORDINATOR = {
+  "PRCOORD02": "EXECUTIVO1", "PRCOORD03": "EXECUTIVO1", "PRCOORD04": "EXECUTIVO1",
+  "PRCOORD05": "EXECUTIVO1", "PRCOORD06": "EXECUTIVO1", "PRCOORD07": "EXECUTIVO1",
+  "PRCOORD08": "EXECUTIVO1", "PROJ-MAIS-COORDPR01": "EXECUTIVO1", "SCCOORD02": "EXECUTIVO1",
+  "SCCOORD03": "EXECUTIVO1", "SCCOORD08": "EXECUTIVO1",
+  "PROJ-MAIS-COORDRS01": "EXECUTIVO2", "PROJ-MAIS-COORDSC01": "EXECUTIVO2",
+  "RSCOORD01": "EXECUTIVO2", "RSCOORD02": "EXECUTIVO2", "RSCOORD03": "EXECUTIVO2",
+  "RSCOORD04": "EXECUTIVO2", "RSCOORD06": "EXECUTIVO2", "RSCOORD07": "EXECUTIVO2",
+  "SCCOORD04": "EXECUTIVO2", "SCCOORD05": "EXECUTIVO2", "SCCOORD06": "EXECUTIVO2",
+  "SCCOORD07": "EXECUTIVO2",
+  "SPICOORD02": "EXECUTIVO3", "SPICOORD04": "EXECUTIVO3", "SPICOORD06": "EXECUTIVO3",
+  "SPICOORD10": "EXECUTIVO3", "SPICOORD11": "EXECUTIVO3", "SPICOORD12": "EXECUTIVO3",
+  "SPICOORD15": "EXECUTIVO3", "SPICOORD19": "EXECUTIVO3", "SPICOORD20": "EXECUTIVO3",
+  "SPICOORD23": "EXECUTIVO3",
+  "PROJ-MAIS-COORDSPI01": "EXECUTIVO4", "SPICOORD01": "EXECUTIVO4", "SPICOORD05": "EXECUTIVO4",
+  "SPICOORD07": "EXECUTIVO4", "SPICOORD14": "EXECUTIVO4", "SPICOORD16": "EXECUTIVO4",
+  "SPICOORD17": "EXECUTIVO4", "SPICOORD18": "EXECUTIVO4", "SPICOORD21": "EXECUTIVO4",
+  "SPICOORD22": "EXECUTIVO4"
+};
+const EXECUTIVE_BY_PROMOTER = { "SC271": "EXECUTIVO2" };
 const REPORT_CONFIG = {
   timeZone: "America/Sao_Paulo",
   hour: 8,
@@ -303,10 +324,13 @@ function authenticate_(payload) {
   const user = normalizeSector_(payload.username);
   const passwordHash = sha256Hex_(text_(payload.password));
   const adminHash = "7c2b1b3006acaae9796c43587668c0f0a8105c2275b7349385eef9d612610ba1";
+  const globalManagerHash = "60135cbb5161c11453a26310f3268c340c0aa3c8110636d96fc1bb647715672b";
   const standardHash = "1785521e024adec9c80aa5c8cb3c0e209928256bbbc14dadc2c46e6031c5d188";
   let role = "";
 
-  if (user === "ADMIN" && secureEquals_(passwordHash, adminHash)) {
+  if (user === GLOBAL_MANAGER_USER && secureEquals_(passwordHash, globalManagerHash)) {
+    role = "admin";
+  } else if (user === "ADMIN" && secureEquals_(passwordHash, adminHash)) {
     role = "admin";
   } else if (user !== "ADMIN" && secureEquals_(passwordHash, standardHash)) {
     role = getCatalogRole_(user);
@@ -321,6 +345,9 @@ function authenticate_(payload) {
 }
 
 function getCatalogRole_(user) {
+  if (Object.keys(EXECUTIVE_BY_COORDINATOR).some(function (coordinator) {
+    return EXECUTIVE_BY_COORDINATOR[coordinator] === user;
+  })) return "manager";
   const book = getBook_();
   const sheet = ensureSheet_(book, TABLES.teams);
   if (sheet.getLastRow() < 2) return "";
@@ -351,9 +378,12 @@ function getManagedTeam_(manager, role) {
   sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues().forEach(function (row) {
     const coordinator = normalizeSector_(row[0]);
     const promoter = normalizeSector_(row[1]);
-    if (!promoter || seenPromoters[promoter] || (role !== "admin" && coordinator !== manager)) return;
+    const executive = resolveExecutive_(coordinator, promoter);
+    const managerOwnsRow = coordinator === manager || executive === manager;
+    if (!promoter || seenPromoters[promoter] || (role !== "admin" && !managerOwnsRow)) return;
     seenPromoters[promoter] = true;
     team.push({
+      executive: executive,
       coordinator: coordinator,
       promoter: promoter,
       regional: text_(row[2]).trim().toUpperCase(),
@@ -361,6 +391,12 @@ function getManagedTeam_(manager, role) {
     });
   });
   return team;
+}
+
+function resolveExecutive_(coordinator, promoter) {
+  return EXECUTIVE_BY_PROMOTER[normalizeSector_(promoter)] ||
+    EXECUTIVE_BY_COORDINATOR[normalizeSector_(coordinator)] ||
+    "SEM EXECUTIVO";
 }
 
 function syncTeams_(token, rows, mode) {

@@ -19,6 +19,9 @@ const currentManagerUser = localStorage.getItem('SETOR') || '';
 let managementReport = null;
 let managementCycle = null;
 let teamSearchTerm = '';
+let teamExecutiveFilter = '';
+let teamCoordinatorFilter = '';
+let teamSectorFilter = '';
 let teamPage = 1;
 const TEAM_PAGE_SIZE = 50;
 
@@ -27,6 +30,7 @@ function managerEscape(value){ return String(value ?? '').replace(/[&<>'"]/g,cha
 function managerPercent(value){ return value === null || value === undefined ? '—' : `${Number(value)}%`; }
 function managerDate(value){ if(!value)return 'Sem login';const date=new Date(value);return Number.isNaN(date.getTime())?'Sem login':date.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}); }
 function managerRegion(value){ return REGION_NAMES[value] || value || 'Sem regional'; }
+function managerExecutive(value){ return String(value||'Sem executivo').replace(/^EXECUTIVO\s*(\d+)$/i,'Executivo $1'); }
 
 function renderManagerLoading(){
   document.getElementById('kpiGrid').innerHTML=['Equipe vinculada','Acessos únicos','Andamento','Índice de acerto'].map(label=>`<article class="kpi-card"><div class="kpi-top"><span>${label}</span></div><div class="kpi-value">—</div><div class="kpi-foot">Carregando dados reais…</div></article>`).join('');
@@ -113,16 +117,46 @@ function renderManagerOperation(){
 
 function filteredManagerPeople(){
   const term=teamSearchTerm.trim().toLowerCase();
-  return (managementReport.people||[]).filter(person=>!term||`${person.sector} ${person.coordinator} ${person.regional}`.toLowerCase().includes(term));
+  return (managementReport.people||[]).filter(person=>
+    (!teamExecutiveFilter||person.executive===teamExecutiveFilter)&&
+    (!teamCoordinatorFilter||person.coordinator===teamCoordinatorFilter)&&
+    (!teamSectorFilter||person.sector===teamSectorFilter)&&
+    (!term||`${person.executive} ${person.coordinator} ${person.sector} ${person.regional}`.toLowerCase().includes(term))
+  );
 }
 
 function renderManagerTeam(){
+  const source=managementReport.people||[];
+  const unique=values=>[...new Set(values.filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const executives=unique(source.map(person=>person.executive));
+  if(teamExecutiveFilter&&!executives.includes(teamExecutiveFilter))teamExecutiveFilter='';
+  const coordinatorSource=source.filter(person=>!teamExecutiveFilter||person.executive===teamExecutiveFilter);
+  const coordinators=unique(coordinatorSource.map(person=>person.coordinator));
+  if(teamCoordinatorFilter&&!coordinators.includes(teamCoordinatorFilter))teamCoordinatorFilter='';
+  const sectorSource=coordinatorSource.filter(person=>!teamCoordinatorFilter||person.coordinator===teamCoordinatorFilter);
+  const sectors=unique(sectorSource.map(person=>person.sector));
+  if(teamSectorFilter&&!sectors.includes(teamSectorFilter))teamSectorFilter='';
   const all=filteredManagerPeople();
   const pages=Math.max(1,Math.ceil(all.length/TEAM_PAGE_SIZE));
   teamPage=Math.min(teamPage,pages);
   const start=(teamPage-1)*TEAM_PAGE_SIZE;
   const people=all.slice(start,start+TEAM_PAGE_SIZE);
-  document.getElementById('teamContent').innerHTML=`<div class="team-toolbar"><input id="teamSearch" value="${managerEscape(teamSearchTerm)}" placeholder="Buscar por setor, coordenador ou regional"><span class="team-count">${all.length} promotores</span></div><div class="team-table"><div class="team-row header"><span>Setor</span><span>% Quiz</span><span>% Assistido</span></div>${people.map(person=>`<button type="button" class="team-row team-row-clickable" data-promoter="${managerEscape(person.sector)}" aria-label="Abrir desempenho de ${managerEscape(person.sector)}"><span class="person"><i class="mini-avatar">${managerEscape(person.sector.slice(0,2))}</i><span><strong>${managerEscape(person.sector)}</strong><small>Ver desempenho dos 9 KBDs</small></span></span><span class="team-metric">${Number(person.completionRate||0)}%</span><span class="team-metric">${Number(person.videoAveragePercent||0)}%</span></button>`).join('')||'<div class="empty-search">Nenhum promotor encontrado.</div>'}</div><div class="pagination"><button class="btn secondary" id="prevTeam" ${teamPage<=1?'disabled':''}>Anterior</button><span>Página ${teamPage} de ${pages}</span><button class="btn secondary" id="nextTeam" ${teamPage>=pages?'disabled':''}>Próxima</button></div>`;
+  const options=(values,current,allLabel,format=value=>value)=>`<option value="">${allLabel}</option>${values.map(value=>`<option value="${managerEscape(value)}" ${value===current?'selected':''}>${managerEscape(format(value))}</option>`).join('')}`;
+  document.getElementById('teamContent').innerHTML=`
+    <div class="hierarchy-filters" aria-label="Filtros da hierarquia">
+      <label><span>1. Executivo</span><select id="teamExecutiveFilter">${options(executives,teamExecutiveFilter,'Todos os executivos',managerExecutive)}</select></label>
+      <label><span>2. Coordenador</span><select id="teamCoordinatorFilter">${options(coordinators,teamCoordinatorFilter,'Todos os coordenadores')}</select></label>
+      <label><span>3. Setor</span><select id="teamSectorFilter">${options(sectors,teamSectorFilter,'Todos os setores')}</select></label>
+    </div>
+    <div class="team-toolbar"><input id="teamSearch" value="${managerEscape(teamSearchTerm)}" placeholder="Buscar na hierarquia"><span class="team-count">${all.length} setores</span></div>
+    <div class="team-table hierarchy-table">
+      <div class="team-row header"><span class="team-hierarchy-column">Executivo</span><span class="team-hierarchy-column">Coordenador</span><span>Setor</span><span>% Quiz</span><span>% Assistido</span></div>
+      ${people.map(person=>`<button type="button" class="team-row team-row-clickable" data-promoter="${managerEscape(person.sector)}" aria-label="Abrir desempenho de ${managerEscape(person.sector)}"><span class="team-hierarchy-column hierarchy-name">${managerEscape(managerExecutive(person.executive))}</span><span class="team-hierarchy-column hierarchy-name">${managerEscape(person.coordinator||'Sem coordenador')}</span><span class="person"><i class="mini-avatar">${managerEscape(person.sector.slice(0,2))}</i><span><strong>${managerEscape(person.sector)}</strong><small>${managerEscape(managerExecutive(person.executive))} › ${managerEscape(person.coordinator||'Sem coordenador')}</small></span></span><span class="team-metric">${Number(person.completionRate||0)}%</span><span class="team-metric">${Number(person.videoAveragePercent||0)}%</span></button>`).join('')||'<div class="empty-search">Nenhum setor encontrado.</div>'}
+    </div>
+    <div class="pagination"><button class="btn secondary" id="prevTeam" ${teamPage<=1?'disabled':''}>Anterior</button><span>Página ${teamPage} de ${pages}</span><button class="btn secondary" id="nextTeam" ${teamPage>=pages?'disabled':''}>Próxima</button></div>`;
+  document.getElementById('teamExecutiveFilter').onchange=event=>{teamExecutiveFilter=event.target.value;teamCoordinatorFilter='';teamSectorFilter='';teamPage=1;renderManagerTeam();};
+  document.getElementById('teamCoordinatorFilter').onchange=event=>{teamCoordinatorFilter=event.target.value;teamSectorFilter='';teamPage=1;renderManagerTeam();};
+  document.getElementById('teamSectorFilter').onchange=event=>{teamSectorFilter=event.target.value;teamPage=1;renderManagerTeam();};
   document.getElementById('teamSearch').addEventListener('input',event=>{teamSearchTerm=event.target.value;teamPage=1;renderManagerTeam();});
   document.getElementById('prevTeam').onclick=()=>{if(teamPage>1){teamPage-=1;renderManagerTeam();}};
   document.getElementById('nextTeam').onclick=()=>{if(teamPage<pages){teamPage+=1;renderManagerTeam();}};
@@ -142,7 +176,7 @@ function renderPromoterDetail(data){
   const completed=Number(person.completedKbdCount||0);
   const eligible=Number(person.eligibleKbdCount||9);
   const activeDays=Number(person.activeDays||0);
-  document.getElementById('promoterDrawerSubtitle').textContent=`${person.coordinator} • ${managerRegion(person.regional)} • ciclo ${data.cycle?.name||'vigente'}`;
+  document.getElementById('promoterDrawerSubtitle').textContent=`${managerExecutive(person.executive)} › ${person.coordinator} › ${person.sector} • ciclo ${data.cycle?.name||'vigente'}`;
   document.getElementById('promoterDrawerContent').innerHTML=`<div class="promoter-summary"><article><small>Quizzes concluídos</small><strong>${completed}/${eligible}</strong></article><article><small>Acerto no ciclo</small><strong>${managerPercent(person.accuracy)}</strong></article><article><small>Dias com acesso</small><strong>${activeDays} ${activeDays===1?'dia':'dias'}</strong></article><article><small>Último login</small><strong>${managerEscape(managerDate(person.lastAccessAt))}</strong></article></div><div class="brand-groups">${Object.entries(groups).map(([brand,rows])=>`<section class="brand-group"><header><span class="brand-avatar">${managerEscape(brand.slice(0,2))}</span><div><h3>${managerEscape(brand)}</h3><p>${rows.filter(row=>row.completedPromoters>0).length}/${rows.length} KBDs concluídos</p></div></header><div class="kbd-detail-head"><span>KBD</span><span>Status</span><span>Resultado</span><span>Vídeo</span></div>${rows.map(row=>`<div class="kbd-detail-row"><strong>${managerEscape(row.kbd)}</strong><span class="kbd-status ${row.completedPromoters>0?'done':'pending'}">${row.completedPromoters>0?'Quiz concluído':'Não concluído'}</span><span><b>${row.questions?`${row.correct}/${row.questions}`:'—'}</b><small>${row.accuracy===null||row.accuracy===undefined?'Sem resultado':`${managerPercent(row.accuracy)} de acerto`}</small></span><span><b>${Number(row.videoAveragePercent||0)}%</b><small>assistido</small></span></div>`).join('')}</section>`).join('')}</div>`;
 }
 
@@ -171,14 +205,14 @@ function renderManagementAll(){renderManagerKpis();renderManagerTrend();renderMa
 function closeManagerSidebar(){document.getElementById('sidebar')?.classList.remove('open');document.body.classList.remove('menu-open');}
 function showManagerView(name){document.querySelectorAll('.view').forEach(view=>view.classList.toggle('active',view.dataset.page===name));document.querySelectorAll('.nav-item[data-view]').forEach(button=>button.classList.toggle('active',button.dataset.view===name));closeManagerSidebar();window.scrollTo(0,0);}
 
-function searchManagement(value){teamSearchTerm=value;teamPage=1;showManagerView('team');if(managementReport)renderManagerTeam();}
+function searchManagement(value){teamSearchTerm=value;teamExecutiveFilter='';teamCoordinatorFilter='';teamSectorFilter='';teamPage=1;showManagerView('team');if(managementReport)renderManagerTeam();}
 
 function updateManagerGlobalSearch(value){
   const box=document.getElementById('searchResults');
   const term=value.trim().toLowerCase();
   if(!managementReport||term.length<2){box.classList.remove('open');box.innerHTML='';return;}
-  const people=(managementReport.people||[]).filter(person=>`${person.sector} ${person.coordinator} ${person.regional}`.toLowerCase().includes(term)).slice(0,8);
-  box.innerHTML=people.length?people.map(person=>`<button class="search-result" data-search-sector="${managerEscape(person.sector)}"><i class="mini-avatar">${managerEscape(person.sector.slice(0,2))}</i><span><strong>${managerEscape(person.sector)}</strong><small>Coordenador ${managerEscape(person.coordinator)} • ${managerEscape(managerRegion(person.regional))}</small></span><span>Abrir equipe</span></button>`).join(''):'<div class="empty-search">Nenhum setor encontrado.</div>';
+  const people=(managementReport.people||[]).filter(person=>`${person.executive} ${person.sector} ${person.coordinator} ${person.regional}`.toLowerCase().includes(term)).slice(0,8);
+  box.innerHTML=people.length?people.map(person=>`<button class="search-result" data-search-sector="${managerEscape(person.sector)}"><i class="mini-avatar">${managerEscape(person.sector.slice(0,2))}</i><span><strong>${managerEscape(person.sector)}</strong><small>${managerEscape(managerExecutive(person.executive))} › ${managerEscape(person.coordinator)}</small></span><span>Abrir setor</span></button>`).join(''):'<div class="empty-search">Nenhum setor encontrado.</div>';
   box.classList.add('open');
   box.querySelectorAll('[data-search-sector]').forEach(button=>button.onclick=()=>{document.getElementById('globalSearch').value=button.dataset.searchSector;box.classList.remove('open');searchManagement(button.dataset.searchSector);});
 }
@@ -188,9 +222,10 @@ function initAdmin(){
   if(!currentManagerUser||!token||!['admin','manager'].includes(currentManagerRole)){window.location.replace('index.html');return;}
   document.querySelectorAll('[data-icon]').forEach(el=>el.innerHTML=managerIcon(el.dataset.icon));
   const avatar=document.getElementById('managerSectorAvatar');
-  if(avatar)avatar.textContent=currentManagerRole==='admin'?'SPOT':currentManagerUser;
-  document.querySelector('.admin-user strong').textContent='Gestor';
-  document.querySelector('.admin-user small').textContent=currentManagerRole==='admin'?'SPOT':currentManagerUser;
+  const isGlobalManager=currentManagerRole==='admin';
+  if(avatar)avatar.textContent=isGlobalManager?'SPOT':currentManagerUser;
+  document.querySelector('.admin-user strong').textContent=isGlobalManager?'Gestor Geral':'Gestor';
+  document.querySelector('.admin-user small').textContent=isGlobalManager?'Todos os executivos':currentManagerUser;
   document.querySelector('.scope-tabs').innerHTML=`<button class="active">${currentManagerRole==='admin'?'Todas as equipes':'Minha equipe'}</button>`;
   if(currentManagerRole==='manager'){
     document.querySelector('[data-page="overview"] .page-head p').textContent='Acompanhe somente os promotores vinculados ao seu setor.';

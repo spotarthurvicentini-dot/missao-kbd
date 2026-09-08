@@ -42,8 +42,8 @@ vm.createContext(context);
 vm.runInContext(managementSource, context, { filename: 'Management.gs' });
 
 const team = [
-  { coordinator: 'SPICOORD19', promoter: 'SPI001', regional: 'SPI' },
-  { coordinator: 'SPICOORD19', promoter: 'SPI002', regional: 'SPI' },
+  { executive: 'EXECUTIVO 3', coordinator: 'SPICOORD19', promoter: 'SPI001', regional: 'SPI' },
+  { executive: 'EXECUTIVO 3', coordinator: 'SPICOORD19', promoter: 'SPI002', regional: 'SPI' },
 ];
 const start = new Date('2026-08-01T00:00:00-03:00');
 const end = new Date('2026-08-06T23:59:59-03:00');
@@ -81,6 +81,7 @@ assert.equal(report.weeklyTrend.reduce((sum, row) => sum + row.activePromoters, 
 assert.equal(report.contentPerformance.length, 9);
 assert.equal(report.contentPerformance.find((row) => row.kbdId === 'bond-repair').videoAveragePercent, 40);
 assert.equal(report.people.find((row) => row.sector === 'SPI001').coordinator, 'SPICOORD19');
+assert.equal(report.people.find((row) => row.sector === 'SPI001').executive, 'EXECUTIVO3');
 assert.ok(report.people.find((row) => row.sector === 'SPI002').lastAccessAt, 'último login deve considerar o histórico anterior à janela');
 assert.equal(report.people.some((row) => row.sector === 'SPICOORD19'), false, 'coordenador não pode virar respondente');
 

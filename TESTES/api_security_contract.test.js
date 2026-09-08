@@ -26,6 +26,11 @@ const context = {
 vm.createContext(context);
 vm.runInContext(codeSource, context, { filename: 'Code.gs' });
 
+assert.equal(context.resolveExecutive_('SPICOORD19', 'SPI001'), 'EXECUTIVO3');
+assert.equal(context.resolveExecutive_('SCCOORD08', 'SC271'), 'EXECUTIVO2', 'exceção por setor deve prevalecer sobre o coordenador');
+assert.match(codeSource, /GLOBAL_MANAGER_USER\s*=\s*"GESTOR"/);
+assert.match(codeSource, /user === GLOBAL_MANAGER_USER/);
+
 const stored = context.eventPayloadForStorage_({
   eventType: 'quiz_completion',
   setor: 'SPI001',
