@@ -1,4 +1,4 @@
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyWAAaDDwVQjwh2qddHr55-hlOU64SboDwdYx4KihXGnYAAnyGncz9yRghsjuzysO4W/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUqGTdSRyV2CQ2tNgL3I-IADDhD95NLcJHSxPeLS7Ibif3odpx6x39LBtnELsVarrv/exec";
 const APP_VERSION = "2.4.1";
 const REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ = 100;
 const DEVICE_ID_KEY = "KBD_DEVICE_ID";

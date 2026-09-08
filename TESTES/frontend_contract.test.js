@@ -38,13 +38,13 @@ assert.doesNotMatch(adminJs, /points\('accesses'\)/);
 assert.match(adminJs, /attentionPeopleCount/);
 assert.doesNotMatch(worker, /admin\.js/);
 assert.match(worker, /req\.mode === "navigate"/);
-assert.match(worker, /app\.js\?v=20260814-13/);
+assert.match(worker, /app\.js\?v=20260908-14/);
 assert.match(worker, /style\.css\?v=20260807-2/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('async function entrar()'), appJs.indexOf('function renderHome()')), /ALLOWED_SECTORS_NORMALIZED/);
 assert.doesNotMatch(appJs.slice(appJs.indexOf('function prepareEventPayload'), appJs.indexOf('function readEventQueue')), /authToken/);
 
 for (const file of ['index.html', 'home.html', 'marca.html', 'kbd.html', 'quiz.html', 'novidades.html', 'checklist.html', 'admin.html']) {
-  assert.match(read(file), /app\.js\?v=20260814-13/, `${file} precisa carregar a versão atual do app`);
+  assert.match(read(file), /app\.js\?v=20260908-14/, `${file} precisa carregar a versão atual do app`);
 }
 
 assert.match(appJs, /const REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ = 100/);
