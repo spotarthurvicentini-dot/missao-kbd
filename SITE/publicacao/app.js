@@ -1,5 +1,5 @@
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUqGTdSRyV2CQ2tNgL3I-IADDhD95NLcJHSxPeLS7Ibif3odpx6x39LBtnELsVarrv/exec";
-const APP_VERSION = "2.4.1";
+const APP_VERSION = "2.4.2";
 const REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ = 100;
 const DEVICE_ID_KEY = "KBD_DEVICE_ID";
 const SESSION_ID_KEY = "KBD_SESSION_ID";
@@ -377,7 +377,9 @@ function getSavedVideoProgress(marcaId, kbdId) {
 }
 
 function isVideoCompleteForQuiz(marcaId, kbdId) {
-  return Number(getSavedVideoProgress(marcaId, kbdId).percentage || 0) >= REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ;
+  const saved = getSavedVideoProgress(marcaId, kbdId);
+  if (saved.videoUnavailable) return true;
+  return Number(saved.percentage || 0) >= REQUIRED_VIDEO_PERCENTAGE_FOR_QUIZ;
 }
 
 function updateKbdQuizButtonAccess(marcaId, kbdId) {
@@ -403,6 +405,7 @@ function saveCurrentVideoProgress() {
     duration: Math.round(videoTrackingState.duration || 0),
     percentage: videoTrackingState.percentage,
     completed: videoTrackingState.completed,
+    videoUnavailable: Boolean(videoTrackingState.videoUnavailable),
     updatedAt: new Date().toISOString()
   };
   saveVideoProgressData(data);
@@ -557,11 +560,21 @@ async function iniciarYouTubePlayer(videoId, marca, kbd) {
           }
         },
         onError: (event) => {
+          const unplayable = [2, 5, 100, 101, 150].includes(Number(event.data));
+          if (unplayable && videoTrackingState) {
+            videoTrackingState.videoUnavailable = true;
+            videoTrackingState.completed = true;
+            saveCurrentVideoProgress();
+          }
           const status = document.getElementById("videoProgressStatus");
           if (status) {
             status.classList.remove("hidden");
-            status.innerHTML = `<div class="helper-text">O YouTube não conseguiu reproduzir este vídeo dentro do aplicativo. Código ${escapeHtml(event.data)}.</div>`;
+            status.classList.toggle("completed", unplayable);
+            status.innerHTML = unplayable
+              ? `<div class="video-progress-copy"><strong>Vídeo indisponível</strong><span>Não foi possível carregar este vídeo (código ${escapeHtml(event.data)}). O quiz foi liberado para você seguir.</span></div><span class="summary-chip completed">${renderIcon("check")}</span>`
+              : `<div class="helper-text">O YouTube não conseguiu reproduzir este vídeo dentro do aplicativo. Código ${escapeHtml(event.data)}.</div>`;
           }
+          if (unplayable && videoTrackingState) updateKbdQuizButtonAccess(videoTrackingState.marcaId, videoTrackingState.kbdId);
           sendVideoEvent(`error_${event.data}`);
         }
       }
